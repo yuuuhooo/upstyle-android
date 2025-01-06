@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="main_color_1">#FFFFF5B1</color>
+    <color name="main_color_1">#FFFFF5B1</color> <!-- 피그마 기준 글자 사용 컬러 -->
     <color name="main_color_2">#FFFFFFFF</color>
 
+    <color name="sub_color_1">#FFFFD27E</color> <!-- 더 진한 yellow -->
+    <color name="sub_color_2">#FF403431</color> <!-- 하단바 brown?? -->
+
+    <color name="background_black">#FF111111</color>
+
+    <!-- 카테고리 컬러들 -->
     <color name="black">#FF000000</color>
     <color name="silver">#FFC0C0C0</color>
     <color name="white">#FFFFFFFF</color>
@@ -24,12 +30,9 @@
     <color name="brown">#FFA52A2A</color>
     <color name="camel">#FFC19A6B</color>
     <color name="beige">#FFE8DCCA</color>
-    <color name="light_denim">#FF97CBD9</color>
-    <color name="denim">#FF02457A</color>
-    <color name="deep_denim">#FF001B48</color>
-
-
-
+    <color name="light_denim">#FF97CBD9</color> <!-- 연청 -->
+    <color name="denim">#FF02457A</color> <!-- 중청 -->
+    <color name="deep_denim">#FF001B48</color> <!-- 흑청 -->
 
 
 </resources>

@@ -1,0 +1,147 @@
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@color/background_black">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="64dp">
+
+            <ImageButton
+                android:id="@+id/arrow_image"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="11dp"
+                android:padding="8.33dp"
+                android:alpha="1"
+                android:rotation="0"
+                android:src="@drawable/arrow_left" />
+
+            <ImageButton
+                android:id="@+id/save_button"
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="225dp"
+                android:src="@drawable/save_button" />
+
+        </LinearLayout>
+
+
+        <FrameLayout
+        android:id="@+id/photo_upload_frame"
+        android:layout_width="319dp"
+        android:layout_height="366dp"
+        android:layout_gravity="center"
+        android:layout_marginLeft="21dp"
+        android:layout_marginTop="107dp"
+        android:layout_marginRight="21dp"
+        android:background="@drawable/round_pic_upload"
+        android:backgroundTintMode="src_over"
+        android:clipToOutline="true"
+        android:elevation="4dp">
+
+        <TextView
+            android:id="@+id/upload_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="사진 등록"
+            android:textColor="@color/login_yellow" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="16dp">
+
+        <Button
+            android:id="@+id/outer_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="OUTER"
+            android:background="@drawable/round_button"
+            android:layout_marginTop="14dp"
+            android:gravity="center_vertical|start"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="0dp"
+            android:drawableRight="@drawable/mdi_pencil" />
+
+        <Button
+            android:id="@+id/top_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="TOP"
+            android:background="@drawable/round_button"
+            android:layout_marginTop="14dp"
+            android:gravity="center_vertical|start"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="0dp"
+            android:drawableRight="@drawable/mdi_pencil" />
+
+        <Button
+            android:id="@+id/bottom_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="BOTTOM"
+            android:background="@drawable/round_button"
+            android:layout_marginTop="14dp"
+            android:gravity="center_vertical|start"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="0dp"
+            android:drawableRight="@drawable/mdi_pencil" />
+
+        <Button
+            android:id="@+id/shoes_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="SHOES"
+            android:background="@drawable/round_button"
+            android:layout_marginTop="14dp"
+            android:gravity="center_vertical|start"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="0dp"
+            android:drawableRight="@drawable/mdi_pencil" />
+
+        <Button
+            android:id="@+id/bag_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="BAG"
+            android:background="@drawable/round_button"
+            android:layout_marginTop="14dp"
+            android:gravity="center_vertical|start"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="0dp"
+            android:drawableRight="@drawable/mdi_pencil" />
+
+        <Button
+            android:id="@+id/others_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="OTHERS"
+            android:background="@drawable/round_button"
+            android:layout_marginTop="14dp"
+            android:gravity="center_vertical|start"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="0dp"
+            android:drawableRight="@drawable/mdi_pencil" />
+
+    </LinearLayout>
+</LinearLayout>
+    </ScrollView>

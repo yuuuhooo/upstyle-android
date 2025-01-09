@@ -37,7 +37,7 @@ class BodyinfoActivity : AppCompatActivity() {
         binding.btBodyinfoStart.setOnClickListener {
             // 버튼 클릭 이벤트 처리
             // Intent 생성
-            val intent = Intent(this, TestActivity::class.java)
+            val intent = Intent(this, MainActivity::class.java)
             startActivity(intent) // TestActivity로 이동
         }
 

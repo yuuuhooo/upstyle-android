@@ -39,10 +39,6 @@
     <color name="brown">#FFA52A2A</color>
     <color name="camel">#FFC19A6B</color>
     <color name="beige">#FFE8DCCA</color>
-    <color name="light_denim">#FF97CBD9</color>
-    <color name="denim">#FF02457A</color>
-    <color name="deep_denim">#FF001B48</color>
-
     <color name="light_denim">#FF97CBD9</color> <!-- 연청 -->
     <color name="denim">#FF02457A</color> <!-- 중청 -->
     <color name="deep_denim">#FF001B48</color> <!-- 흑청 -->

@@ -18,6 +18,7 @@ android {
     }
 
     buildFeatures {
+        compose = true
         viewBinding = true
         dataBinding = true
     }
@@ -39,12 +40,6 @@ android {
 
     kotlinOptions {
         jvmTarget = "11"
-
-    }
-    buildFeatures {
-        compose = true
-        dataBinding = true
-        viewBinding = true
 
     }
     composeOptions {
@@ -75,6 +70,7 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
 
+
     /*implementation(libs.androidx-navigation-fragment-ktx)
     implementation(libs.androidx-navigation-ui-ktx)*/
 
@@ -86,8 +82,6 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-
-    implementation ("com.google.android.material:material:1.9.0")
 
     implementation ("androidx.credentials:credentials:1.3.0")
     implementation ("androidx.credentials:credentials-play-services-auth:1.3.0")

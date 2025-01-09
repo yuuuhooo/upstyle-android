@@ -16,7 +16,6 @@
             android:name=".MainActivity"/>
         <activity
             android:name=".BodyinfoActivity"/>
-<!--            android:exported="false" -->
         <activity
             android:name=".TestActivity" />
         <activity

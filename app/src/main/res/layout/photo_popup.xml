@@ -1,0 +1,51 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="330dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/round_popup_background"
+    android:padding="16dp"
+    android:clipToOutline="true">
+
+    <TextView
+        android:id="@+id/takePhoto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="사진찍기"
+        android:textSize="16sp"
+        android:padding="12dp"
+        android:gravity="center"
+        android:background="?attr/selectableItemBackground"
+        android:textColor="#000000" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#E0E0E0" />
+
+    <TextView
+        android:id="@+id/choosePhoto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="사진 보관함"
+        android:textSize="16sp"
+        android:padding="12dp"
+        android:gravity="center"
+        android:background="?attr/selectableItemBackground"
+        android:textColor="#000000" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#E0E0E0" />
+
+    <TextView
+        android:id="@+id/cancel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="취소"
+        android:textSize="16sp"
+        android:padding="12dp"
+        android:gravity="center"
+        android:background="?attr/selectableItemBackground"
+        android:textColor="#FF0000" />
+</LinearLayout>

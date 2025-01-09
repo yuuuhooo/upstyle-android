@@ -13,13 +13,19 @@
         android:theme="@style/Theme.UPSTYLE"
         tools:targetApi="31">
         <activity
-            android:name=".MainActivity"
+            android:name=".MainActivity"/>
+        <activity
+            android:name=".BodyinfoActivity"/>
+<!--            android:exported="false" -->
+        <activity
+            android:name=".TestActivity" />
+        <activity
+            android:name=".LoginActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.UPSTYLE">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

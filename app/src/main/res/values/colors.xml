@@ -13,7 +13,6 @@
     <color name="login_text_gray">#FFB0B0B0</color> <!-- 로그인 화면 글자에 사용되는 회색 -->
     <color name="login_yellow">#FFFFF5B1</color> <!-- 시작하기 버튼 색상 -->
 
-    <!--마이페이지 사용-->
     <color name = "pic_select_yellow">#FFF9D4</color>
 
 
@@ -42,6 +41,10 @@
     <color name="light_denim">#FF97CBD9</color>
     <color name="denim">#FF02457A</color>
     <color name="deep_denim">#FF001B48</color>
+
+    <color name="light_denim">#FF97CBD9</color> <!-- 연청 -->
+    <color name="denim">#FF02457A</color> <!-- 중청 -->
+    <color name="deep_denim">#FF001B48</color> <!-- 흑청 -->
     <color name="othercolor">#FFFFFFFF</color>
     <color name="selectYellow">#FFFFF5B1</color>
 

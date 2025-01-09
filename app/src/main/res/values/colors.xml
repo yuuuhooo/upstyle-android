@@ -42,6 +42,8 @@
     <color name="light_denim">#FF97CBD9</color>
     <color name="denim">#FF02457A</color>
     <color name="deep_denim">#FF001B48</color>
+    <color name="othercolor">#FFFFFFFF</color>
+    <color name="selectYellow">#FFFFF5B1</color>
 
 
 </resources>

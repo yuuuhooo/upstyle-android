@@ -14,6 +14,8 @@
     <color name="login_yellow">#FFFFF5B1</color> <!-- 시작하기 버튼 색상 -->
     <color name="google_login_normal">#FF909090</color> <!-- 임시 컬러임 수정 필요 -->
 
+    <color name = "pic_select_yellow">#FFF9D4</color>
+
 
     <!-- 카테고리 컬러들 -->
     <color name="black">#FF000000</color>
@@ -37,8 +39,14 @@
     <color name="brown">#FFA52A2A</color>
     <color name="camel">#FFC19A6B</color>
     <color name="beige">#FFE8DCCA</color>
+    <color name="light_denim">#FF97CBD9</color>
+    <color name="denim">#FF02457A</color>
+    <color name="deep_denim">#FF001B48</color>
+
     <color name="light_denim">#FF97CBD9</color> <!-- 연청 -->
     <color name="denim">#FF02457A</color> <!-- 중청 -->
     <color name="deep_denim">#FF001B48</color> <!-- 흑청 -->
+    <color name="othercolor">#FFFFFFFF</color>
+    <color name="selectYellow">#FFFFF5B1</color>
 
 </resources>

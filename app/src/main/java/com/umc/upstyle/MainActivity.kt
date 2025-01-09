@@ -2,14 +2,24 @@ package com.umc.upstyle
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.umc.upstyle.databinding.ActivityMainBinding
+import com.umc.upstyle.ui.theme.UPSTYLETheme
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.fragment.app.Fragment
 
 class MainActivity : AppCompatActivity() {
 
+  // ViewBinding 객체 선언
+    private lateinit var binding: ActivityMainBinding
+  
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        
+        // ViewBinding 초기화
+        binding = ActivityMainBinding.inflate(layoutInflater)
+
+        // setContentView()로 ViewBinding root 레이아웃을 설정
+        setContentView(binding.root)
 
         val bottomNavigationView: BottomNavigationView = findViewById(R.id.bottom_navigation_view)
 

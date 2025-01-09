@@ -12,6 +12,7 @@
     <color name="login_gray">#FFEFEFEF</color> <!-- 로그인 화면&체형 정보 입력 페이지 칸에 사용되는 회색 -->
     <color name="login_text_gray">#FFB0B0B0</color> <!-- 로그인 화면 글자에 사용되는 회색 -->
     <color name="login_yellow">#FFFFF5B1</color> <!-- 시작하기 버튼 색상 -->
+    <color name="google_login_normal">#FF909090</color> <!-- 임시 컬러임 수정 필요 -->
 
     <color name = "pic_select_yellow">#FFF9D4</color>
 
@@ -47,6 +48,5 @@
     <color name="deep_denim">#FF001B48</color> <!-- 흑청 -->
     <color name="othercolor">#FFFFFFFF</color>
     <color name="selectYellow">#FFFFF5B1</color>
-
 
 </resources>

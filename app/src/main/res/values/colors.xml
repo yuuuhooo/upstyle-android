@@ -1,12 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="main_color_1">#FFFFF5B1</color> <!-- 피그마 기준 글자 사용 컬러 -->
+    <color name="main_color_1">#FFFFF5B1</color> <!-- 피그마 기준 글자 사용 컬러 노랑-->
     <color name="main_color_2">#FFFFFFFF</color>
 
     <color name="sub_color_1">#FFFFD27E</color> <!-- 더 진한 yellow -->
     <color name="sub_color_2">#FF403431</color> <!-- 하단바 brown?? -->
 
     <color name="background_black">#FF111111</color>
+
+    <!-- 로그인&체형 정보 페이지 컬러들 -->
+    <color name="login_gray">#FFEFEFEF</color> <!-- 로그인 화면&체형 정보 입력 페이지 칸에 사용되는 회색 -->
+    <color name="login_text_gray">#FFB0B0B0</color> <!-- 로그인 화면 글자에 사용되는 회색 -->
+    <color name="login_yellow">#FFFFF5B1</color> <!-- 시작하기 버튼 색상 -->
+
 
     <!-- 카테고리 컬러들 -->
     <color name="black">#FF000000</color>

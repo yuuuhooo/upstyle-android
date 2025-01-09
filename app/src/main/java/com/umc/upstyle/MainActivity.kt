@@ -3,7 +3,6 @@ package com.umc.upstyle
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.umc.upstyle.databinding.ActivityMainBinding
-import com.umc.upstyle.ui.theme.UPSTYLETheme
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.fragment.app.Fragment
 

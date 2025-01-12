@@ -21,7 +21,8 @@
     </style>
 
     <style name="CustomStartButton" parent="Widget.AppCompat.Button">
-        <item name="android:background">@drawable/button_background_login_selector</item>
+        <item name="android:textStyle"></item>
+        <item name="android:fontFamily">@font/</item>
         <item name="android:textColor">@color/black</item>
         <item name="android:textSize">18sp</item>
     </style>

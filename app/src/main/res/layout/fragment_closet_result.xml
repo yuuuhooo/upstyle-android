@@ -28,7 +28,6 @@
             android:id="@+id/mainTitleTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="TEST"
             android:textSize="20sp"
             android:textStyle="bold"
             android:textColor="@color/selectYellow"
@@ -52,6 +51,7 @@
                 tools:ignore="MissingConstraints">
 
             <TextView
+                android:id="@+id/tv_selectedOptions"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="12sp"
@@ -61,10 +61,11 @@
                 />
 
             <TextView
+                android:id="@+id/tv_resultCount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="10sp"
-                android:layout_marginStart="1dp"
+                android:layout_marginStart="2dp"
                 android:text="에 대한 결과 N건"
                 android:textColor="@color/main_color_2"
                 android:textFontWeight="400"

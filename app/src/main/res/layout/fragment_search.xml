@@ -50,13 +50,13 @@
             </com.google.android.material.textfield.TextInputLayout>
 
 
-        <!-- 원인 모를 버튼 아래 수염이 생김 ㅠㅠ 지금은 일단 rippleColor를 transparent로 해서 아예 안 보이게 설정 해두었음 -->
         <HorizontalScrollView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/til_search_bar"
             android:layout_marginTop="21dp"
             app:layout_constraintStart_toStartOf="parent"
+            android:scrollbars="none"
             tools:ignore="MissingConstraints">
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -76,8 +76,7 @@
                     app:iconTint="@color/black"
                     android:paddingStart="8dp"
                     android:paddingEnd="8dp"
-                    app:rippleColor="@android:color/transparent"
-                    android:elevation="0dp"
+
                     android:insetTop="0dp"
                     android:insetLeft="0dp"
                     android:insetBottom="0dp"
@@ -99,8 +98,7 @@
                     app:iconTint="@color/black"
                     android:paddingStart="8dp"
                     android:paddingEnd="8dp"
-                    app:rippleColor="@android:color/transparent"
-                    android:elevation="0dp"
+
                     android:insetTop="0dp"
                     android:insetLeft="0dp"
                     android:insetBottom="0dp"
@@ -122,8 +120,7 @@
                     app:iconTint="@color/black"
                     android:paddingStart="8dp"
                     android:paddingEnd="8dp"
-                    app:rippleColor="@android:color/transparent"
-                    android:elevation="0dp"
+
                     android:insetTop="0dp"
                     android:insetLeft="0dp"
                     android:insetBottom="0dp"
@@ -145,8 +142,7 @@
                     app:iconTint="@color/black"
                     android:paddingStart="8dp"
                     android:paddingEnd="8dp"
-                    app:rippleColor="@android:color/transparent"
-                    android:elevation="0dp"
+
                     android:insetTop="0dp"
                     android:insetLeft="0dp"
                     android:insetBottom="0dp"

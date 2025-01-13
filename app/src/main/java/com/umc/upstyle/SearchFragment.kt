@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import com.umc.upstyle.databinding.FragmentSearchBinding
 
 // 필요한 UI 요소와 동작을 여기에 추가할 수 있습니다
@@ -28,6 +29,11 @@ class SearchFragment : Fragment() {
 //        binding.myButton.setOnClickListener {
 //            // 버튼 클릭 이벤트 처리
 //        }
+
+        binding.btnGoToOuter.setOnClickListener {
+            val navController = findNavController()
+            navController.navigate(R.id.action_searchFragment_to_closetResultFragment)
+        }
     }
 
     override fun onDestroyView() {

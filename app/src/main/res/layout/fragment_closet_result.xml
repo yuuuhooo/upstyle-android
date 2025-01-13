@@ -102,7 +102,6 @@
                         android:layout_width="12dp"
                         android:layout_height="7dp"
                         app:tint="@color/black"
-                        android:margiinTop="5dp"
                         android:src="@drawable/ic_polygon_5"/>
 
                 </LinearLayout>

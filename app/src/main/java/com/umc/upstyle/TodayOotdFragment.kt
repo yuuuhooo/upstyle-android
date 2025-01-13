@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
+import androidx.core.content.edit
 import androidx.fragment.app.Fragment
 import com.umc.upstyle.databinding.ActivityTodayOotdBinding
 import java.io.File
@@ -26,6 +27,9 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
         _binding = ActivityTodayOotdBinding.bind(view)
 
         val preferences = requireActivity().getSharedPreferences("AppData", Context.MODE_PRIVATE)
+
+        // 이전 Fragment나 Activity에서 전달된 데이터 처리
+        handleReceivedData(preferences)
 
         // 저장된 데이터 복원
         updateUIWithPreferences(preferences)
@@ -49,6 +53,38 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
         }
     }
 
+    // 이전 Fragment나 Activity에서 전달된 데이터 처리
+    private fun handleReceivedData(preferences: SharedPreferences) {
+        val selectedCategory = arguments?.getString("CATEGORY")
+        val selectedSubCategory = arguments?.getString("SUB_CATEGORY")
+        val selectedFit = arguments?.getString("FIT")
+        val selectedSize = arguments?.getString("SIZE")
+        val selectedColor = arguments?.getString("COLOR")
+
+        if (!selectedCategory.isNullOrEmpty()) {
+            val categoryText = when (selectedCategory) {
+                "OUTER", "TOP", "BOTTOM" -> "$selectedSubCategory $selectedFit $selectedColor"
+                "SHOES", "OTHER" -> "$selectedSubCategory $selectedColor"
+                "BAG" -> "$selectedSubCategory $selectedSize $selectedColor"
+                else -> ""
+            }
+
+            // 데이터를 SharedPreferences에 저장
+            preferences.edit {
+                putString(selectedCategory, categoryText)
+            }
+
+            // UI 업데이트
+            when (selectedCategory) {
+                "OUTER" -> binding.outerText.text = categoryText
+                "TOP" -> binding.topText.text = categoryText
+                "BOTTOM" -> binding.bottomText.text = categoryText
+                "SHOES" -> binding.shoesText.text = categoryText
+                "BAG" -> binding.bagText.text = categoryText
+                "OTHER" -> binding.otherText.text = categoryText
+            }
+        }
+    }
 
     // 카테고리 버튼 초기화
     private fun setupCategoryButtons(preferences: SharedPreferences) {

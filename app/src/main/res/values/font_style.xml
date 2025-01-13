@@ -22,5 +22,9 @@
         <item name="android:fontFamily">@font/font_custom</item>
     </style>
 
+    <style name="pretendard900">
+        <item name="fontFamily">@font/pretendard_medium</item>
+        <item name="fontWeight">900</item>
+    </style>
 
 </resources>

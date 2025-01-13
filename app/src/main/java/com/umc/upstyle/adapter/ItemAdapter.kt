@@ -4,9 +4,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
-import umc.upstyle.R
-import com.example.app.databinding.ItemLayoutBinding
-import umc.upstyle.app.model.Item
+import com.umc.upstyle.R
+import com.umc.upstyle.databinding.ItemLayoutBinding
+import com.umc.upstyle.Item
 
 class ItemAdapter(private val items: List<Item>) : RecyclerView.Adapter<ItemAdapter.ItemViewHolder>() {
 

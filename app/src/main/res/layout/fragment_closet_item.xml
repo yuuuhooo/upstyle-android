@@ -13,7 +13,6 @@
         android:src="@drawable/arrow_left"
         android:contentDescription="뒤로가기" />
 
-    <!-- OUTER 제목 -->
 
     <!-- 필터 버튼 -->
     <TextView
@@ -24,7 +23,7 @@
         android:layout_marginTop="11dp"
         android:layout_toEndOf="@id/backButton"
         android:fontFamily="@font/pretendard_medium"
-        android:text="OUTER"
+        android:text=""
         android:textColor="#FFF5B1"
         android:textSize="28sp"
         android:textStyle="bold" />
@@ -48,5 +47,5 @@
         android:layout_alignTop="@id/filterButton"
         android:layout_marginTop="12dp"
         android:padding="12dp" />
-
 </RelativeLayout>
+

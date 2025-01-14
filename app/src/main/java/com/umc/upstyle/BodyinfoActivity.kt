@@ -25,12 +25,18 @@ class BodyinfoActivity : AppCompatActivity() {
         binding.btnBodyinfoMale.setOnClickListener {
             binding.btnBodyinfoMale.isSelected = true
             binding.btnBodyinfoFemale.isSelected = false
+            binding.btnBodyinfoMale.setBackgroundResource(R.drawable.button_background_gender_checked)
+            binding.btnBodyinfoFemale.setBackgroundResource(R.drawable.button_background_gender_unchecked)
         }
 
         binding.btnBodyinfoFemale.setOnClickListener {
             binding.btnBodyinfoFemale.isSelected = true
             binding.btnBodyinfoMale.isSelected = false
+            binding.btnBodyinfoFemale.setBackgroundResource(R.drawable.button_background_gender_checked)
+            binding.btnBodyinfoMale.setBackgroundResource(R.drawable.button_background_gender_unchecked)
+
         }
+
 
 
         //시작하기 버튼 이벤트 처리

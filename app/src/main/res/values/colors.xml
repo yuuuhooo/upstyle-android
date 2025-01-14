@@ -14,7 +14,8 @@
     <color name="login_yellow">#FFFFF5B1</color> <!-- 시작하기 버튼 색상 -->
     <color name="google_login_normal">#FF909090</color> <!-- 임시 컬러임 수정 필요 -->
 
-    <color name = "pic_select_yellow">#FFF9D4</color>
+    <color name ="pic_select_yellow">#FFFFF9D4</color>
+    <color name="circle_gray">#FFB3B3B3</color> <!-- 분류 카테고리 핏 사이즈 컬러 선택 회색 타원 -->
 
 
     <!-- 카테고리 컬러들 -->
@@ -44,5 +45,6 @@
     <color name="deep_denim">#FF001B48</color> <!-- 흑청 -->
     <color name="othercolor">#FFFFFFFF</color>
     <color name="selectYellow">#FFFFF5B1</color>
+    <color name="lightgray">#FFD9D9D9</color>
 
 </resources>

@@ -7,33 +7,40 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.umc.upstyle.databinding.ItemLayoutBinding
 
 class RecyclerAdapter(private val itemList: List<Item>) :
     RecyclerView.Adapter<RecyclerAdapter.ViewHolder>() {
 
     // ViewHolder 클래스
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val title: TextView = itemView.findViewById(R.id.item_title) // 제목 TextView
-        val image: ImageView = itemView.findViewById(R.id.item_image) // 이미지 ImageView
-    }
+    class ViewHolder(val binding: ItemLayoutBinding) : RecyclerView.ViewHolder(binding.root)
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.recycler_item, parent, false)
-        return ViewHolder(view)
+        val binding = ItemLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = itemList[position]
 
-        // 텍스트 설정
-        holder.title.text = item.description
+        // Glide를 사용해 이미지 로드
+        Glide.with(holder.binding.root.context)
+            .load(item.imageUrl) // 이미지 URL
+            .centerCrop() // 이미지 자르기
+            .into(holder.binding.itemImage) // ImageView에 설정
 
-        // Glide를 사용해 이미지 로드 (URL 또는 로컬 파일 모두 처리 가능)
-        Glide.with(holder.itemView.context)
-            .load(item.imageUrl)
-            .into(holder.image)
+        // 텍스트 바인딩
+        holder.binding.item = item // 바인딩된 item 객체에 값을 설정 (item_title의 텍스트가 자동으로 업데이트됨)
+
     }
 
     override fun getItemCount(): Int = itemList.size
+
+    // 뷰 재활용 시 이미지 클리어
+    override fun onViewRecycled(holder: ViewHolder) {
+        super.onViewRecycled(holder)
+        Glide.with(holder.binding.root.context).clear(holder.binding.itemImage) // 이미지 클리어
+    }
+
 }

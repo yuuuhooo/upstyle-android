@@ -246,6 +246,7 @@
                     app:layout_constraintEnd_toEndOf="parent"/>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <!-- 세 번째 -->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/btn_go_to_bottom"
                 android:clickable="true"
@@ -280,6 +281,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"/>
             </androidx.constraintlayout.widget.ConstraintLayout>
+            <!-- 네 번째 -->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/btn_go_to_shoes"
                 android:clickable="true"
@@ -314,6 +316,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"/>
             </androidx.constraintlayout.widget.ConstraintLayout>
+            <!-- 다섯 번째 -->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/btn_go_to_bag"
                 android:clickable="true"
@@ -347,6 +350,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"/>
             </androidx.constraintlayout.widget.ConstraintLayout>
+            <!-- 여섯 번째 -->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/btn_go_to_other"
                 android:clickable="true"

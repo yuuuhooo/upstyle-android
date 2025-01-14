@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <!-- 폰트 일괄 적용을 위한 부분... 인터넷 보고 쓴 거라 수정해야 될 수도 -->
     <style name="customTextViewFontStyle" parent="@android:style/Widget.DeviceDefault.TextView">
         <item name="android:fontFamily">@font/font_custom</item>
     </style>
@@ -19,4 +21,10 @@
     <style name="customCheckboxFontStyle" parent="@android:style/Widget.DeviceDefault.CompoundButton.CheckBox">
         <item name="android:fontFamily">@font/font_custom</item>
     </style>
+
+    <style name="pretendard900">
+        <item name="fontFamily">@font/pretendard_medium</item>
+        <item name="fontWeight">900</item>
+    </style>
+
 </resources>

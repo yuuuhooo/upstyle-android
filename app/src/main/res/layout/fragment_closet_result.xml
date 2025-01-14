@@ -61,15 +61,35 @@
                 />
 
             <TextView
-                android:id="@+id/tv_resultCount"
+                android:id="@+id/tv_result"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="10sp"
                 android:layout_marginStart="2dp"
-                android:text="에 대한 결과 N건"
+                android:text="에 대한 결과 "
                 android:textColor="@color/main_color_2"
                 android:textFontWeight="400"
                 />
+
+                <TextView
+                    android:id="@+id/tv_resultCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="10sp"
+                    android:text="N"
+                    android:textColor="@color/main_color_2"
+                    android:textFontWeight="400"
+                    />
+
+                <TextView
+                    android:id="@+id/tv_resultCount_end"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="10sp"
+                    android:text="건"
+                    android:textColor="@color/main_color_2"
+                    android:textFontWeight="400"
+                    />
 
             </LinearLayout>
 
@@ -108,7 +128,6 @@
                 </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

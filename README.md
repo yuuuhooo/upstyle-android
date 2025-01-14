@@ -8,6 +8,7 @@
     - Glide: 이미지 처리를 위해 사용
     - Retrofit: HTTP API를 쉽게 호출하기 위해 사용
     - flexbox: 레이아웃 구성을 위해 사용
+    - navigation component: Fragment 전환을 위해 사용
 
 ---
 #### Branch 전략

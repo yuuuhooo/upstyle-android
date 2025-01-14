@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.umc.upstyle.databinding.FragmentSearchBinding
 
-// 필요한 UI 요소와 동작을 여기에 추가할 수 있습니다
 class SearchFragment : Fragment() {
 
     private var _binding: FragmentSearchBinding? = null
@@ -25,23 +24,55 @@ class SearchFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // UI 작업 및 이벤트 처리
-//        binding.myButton.setOnClickListener {
-//            // 버튼 클릭 이벤트 처리
-//        }
 
+        // OUTER 버튼 클릭
         binding.btnGoToOuter.setOnClickListener {
+            navigateToSearchResult("OUTER")
+        }
 
+        // TOP 버튼 클릭
+        binding.btnGoToTop.setOnClickListener {
+            navigateToSearchResult("TOP")
+        }
+
+        // 다른 버튼들 클릭 (예시)
+        binding.btnGoToBottom.setOnClickListener {
+            navigateToSearchResult("BOTTOM")
+        }
+
+        binding.btnGoToShoes.setOnClickListener {
+            navigateToSearchResult("SHOES")
+        }
+
+        binding.btnGoToBag.setOnClickListener {
+            navigateToSearchResult("BAG")
+        }
+
+        binding.btnGoToOther.setOnClickListener {
+            navigateToSearchResult("OTHER")
+        }
+
+    }
+
+    // 프래그먼트로 문자열 전달 함수
+    private fun navigateToSearchResult(category: String) {
+        val fragment = SearchItemFragment().apply {
+            arguments = Bundle().apply {
+                putString("category", category) // 카테고리 문자열 전달
+            }
+        }
+
+        // 현재는 그냥 프래그먼트 매니저
+        requireActivity().supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, fragment)
+            .addToBackStack(null) // 뒤로가기 시 이전 프래그먼트로 돌아가도록 추가
+            .commit()
+
+
+        // navigation component로 수정하는 게 좋아보여서 일단 써둠
 //            val navController = findNavController()
 //            navController.navigate(R.id.action_searchFragment_to_closetResultFragment)
 
-
-            val fragment = SearchOuterFragment()
-            requireActivity().supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, fragment)
-                .addToBackStack(null) // 뒤로가기 시 이전 프래그먼트로 돌아가도록 추가
-                .commit()
-        }
     }
 
     override fun onDestroyView() {

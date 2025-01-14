@@ -31,8 +31,16 @@ class SearchFragment : Fragment() {
 //        }
 
         binding.btnGoToOuter.setOnClickListener {
-            val navController = findNavController()
-            navController.navigate(R.id.action_searchFragment_to_closetResultFragment)
+
+//            val navController = findNavController()
+//            navController.navigate(R.id.action_searchFragment_to_closetResultFragment)
+
+
+            val fragment = SearchOuterFragment()
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack(null) // 뒤로가기 시 이전 프래그먼트로 돌아가도록 추가
+                .commit()
         }
     }
 

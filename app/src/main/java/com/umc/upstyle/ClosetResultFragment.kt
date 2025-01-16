@@ -37,7 +37,7 @@ class ClosetResultFragment : Fragment() {
         binding.mainTitleTextView.text = where
 
         // arguments에서 전달된 리스트 받기
-        val colorList = arguments?.getStringArrayList("colorList") ?: arrayListOf()
+        val colorList = arguments?.getStringArrayList("selectedOptions") ?: arrayListOf()
 
         // 리스트를 ", "로 구분하여 하나의 문자열로 결합
         val resultText = colorList.joinToString(", ")

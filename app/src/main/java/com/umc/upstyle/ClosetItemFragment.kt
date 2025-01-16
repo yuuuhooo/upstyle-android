@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.umc.upstyle.databinding.FragmentClosetItemBinding
 import java.io.File
@@ -22,7 +23,7 @@ class ClosetItemFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // Arguments로 전달된 category 값 가져오기
-        category = arguments?.getString("CATEGORY")
+        // category = arguments?.getString("CATEGORY")
     }
 
     override fun onCreateView(
@@ -37,19 +38,28 @@ class ClosetItemFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // 이전 Fragment로 이동
         binding.backButton.setOnClickListener {
-            parentFragmentManager.popBackStack() // 이전 Fragment로 이동
+            findNavController().navigate(R.id.closetFragment)
         }
 
+        // 컬러 필터링 filterButton
+        binding.filterButton.setOnClickListener {
+            findNavController().navigate(R.id.closetItemFilterFragment)
+        }
+
+
+        val category = arguments?.getString("category") // 전달된 데이터 수신
 
         // 상단 텍스트 표시
-        binding.titleText.text = when (category) {
-            "OUTER" -> "OUTER"
-            "TOP" -> "TOP"
-            "SHOES" -> "SHOES"
-            "BOTTOM" -> "BOTTOM"
-            else -> "OTHER"
-        }
+        binding.titleText.text = "$category"
+//        binding.titleText.text = when (category) {
+//            "OUTER" -> "OUTER"
+//            "TOP" -> "TOP"
+//            "SHOES" -> "SHOES"
+//            "BOTTOM" -> "BOTTOM"
+//            else -> "OTHER"
+//        }
 
         // RecyclerView 설정
         val items = loadItemsFromPreferences()
@@ -91,13 +101,13 @@ class ClosetItemFragment : Fragment() {
         _binding = null // 뷰 바인딩 해제
     }
 
-    companion object {
-        fun newInstance(category: String): ClosetItemFragment {
-            val fragment = ClosetItemFragment()
-            val args = Bundle()
-            args.putString("CATEGORY", category) // 카테고리 전달
-            fragment.arguments = args
-            return fragment
-        }
-    }
+//    companion object {
+//        fun newInstance(category: String): ClosetItemFragment {
+//            val fragment = ClosetItemFragment()
+//            val args = Bundle()
+//            args.putString("CATEGORY", category) // 카테고리 전달
+//            fragment.arguments = args
+//            return fragment
+//        }
+//    }
 }

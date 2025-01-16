@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.google.android.flexbox.FlexboxLayout
 import com.umc.upstyle.databinding.ActivitySizeBinding
 
@@ -33,11 +34,9 @@ class SizeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // 이전 Fragment에서 전달된 데이터 수신
-        arguments?.let {
-            selectedCategory = it.getString("CATEGORY")
-            selectedSubCategory = it.getString("SUB_CATEGORY")
-            selectedFit = it.getString("FIT")
-        }
+        selectedCategory = arguments?.getString("CATEGORY")
+        selectedSubCategory = arguments?.getString("SUB_CATEGORY")
+        selectedFit = arguments?.getString("FIT")
 
         // 옷 종류에 대한 설명
         binding.mainTitleTextView.text = selectedCategory
@@ -46,10 +45,10 @@ class SizeFragment : Fragment() {
 
         setupSizeOptions()
 
-        binding.backButton.setOnClickListener {
-            requireActivity().supportFragmentManager.popBackStack()
-        }
+        // 뒤로가기 버튼 클릭 이벤트 설정
+        binding.backButton.setOnClickListener { findNavController().navigateUp() }
 
+        // 다음 버튼 클릭 시 처리
         binding.nextButton.setOnClickListener {
             navigateToNextStep()
         }
@@ -101,20 +100,17 @@ class SizeFragment : Fragment() {
             return
         }
 
-        // 다음 Fragment로 데이터 전달 및 전환
-        val nextFragment = ColorFragment().apply {
-            arguments = Bundle().apply {
-                putString("CATEGORY", selectedCategory)
-                putString("SUB_CATEGORY", selectedSubCategory)
-                putString("FIT", selectedFit)
-                putString("SIZE", selectedSize)
-            }
+        // 데이터를 Bundle에 추가
+        val bundle = Bundle().apply {
+            putString("CATEGORY", selectedCategory)
+            putString("SUB_CATEGORY", selectedSubCategory)
+            putString("FIT", selectedFit)
+            putString("SIZE", selectedSize)
         }
+        val action = R.id.action_sizeFragment_to_colorFragment
 
-        parentFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container, nextFragment) // R.id.fragment_container는 FrameLayout ID
-            .addToBackStack(null) // 뒤로 가기 지원
-            .commit()
+        // 네비게이션 액션 수행
+        findNavController().navigate(action, bundle)
     }
 
     override fun onDestroyView() {

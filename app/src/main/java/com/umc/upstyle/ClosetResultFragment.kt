@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import com.umc.upstyle.databinding.FragmentClosetResultBinding
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -43,6 +44,17 @@ class ClosetResultFragment : Fragment() {
 
         // TextView에 선택된 컬러들 보여주기
         binding.tvSelectedOptions.text = resultText
+
+        // closetItemFragment으로 뒤로가기
+        binding.backButton.setOnClickListener {
+            findNavController().navigate(R.id.closetItemFragment)
+        }
+
+        // 컬러 필터링 filterButton
+        binding.filterButton.setOnClickListener {
+            findNavController().navigate(R.id.closetResultFilterFragment)
+        }
+
 
     }
 

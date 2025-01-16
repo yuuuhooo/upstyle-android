@@ -3,7 +3,149 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/mainActivity">
+    app:startDestination="@id/mainFragment">
+
+    <!-- 북마크 -->
+    <fragment
+        android:id="@+id/bookMarkFragment"
+        android:name="com.umc.upstyle.BookmarkFragment"
+        android:label="activity_myhome"
+        tools:layout="@layout/activity_myhome" />
+
+    <!-- 검색 -->
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.umc.upstyle.SearchFragment"
+        android:label="fragment_search"
+        tools:layout="@layout/fragment_search" >
+        <action
+            android:id="@+id/action_searchFragment_to_closetResultFragment"
+            app:destination="@id/closetResultFragment" />
+    </fragment>
+
+    <!-- 홈 -->
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="com.umc.upstyle.MyHomeFragment"
+        android:label="activity_myhome"
+        tools:layout="@layout/activity_myhome" />
+
+    <!-- 채팅 -->
+    <fragment
+        android:id="@+id/chatFragment"
+        android:name="com.umc.upstyle.ChatFragment"
+        android:label="activity_myhome"
+        tools:layout="@layout/activity_myhome" />
+
+    <!-- 계정 -->
+    <fragment
+        android:id="@+id/accountFragment"
+        android:name="com.umc.upstyle.AccountFragment"
+        android:label="activity_myhome"
+        tools:layout="@layout/activity_myhome" />
+
+    <fragment
+        android:id="@+id/closetFragment"
+        android:name="com.umc.upstyle.ClosetFragment"
+        tools:layout="@layout/activity_closet">
+        <action
+            android:id="@+id/action_closetFragment_to_closetItemFragment"
+            app:destination="@id/closetItemFragment">
+            <argument
+                android:name="category"
+                app:argType="string"
+                app:nullable="false" />
+        </action>
+    </fragment>
+
+    <fragment
+        android:id="@+id/todayOotdFragment"
+        android:name="com.umc.upstyle.TodayOotdFragment"
+        android:label="Today OOTD">
+        <action
+            android:id="@+id/action_todayOotdFragmentToCategoryFragment"
+            app:destination="@id/categoryFragment">
+            <argument
+                android:name="CATEGORY"
+                app:argType="string"
+                app:nullable="false" />
+        </action>
+    </fragment>
+
+    <!-- 카테고리 선택 -->
+    <fragment
+        android:id="@+id/categoryFragment"
+        android:name="com.umc.upstyle.CategoryFragment">
+        <action
+            android:id="@+id/action_categoryFragment_to_fitFragment"
+            app:destination="@id/fitFragment">
+            <argument
+                android:name="category"
+                app:argType="string" />
+            <argument
+                android:name="subCategory"
+                app:argType="string" />
+        </action>
+
+        <action
+            android:id="@+id/action_categoryFragment_to_colorFragment"
+            app:destination="@id/colorFragment">
+            <argument
+                android:name="category"
+                app:argType="string" />
+            <argument
+                android:name="subCategory"
+                app:argType="string" />
+        </action>
+
+        <action
+            android:id="@+id/action_categoryFragment_to_sizeFragment"
+            app:destination="@id/sizeFragment">
+            <argument
+                android:name="category"
+                app:argType="string" />
+            <argument
+                android:name="subCategory"
+                app:argType="string" />
+        </action>
+    </fragment>
+
+    <!-- 핏 선택 -->
+    <fragment
+        android:id="@+id/fitFragment"
+        android:name="com.umc.upstyle.FitFragment">
+        <action
+            android:id="@+id/action_fitFragment_to_colorFragment"
+            app:destination="@id/colorFragment">
+            <argument
+                android:name="category"
+                app:argType="string" />
+            <argument
+                android:name="subCategory"
+                app:argType="string" />
+            <argument
+                android:name="fit"
+                app:argType="string" />
+        </action>
+    </fragment>
+
+    <!-- 컬러 선택 -->
+    <fragment
+        android:id="@+id/colorFragment"
+        android:name="com.umc.upstyle.ColorFragment" >
+        <action
+            android:id="@+id/action_colorFragment_to_todayOotdFragment"
+            app:destination="@id/todayOotdFragment"/>
+    </fragment>
+
+    <!-- 사이즈 선택 -->
+    <fragment
+        android:id="@+id/sizeFragment"
+        android:name="com.umc.upstyle.SizeFragment" >
+        <action
+            android:id="@+id/action_sizeFragment_to_colorFragment"
+            app:destination="@id/colorFragment"/>
+    </fragment>
 
 
     <fragment
@@ -21,21 +163,23 @@
         android:name="com.umc.upstyle.SearchResultFragment"
         android:label="fragment_search_result"
         tools:layout="@layout/fragment_search_result" />
+
+
     <fragment
-        android:id="@+id/searchFragment"
-        android:name="com.umc.upstyle.SearchFragment"
-        android:label="fragment_search"
-        tools:layout="@layout/fragment_search" >
+        android:id="@+id/closetItemFragment"
+        android:name="com.umc.upstyle.ClosetItemFragment"
+        android:label="Closet Item"
+        tools:layout="@layout/fragment_closet_item">
         <action
-            android:id="@+id/action_searchFragment_to_closetResultFragment"
-            app:destination="@id/closetResultFragment" />
+            android:id="@+id/action_closetItemFragment_to_filterFragment"
+            app:destination="@id/closetItemFilterFragment" />
     </fragment>
 
-    <activity
-        android:id="@+id/mainActivity"
-        android:name="com.umc.upstyle.MainActivity"
-        android:label="activity_myhome"
-        tools:layout="@layout/activity_myhome" />
+    <fragment
+        android:id="@+id/closetItemFilterFragment"
+        android:name="com.umc.upstyle.ClosetItemFilterFragment"
+        android:label="Filter"
+        tools:layout="@layout/fragment_closet_item_filter" />
 
 
 </navigation>

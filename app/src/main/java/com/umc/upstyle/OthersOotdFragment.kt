@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.umc.upstyle.data.Item
 import com.umc.upstyle.databinding.FragmentOthersOotdBinding
 
@@ -56,8 +57,10 @@ class OthersOotdFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // 뒤로 가기 버튼 설정
-        binding.backButton.setOnClickListener { requireActivity().supportFragmentManager.popBackStack() }
+        // 이전 Fragment로 이동
+        binding.backButton.setOnClickListener {
+            findNavController().navigateUp()
+        }
 
         // 사용자 이름 받기
         binding.userName.text = "$userName"

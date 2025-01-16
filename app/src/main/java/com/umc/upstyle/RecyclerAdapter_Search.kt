@@ -1,13 +1,13 @@
 package com.umc.upstyle
 
+import Item_search
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 
@@ -28,26 +28,36 @@ class RecyclerAdapter_Search(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = itemList[position]
+        val context = holder.itemButton.context
 
         // 제목 설정
         holder.itemTitle.text = item.description
 
-        // 배경 이미지 설정
-        val context = holder.itemButton.context
-        val drawable = Glide.with(context)
-            .asDrawable()
+        // Glide를 사용해 이미지를 비동기로 로드하고 버튼 배경 설정
+        Glide.with(context)
             .load(item.imageUrl)
-            .submit()
-            .get() // Glide로 이미지를 동기적으로 로드
+            .into(object : com.bumptech.glide.request.target.CustomTarget<android.graphics.drawable.Drawable>() {
+                override fun onResourceReady(
+                    resource: android.graphics.drawable.Drawable,
+                    transition: com.bumptech.glide.request.transition.Transition<in android.graphics.drawable.Drawable>?
+                ) {
+                    holder.itemButton.background = resource
+                }
 
-        holder.itemButton.background = drawable
+                override fun onLoadCleared(placeholder: android.graphics.drawable.Drawable?) {
+                    holder.itemButton.background = placeholder
+                }
+            })
 
-        // 클릭 이벤트 설정
+        // 클릭 이벤트 설정: 클릭 시 새로운 화면으로 이동
         holder.itemButton.setOnClickListener {
-            Toast.makeText(context, "클릭한 아이템: ${item.description}", Toast.LENGTH_SHORT).show()
+            val intent = Intent(context, SearchResultFragment::class.java).apply {
+                putExtra("description", item.description) // 제목 전달
+                putExtra("imageUrl", item.imageUrl)       // 이미지 URL 전달
+            }
+            context.startActivity(intent)
         }
     }
-
 
     override fun getItemCount(): Int = itemList.size
 }

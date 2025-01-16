@@ -21,14 +21,25 @@
         android:name="com.umc.upstyle.SearchResultFragment"
         android:label="fragment_search_result"
         tools:layout="@layout/fragment_search_result" />
+
     <fragment
         android:id="@+id/searchFragment"
         android:name="com.umc.upstyle.SearchFragment"
         android:label="fragment_search"
         tools:layout="@layout/fragment_search" >
         <action
-            android:id="@+id/action_searchFragment_to_closetResultFragment"
-            app:destination="@id/closetResultFragment" />
+            android:id="@+id/action_searchFragment_to_SearchItemFragment"
+            app:destination="@id/SearchItemFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/SearchItemFragment"
+        android:name="com.umc.upstyle.SearchItemFragment"
+        android:label="fragment_search_item"
+        tools:layout="@layout/fragment_search_item" >
+        <action
+            android:id="@+id/action_SearchItemFragment_to_searchResultFragment"
+            app:destination="@id/searchResultFragment" />
     </fragment>
 
     <activity
@@ -36,6 +47,5 @@
         android:name="com.umc.upstyle.MainActivity"
         android:label="activity_myhome"
         tools:layout="@layout/activity_myhome" />
-
 
 </navigation>

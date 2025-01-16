@@ -1,27 +1,36 @@
 package com.umc.upstyle
 
+import Item_search
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
-import com.bumptech.glide.Glide
 import com.umc.upstyle.databinding.FragmentSearchItemBinding
 import java.io.File
 
-class SearchItemFragment : Fragment(R.layout.fragment_search_item) {
+class SearchItemFragment : Fragment() {
+
 
     private var _binding: FragmentSearchItemBinding? = null
     private val binding get() = _binding!!
 
+    private var category: String? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        // Arguments로 전달된 category 값 가져오기
+        category = arguments?.getString("CATEGORY")
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
+    ): View? {
+        // 뷰 바인딩 초기화
         _binding = FragmentSearchItemBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -29,78 +38,77 @@ class SearchItemFragment : Fragment(R.layout.fragment_search_item) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.backButton.setOnClickListener {
+            parentFragmentManager.popBackStack() // 이전 Fragment로 이동
+
+            // 카테고리 설정 및 버튼 클릭 이벤트
+            binding.titleText.text = category ?: "CATEGORY"
+            binding.backButton.setOnClickListener {
+                // SearchResultFragment로 이동
+                val searchResultFragment = SearchResultFragment.newInstance(category ?: "DEFAULT")
+                parentFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, searchResultFragment)
+                    .addToBackStack(null)
+                    .commit()
+            }
+        }
+
+
+        // 상단 텍스트 표시
+        binding.titleText.text = when (category) {
+            "OUTER" -> "OUTER"
+            "TOP" -> "TOP"
+            "SHOES" -> "SHOES"
+            "BOTTOM" -> "BOTTOM"
+            else -> "OTHER"
+        }
+
         // RecyclerView 설정
         val items = loadItemsFromPreferences()
         binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
-        binding.recyclerView.adapter = SearchItemAdapter(items) { item ->
-            Toast.makeText(requireContext(), "클릭한 아이템: ${item.description}", Toast.LENGTH_SHORT).show()
-        }
+        binding.recyclerView.adapter = RecyclerAdapter_Search(items)
+
+
     }
+
 
     private fun loadItemsFromPreferences(): List<Item_search> {
         val preferences = requireActivity().getSharedPreferences("AppData", Context.MODE_PRIVATE)
 
-        // 저장된 데이터 로드
-        val description = preferences.getString("DESCRIPTION", "설명 없음")
+        // 해당 카테고리에 맞는 텍스트와 이미지 경로 가져오기
+        val description = preferences.getString(category, "$category 정보 없음")
         val savedImagePath = preferences.getString("SAVED_IMAGE_PATH", null)
 
         // 기본 샘플 데이터
-        val items = mutableListOf(
+        val itemSearchs = mutableListOf(
             Item_search("샘플 1", "https://example.com/image1.jpg"),
             Item_search("샘플 2", "https://example.com/image2.jpg")
         )
 
-        // 저장된 데이터 추가
-        if (!savedImagePath.isNullOrEmpty() && !description.isNullOrEmpty()) {
+        // 저장된 데이터 추가 + 없으면 걍 안뜨게
+        if (!savedImagePath.isNullOrEmpty() && !description.isNullOrEmpty() && description != "없음") {
             val file = File(savedImagePath)
             if (file.exists()) {
-                val fileUri = Uri.fromFile(file).toString()
-                items.add(0, Item_search(description, fileUri))
+                val fileUri = Uri.fromFile(file)
+                itemSearchs.add(0, Item_search(description, fileUri.toString()))
             }
         }
 
-        return items
+        return itemSearchs
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
+        _binding = null // 뷰 바인딩 해제
     }
 
-    // RecyclerView Adapter
-    class SearchItemAdapter(
-        private val items: List<Item_search>,
-        private val onItemClick: (Item_search) -> Unit
-    ) : androidx.recyclerview.widget.RecyclerView.Adapter<SearchItemAdapter.ViewHolder>() {
-
-        class ViewHolder(view: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(view) {
-            val imageView: android.widget.ImageView = view.findViewById(R.id.item_image)
-            val textView: android.widget.TextView = view.findViewById(R.id.item_title)
+    companion object {
+        fun newInstance(category: String): SearchResultFragment {
+            val fragment = SearchResultFragment()
+            val args = Bundle()
+            args.putString("CATEGORY", category)
+            fragment.arguments = args
+            return fragment
         }
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.recycler_item_search, parent, false)
-            return ViewHolder(view)
-        }
-
-        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            val item = items[position]
-            holder.textView.text = item.description
-
-            // Glide를 사용하여 이미지 로드
-            Glide.with(holder.itemView.context)
-                .load(item.imageUrl)
-                //.placeholder(R.drawable.placeholder_image)
-                //.error(R.drawable.error_image)
-                .into(holder.imageView)
-
-            // 아이템 클릭 이벤트
-            holder.itemView.setOnClickListener {
-                onItemClick(item)
-            }
-        }
-
-        override fun getItemCount(): Int = items.size
     }
 }

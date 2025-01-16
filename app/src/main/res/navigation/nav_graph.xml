@@ -171,14 +171,14 @@
         android:name="com.umc.upstyle.SearchResultFragment"
         android:label="fragment_search_result"
         tools:layout="@layout/fragment_search_result">
-    <argument
-        android:name="imageUrl"
-        app:argType="string"
-        app:nullable="true" />
-    <argument
-        android:name="description"
-        app:argType="string"
-        app:nullable="true" />
+        <argument
+            android:name="imageUrl"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="description"
+            app:argType="string"
+            app:nullable="true" />
     </fragment>
 
 
@@ -210,5 +210,11 @@
         android:name="com.umc.upstyle.ClosetItemFilterFragment"
         android:label="Filter"
         tools:layout="@layout/fragment_closet_item_filter" />
+
+    <fragment
+        android:id="@+id/closetResultFilterFragment"
+        android:name="com.umc.upstyle.ClosetResultFilterFragment"
+        android:label="Closet Result Filter"
+        tools:layout="@layout/fragment_closet_result_filter" />
 
 </navigation>

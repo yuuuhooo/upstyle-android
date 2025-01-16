@@ -42,8 +42,20 @@ class SearchItemFragment : Fragment() {
             requireActivity().onBackPressedDispatcher.onBackPressed()
         }
 
+        val category = arguments?.getString("category") // 전달된 데이터 수신
+
+        val bundle = Bundle().apply {
+            putString("category", category)
+        }
+
+        // 컬러 필터링 filterButton
+        binding.filterButton.setOnClickListener {
+            findNavController().navigate(R.id.closetItemFilterFragment, bundle)
+        }
+
         // 상단 제목 설정
-        binding.titleText.text = category ?: "CATEGORY"
+        binding.titleText.text = "$category"
+
 
         // RecyclerView 설정
         val items = loadItemsFromPreferences()

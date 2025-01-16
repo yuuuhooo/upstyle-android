@@ -36,8 +36,10 @@
                 android:id="@+id/date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
                 android:textSize="20sp"
+                app:layout_constraintStart_toEndOf="@id/backButton"
                 android:textColor="@color/login_yellow" />
 
             <ImageButton
@@ -92,7 +94,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginTop="11dp">
+            android:layout_marginTop="11dp"
+            android:layout_marginBottom="30dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -103,8 +106,8 @@
                 <LinearLayout
                     android:id="@+id/outerButton"
                     android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:layout_marginTop="14dp"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="10dp"
                     android:background="@drawable/round_button2"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
@@ -150,8 +153,8 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:layout_marginTop="14dp"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="10dp"
                     android:background="@drawable/round_button2"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
@@ -197,8 +200,8 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:layout_marginTop="14dp"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="10dp"
                     android:background="@drawable/round_button2"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
@@ -244,8 +247,8 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:layout_marginTop="14dp"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="10dp"
                     android:background="@drawable/round_button2"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
@@ -291,8 +294,8 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:layout_marginTop="14dp"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="10dp"
                     android:background="@drawable/round_button2"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
@@ -338,8 +341,8 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:layout_marginTop="14dp"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="10dp"
                     android:background="@drawable/round_button2"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"

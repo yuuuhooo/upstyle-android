@@ -87,14 +87,14 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    implementation ("androidx.credentials:credentials:1.3.0")
-    implementation ("androidx.credentials:credentials-play-services-auth:1.3.0")
-    implementation ("com.google.android.libraries.identity.googleid:googleid:1.1.1")
+    implementation("androidx.credentials:credentials:1.3.0")
+    implementation("androidx.credentials:credentials-play-services-auth:1.3.0")
+    implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
 
     implementation("com.google.android.flexbox:flexbox:3.0.0")
 
-    implementation ("com.github.bumptech.glide:glide:4.16.0")
-    annotationProcessor ("com.github.bumptech.glide:compiler:4.16.0")
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
 
     // Jetpack Compose Integration
     implementation("androidx.navigation:navigation-compose:2.8.5")
@@ -105,11 +105,10 @@ dependencies {
 
 
     // Navigation Component
-    implementation ("androidx.navigation:navigation-fragment-ktx:2.7.2")
-    implementation ("androidx.navigation:navigation-ui-ktx:2.7.2")
+    implementation("androidx.navigation:navigation-fragment-ktx:2.7.2")
+    implementation("androidx.navigation:navigation-ui-ktx:2.7.2")
     implementation("com.github.prolificinteractive:material-calendarview:2.0.1") {
         exclude(group = "com.android.support")
-
-
+    }
 }
 

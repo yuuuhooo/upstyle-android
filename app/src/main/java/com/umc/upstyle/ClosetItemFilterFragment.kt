@@ -210,11 +210,21 @@ class ClosetItemFilterFragment : Fragment() { // 주석 처리한 코드는 이�
             return
         }
 
+        val category = arguments?.getString("category") // 전달된 데이터 수신
+
+
+        // 선택된 옵션을 문자열로 변환하여 전달
+        val bundle = Bundle().apply {
+            putString("category", category)
+            putStringArrayList("selectedOptions", ArrayList(selectedOptions)) // ArrayList로 변환하여 전달
+        }
+
         // 테스트용
         Toast.makeText(requireContext(), "선택된 컬러: $filteredColor", Toast.LENGTH_SHORT).show()
 
+        // ClosetResultFragment로 이동하며 데이터 전달
+        findNavController().navigate(R.id.closetResultFragment, bundle)
 
-        findNavController().navigate(R.id.closetResultFragment)
 
     }
 

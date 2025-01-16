@@ -23,7 +23,7 @@ class ClosetItemFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // Arguments로 전달된 category 값 가져오기
-        // category = arguments?.getString("CATEGORY")
+        //category = arguments?.getString("category")
     }
 
     override fun onCreateView(
@@ -43,13 +43,17 @@ class ClosetItemFragment : Fragment() {
             findNavController().navigate(R.id.closetFragment)
         }
 
-        // 컬러 필터링 filterButton
-        binding.filterButton.setOnClickListener {
-            findNavController().navigate(R.id.closetItemFilterFragment)
-        }
-
 
         val category = arguments?.getString("category") // 전달된 데이터 수신
+
+        val bundle = Bundle().apply {
+            putString("category", category)
+        }
+
+        // 컬러 필터링 filterButton
+        binding.filterButton.setOnClickListener {
+            findNavController().navigate(R.id.closetItemFilterFragment, bundle)
+        }
 
         // 상단 텍스트 표시
         binding.titleText.text = "$category"
@@ -60,6 +64,7 @@ class ClosetItemFragment : Fragment() {
 //            "BOTTOM" -> "BOTTOM"
 //            else -> "OTHER"
 //        }
+
 
         // RecyclerView 설정
         val items = loadItemsFromPreferences()

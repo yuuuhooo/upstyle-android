@@ -120,11 +120,12 @@ class CategoryFragment : Fragment(R.layout.activity_category) {
             putString("SUB_CATEGORY", selectedSubCategory)
         }
 
+        // action_categoryFragment_to_fitFragment
         // Fragment 전환 처리
         val action = when (selectedCategory) {
-            "OUTER", "TOP", "BOTTOM" -> R.id.action_categoryFragment_to_fitFragment
-            "SHOES", "OTHER" -> R.id.action_categoryFragment_to_colorFragment
-            "BAG" -> R.id.action_categoryFragment_to_sizeFragment
+            "OUTER", "TOP", "BOTTOM" -> R.id.fitFragment
+            "SHOES", "OTHER" -> R.id.colorFragment
+            "BAG" -> R.id.sizeFragment
             else -> {
                 Toast.makeText(requireContext(), "올바른 카테고리를 선택해주세요.", Toast.LENGTH_SHORT).show()
                 return

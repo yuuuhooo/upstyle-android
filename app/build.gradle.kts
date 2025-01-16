@@ -109,7 +109,7 @@ dependencies {
     implementation ("androidx.navigation:navigation-ui-ktx:2.7.2")
     implementation("com.github.prolificinteractive:material-calendarview:2.0.1") {
         exclude(group = "com.android.support")
-
+    }
 
 }
 

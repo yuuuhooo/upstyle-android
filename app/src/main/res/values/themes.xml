@@ -8,7 +8,7 @@
     <item name="android:editTextStyle">@style/customEditTextFontStyle</item>
     <item name="android:radioButtonStyle">@style/customRadioButtonFontStyle</item>
     <item name="android:checkboxStyle">@style/customCheckboxFontStyle</item>
-    <item name="android:windowBackground">@color/black</item>
+    <item name="android:windowBackground">@color/background_black</item>
 
 </style>
 

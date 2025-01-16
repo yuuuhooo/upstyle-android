@@ -29,9 +29,7 @@ class ClosetResultFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // arguments에서 전달된 데이터 받기
-        val where = arguments?.getString("where") ?: "기본값1"
-        val param2 = arguments?.getString("param2") ?: "기본값2"
-        val param3 = arguments?.getString("param3") ?: "기본값3"
+        val where = arguments?.getString("category") ?: "기본값1"
 
         // 어디서 온 건지 TextView에 데이터 설정 ex. OUTER, TOP
         binding.mainTitleTextView.text = where

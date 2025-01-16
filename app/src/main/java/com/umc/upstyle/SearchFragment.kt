@@ -51,6 +51,7 @@ class SearchFragment : Fragment() {
         binding.btnGoToOther.setOnClickListener {
             navigateToSearchResult("OTHER")
         }
+
     }
 
     // 프래그먼트로 문자열 전달 함수

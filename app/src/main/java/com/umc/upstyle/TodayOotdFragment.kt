@@ -23,9 +23,17 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
     private var _binding: ActivityTodayOotdBinding? = null
     private val binding get() = _binding!!
 
+    private var calendar = Calendar.getInstance()
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = ActivityTodayOotdBinding.bind(view)
+
+        // 날짜 표시
+        val month = calendar.get(Calendar.MONTH) + 1 // Calendar.MONTH는 0부터 시작하므로 1을 더함
+        val day = calendar.get(Calendar.DATE)
+
+        binding.date.text = "${month.toString().padStart(2, '0')}${day.toString().padStart(2, '0')}"
 
         val preferences = requireActivity().getSharedPreferences("AppData", Context.MODE_PRIVATE)
 
@@ -112,11 +120,23 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
         if (!savedPath.isNullOrEmpty()) {
             val file = File(savedPath)
             if (file.exists()) {
+
+                // 이미지가 있을 경우 이미지를 표시하고 "사진등록" 글자 숨기기
                 binding.photoImageView.visibility = View.VISIBLE
+                binding.uploadText.visibility = View.GONE
                 binding.photoImageView.setImageURI(Uri.fromFile(file))
+            } else {
+                // 이미지 파일이 없을 경우 "사진등록" 글자 표시
+                binding.photoImageView.visibility = View.GONE
+                binding.uploadText.visibility = View.VISIBLE
             }
+        } else {
+            // 저장된 경로가 없을 경우 "사진등록" 글자 표시
+            binding.photoImageView.visibility = View.GONE
+            binding.uploadText.visibility = View.VISIBLE
         }
     }
+
 
     // 데이터 저장 함수
     private fun saveData(preferences: SharedPreferences) {
@@ -205,6 +225,8 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
             Toast.makeText(requireContext(), "이미지 경로 저장 실패: URI가 null입니다.", Toast.LENGTH_SHORT).show()
         }
     }
+
+
 
     private fun selectImageFromGallery() {
         pickImageLauncher.launch("image/*")

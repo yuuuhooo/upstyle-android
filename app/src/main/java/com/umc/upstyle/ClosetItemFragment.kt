@@ -74,7 +74,10 @@ class ClosetItemFragment : Fragment() {
 
     }
 
-
+    private fun setupRecyclerView(items: List<Item_closet>) {
+        binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
+        binding.recyclerView.adapter = RecyclerAdapter_Closet(items)
+    }
 
     private fun loadItemsFromPreferences(): List<Item_closet> {
         val preferences = requireActivity().getSharedPreferences("AppData", Context.MODE_PRIVATE)

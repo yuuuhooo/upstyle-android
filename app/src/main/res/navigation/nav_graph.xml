@@ -19,8 +19,8 @@
         android:label="fragment_search"
         tools:layout="@layout/fragment_search" >
         <action
-            android:id="@+id/action_searchFragment_to_closetResultFragment"
-            app:destination="@id/closetResultFragment" />
+            android:id="@+id/action_searchFragment_to_SearchItemFragment"
+            app:destination="@id/SearchItemFragment" />
     </fragment>
 
     <!-- 홈 -->

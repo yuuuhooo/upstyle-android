@@ -18,10 +18,18 @@
         android:name="com.umc.upstyle.SearchFragment"
         android:label="fragment_search"
         tools:layout="@layout/fragment_search" >
+
         <action
             android:id="@+id/action_searchFragment_to_SearchItemFragment"
-            app:destination="@id/SearchItemFragment" />
+            app:destination="@id/SearchItemFragment" >
+            <argument
+                android:name="category"
+                app:argType="string"
+                app:nullable="false" />
+        </action>
+
     </fragment>
+
 
     <!-- 홈 -->
     <fragment

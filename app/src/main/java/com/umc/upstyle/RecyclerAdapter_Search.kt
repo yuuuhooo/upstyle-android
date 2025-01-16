@@ -7,17 +7,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 
-class RecyclerAdapter_Search(
-    private val itemList: List<Item_search>
-) : RecyclerView.Adapter<RecyclerAdapter_Search.ViewHolder>() {
+class RecyclerAdapter_Search(private val itemSearchList: List<Item_search>) :
+    RecyclerView.Adapter<RecyclerAdapter_Search.ViewHolder>() {
 
+    // ViewHolder 클래스
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val itemButton: Button = itemView.findViewById(R.id.item_button) // 아이템 버튼
-        val itemTitle: TextView = itemView.findViewById(R.id.item_title) // 아이템 제목
+        val title: TextView = itemView.findViewById(R.id.item_title) // 제목 TextView
+        val image: ImageView = itemView.findViewById(R.id.item_image) // 이미지 ImageView
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -27,37 +28,16 @@ class RecyclerAdapter_Search(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = itemList[position]
-        val context = holder.itemButton.context
+        val item = itemSearchList[position]
 
-        // 제목 설정
-        holder.itemTitle.text = item.description
+        // 텍스트 설정
+        holder.title.text = item.description
 
-        // Glide를 사용해 이미지를 비동기로 로드하고 버튼 배경 설정
-        Glide.with(context)
+        // Glide를 사용해 이미지 로드
+        Glide.with(holder.itemView.context)
             .load(item.imageUrl)
-            .into(object : com.bumptech.glide.request.target.CustomTarget<android.graphics.drawable.Drawable>() {
-                override fun onResourceReady(
-                    resource: android.graphics.drawable.Drawable,
-                    transition: com.bumptech.glide.request.transition.Transition<in android.graphics.drawable.Drawable>?
-                ) {
-                    holder.itemButton.background = resource
-                }
-
-                override fun onLoadCleared(placeholder: android.graphics.drawable.Drawable?) {
-                    holder.itemButton.background = placeholder
-                }
-            })
-
-        // 클릭 이벤트 설정: 클릭 시 새로운 화면으로 이동
-        holder.itemButton.setOnClickListener {
-            val intent = Intent(context, SearchResultFragment::class.java).apply {
-                putExtra("description", item.description) // 제목 전달
-                putExtra("imageUrl", item.imageUrl)       // 이미지 URL 전달
-            }
-            context.startActivity(intent)
-        }
+            .into(holder.image)
     }
 
-    override fun getItemCount(): Int = itemList.size
+    override fun getItemCount(): Int = itemSearchList.size
 }

@@ -7,7 +7,7 @@
 
     <!-- 아이템 이미지 -->
     <ImageButton
-        android:id="@+id/item_button"
+        android:id="@+id/item_image"
         android:layout_width="match_parent"
         android:layout_height="160dp"
         android:contentDescription="아이템 이미지"

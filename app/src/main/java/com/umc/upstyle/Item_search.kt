@@ -1,5 +1,3 @@
-package com.umc.upstyle
-
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 

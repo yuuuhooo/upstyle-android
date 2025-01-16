@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.navigation.fragment.findNavController
+
 import com.umc.upstyle.databinding.FragmentSearchBinding
 
 class SearchFragment : Fragment() {
@@ -25,37 +25,59 @@ class SearchFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
-        // OUTER 버튼 클릭
         binding.btnGoToOuter.setOnClickListener {
-            navigateToSearchResult("OUTER")
+            val fragment = SearchItemFragment.newInstance("OUTER") // 카테고리 전달
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack(null)
+                .commit()
         }
 
-        // TOP 버튼 클릭
+
         binding.btnGoToTop.setOnClickListener {
-            navigateToSearchResult("TOP")
+            val fragment = SearchItemFragment.newInstance("TOP") // 카테고리 전달
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack(null)
+                .commit()
         }
 
-        // 다른 버튼들 클릭 (예시)
         binding.btnGoToBottom.setOnClickListener {
-            navigateToSearchResult("BOTTOM")
+            val fragment = SearchItemFragment.newInstance("BOTTOM") // 카테고리 전달
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack(null)
+                .commit()
         }
 
         binding.btnGoToShoes.setOnClickListener {
-            navigateToSearchResult("SHOES")
+            val fragment = SearchItemFragment.newInstance("SHOES") // 카테고리 전달
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack(null)
+                .commit()
         }
 
         binding.btnGoToBag.setOnClickListener {
-            navigateToSearchResult("BAG")
+            val fragment = SearchItemFragment.newInstance("BAG") // 카테고리 전달
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack(null)
+                .commit()
         }
 
         binding.btnGoToOther.setOnClickListener {
-            navigateToSearchResult("OTHER")
+            val fragment = SearchItemFragment.newInstance("OTHER") // 카테고리 전달
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack(null)
+                .commit()
         }
-
     }
 
     // 프래그먼트로 문자열 전달 함수
-    private fun navigateToSearchResult(category: String) {
+    private fun navigateToSearchItemFragment(category: String) {
+
         val fragment = SearchItemFragment().apply {
             arguments = Bundle().apply {
                 putString("category", category) // 카테고리 문자열 전달

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+
 import com.umc.upstyle.databinding.FragmentSearchBinding
 
 class SearchFragment : Fragment() {
@@ -76,6 +77,7 @@ class SearchFragment : Fragment() {
 
     // 프래그먼트로 문자열 전달 함수
     private fun navigateToSearchItemFragment(category: String) {
+
         val fragment = SearchItemFragment().apply {
             arguments = Bundle().apply {
                 putString("category", category) // 카테고리 문자열 전달
@@ -100,5 +102,4 @@ class SearchFragment : Fragment() {
         // 메모리 누수 방지: 뷰가 파괴되면 바인딩 해제
         _binding = null
     }
-
 }

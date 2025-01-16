@@ -28,6 +28,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/bottom_nav_bar"
+        app:itemIconSize="40dp"
         app:itemIconTint="@color/selector_icon_color"
         app:backgroundTint="#403431"
         app:labelVisibilityMode="unlabeled" />

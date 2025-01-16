@@ -1,4 +1,3 @@
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -103,5 +102,10 @@ dependencies {
     // Views/Fragments Integration
     implementation("androidx.navigation:navigation-fragment:2.8.5")
     implementation("androidx.navigation:navigation-ui:2.8.5")
+
+    implementation("com.github.prolificinteractive:material-calendarview:2.0.1") {
+        exclude(group = "com.android.support")
+    }
+
 
 }

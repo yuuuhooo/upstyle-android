@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.PagerSnapHelper
 import com.umc.upstyle.databinding.ActivityMyhomeBinding
 import java.util.Calendar
 
@@ -13,16 +15,30 @@ class MyHomeFragment : Fragment() {
     private var _binding: ActivityMyhomeBinding? = null
     private val binding get() = _binding!! // Non-nullable binding
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         _binding = ActivityMyhomeBinding.inflate(inflater, container, false)
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val monthListManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        val monthListAdapter = AdapterMonth()
+
+        binding.calendarCustom.apply {
+            layoutManager = monthListManager
+            adapter = monthListAdapter
+            scrollToPosition(Int.MAX_VALUE/2)
+        }
+
+        val snap = PagerSnapHelper()
+        snap.attachToRecyclerView(binding.calendarCustom)
 
         // 현재 연도와 월 가져오기
         val calendar = Calendar.getInstance()

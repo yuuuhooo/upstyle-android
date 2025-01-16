@@ -39,19 +39,10 @@ class SearchResultFragment : Fragment() {
         // RecyclerView 설정
         val items = loadItemsFromPreferences()
         binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
+        binding.recyclerView.adapter = RecyclerAdapter(items)
 
-        // RecyclerAdapter에 아이템 클릭 리스너 추가
-        binding.recyclerView.adapter = RecyclerAdapter(items, object : RecyclerAdapter.OnItemClickListener {
-            override fun onItemClick(item: Item) {
-                // 클릭된 아이템에 따라 다른 프래그먼트로 이동
-                val fragment = OthersOotdFragment.newInstance(item)
-                requireActivity().supportFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, fragment)
-                    .addToBackStack(null) // 백 스택에 추가해서 뒤로 가기 가능
-                    .commit()
-            }
-        })
     }
+
 
     override fun onResume() {
         super.onResume()
@@ -70,6 +61,7 @@ class SearchResultFragment : Fragment() {
             Item("루스한 오버핏 블랙", "https://www.ocokorea.com//upload/images/product/148/148607/Product_1693647123947.jpg"),
             Item("오버핏 레귤러 블랙", "https://sitem.ssgcdn.com/70/26/15/item/1000363152670_i1_750.jpg"),
             Item("일단 아무 텍스트", "https://m.likeygirl.kr/web/product/big/20231204_000027_LK.jpg")
+
         )
 
         // 저장된 데이터 추가
@@ -81,6 +73,7 @@ class SearchResultFragment : Fragment() {
         return items
     }
 
+
     override fun onDestroyView() {
         super.onDestroyView()
         // 메모리 누수 방지: 뷰가 파괴되면 바인딩 해제
@@ -88,12 +81,13 @@ class SearchResultFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance(category: String): SearchResultFragment {
-            val fragment = SearchResultFragment()
+        fun newInstance(category: String): ClosetItemFragment {
+            val fragment = ClosetItemFragment()
             val args = Bundle()
             args.putString("CATEGORY", category) // 카테고리 전달
             fragment.arguments = args
             return fragment
         }
     }
+
 }

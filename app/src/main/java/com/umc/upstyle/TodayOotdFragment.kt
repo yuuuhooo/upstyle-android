@@ -98,7 +98,7 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
         )
 
         buttons.forEach { (button, category) ->
-            button.setOnClickListener { navigateToCategory(category) }
+            button.setOnClickListener { navigateToClosetItemFragment(category) }
         }
     }
 
@@ -119,8 +119,29 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
                 binding.photoImageView.setImageURI(Uri.fromFile(file))
             }
         }
+        // "저장하기" 버튼 표시 여부 업데이트
+        updateSaveButtonVisibility(preferences)
     }
 
+<<<<<<< Updated upstream
+=======
+    private fun updateSaveButtonVisibility(preferences: SharedPreferences) {
+        val savedPath = preferences.getString("SAVED_IMAGE_PATH", null)
+        val categories = listOf(
+            preferences.getString("OUTER", "없음"),
+            preferences.getString("TOP", "없음"),
+            preferences.getString("BOTTOM", "없음"),
+            preferences.getString("SHOES", "없음"),
+            preferences.getString("BAG", "없음"),
+            preferences.getString("OTHER", "없음")
+        )
+
+        // 사진이 등록되었거나 카테고리 중 하나 이상이 입력되었는지 확인
+        val isSaveEnabled = (!savedPath.isNullOrEmpty() && File(savedPath).exists()) || categories.any { it != "없음" }
+
+        binding.saveButton.visibility = if (isSaveEnabled) View.VISIBLE else View.GONE
+    }
+>>>>>>> Stashed changes
     // 데이터 저장 함수
     private fun saveData(preferences: SharedPreferences) {
         val editor = preferences.edit()
@@ -137,6 +158,7 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
     }
 
     // 카테고리 이동 함수
+<<<<<<< Updated upstream
     private fun navigateToCategory(category: String) {
         val fragment = CategoryFragment().apply {
             arguments = Bundle().apply { putString("CATEGORY", category) }
@@ -145,7 +167,14 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
             .replace(R.id.fragment_container, fragment)
             .addToBackStack(null)
             .commit()
+=======
+    private fun navigateToClosetItemFragment(category: String) {
+        val action = TodayOotdFragmentDirections.actionTodayOotdFragmentToClosetItemFragment(category)
+        findNavController().navigate(action)
+>>>>>>> Stashed changes
     }
+
+
 
     // 사진 관련 코드 시작
     private lateinit var photoUri: Uri // 사진 촬영 URI

@@ -59,5 +59,10 @@ class RecyclerAdapter_Search(
         }
     }
 
+<<<<<<< Updated upstream
     override fun getItemCount(): Int = itemList.size
+=======
+
+    override fun getItemCount(): Int = itemSearchList.size
+>>>>>>> Stashed changes
 }

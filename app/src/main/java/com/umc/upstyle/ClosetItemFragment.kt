@@ -21,9 +21,10 @@ class ClosetItemFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Arguments로 전달된 category 값 가져오기
-        category = arguments?.getString("CATEGORY")
+        val args = ClosetItemFragmentArgs.fromBundle(requireArguments())
+        category = args.category // Safe Args로 전달된 CATEGORY 값
     }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

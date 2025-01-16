@@ -6,10 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.PagerSnapHelper
+
+import androidx.navigation.fragment.findNavController
 import com.umc.upstyle.databinding.ActivityMyhomeBinding
 import java.util.Calendar
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.PagerSnapHelper
+
+
 
 class MyHomeFragment : Fragment() {
     private var _binding: ActivityMyhomeBinding? = null
@@ -48,22 +52,14 @@ class MyHomeFragment : Fragment() {
         // TextView에 연도와 월 설정
         binding.calendarMonth.text = "${year}년 ${month}월"
 
-        // closet섹션으로 이동 (뒤로 가기 버튼 없이)
+        // ~님의 옷장으로 이동
         binding.closetSection.setOnClickListener {
-            val transaction: FragmentTransaction = parentFragmentManager.beginTransaction()
-            transaction.replace(R.id.fragment_container, ClosetFragment())
-            transaction.addToBackStack(null) // 백스택에 추가
-            transaction.commit()
+            findNavController().navigate(R.id.closetFragment)
         }
 
-
-        // todayOOTDSection 버튼 클릭 이벤트 설정
+        // 오늘의 OOTD로 이동
         binding.todayOOTDSection.setOnClickListener {
-            // TodayOotdFragment로 이동
-            val transaction: FragmentTransaction = parentFragmentManager.beginTransaction()
-            transaction.replace(R.id.fragment_container, TodayOotdFragment())
-            transaction.addToBackStack(null) // 뒤로 가기 버튼으로 돌아가기 가능
-            transaction.commit()
+            findNavController().navigate(R.id.todayOotdFragment)
         }
     }
 

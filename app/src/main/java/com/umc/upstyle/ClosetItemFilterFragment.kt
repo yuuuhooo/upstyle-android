@@ -10,11 +10,12 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
+import androidx.navigation.fragment.findNavController
 import com.google.android.flexbox.FlexboxLayout
-import com.umc.upstyle.databinding.FragmentFilterBinding
-class FilterFragment : Fragment() { // 주석 처리한 코드는 이전 구현 때 사용했던 코드들인데 다음 기능을 추가할 때 필요할 수 있는 코드들이라 삭제하지 않은 코드들입니다.
+import com.umc.upstyle.databinding.FragmentClosetItemFilterBinding
+class ClosetItemFilterFragment : Fragment() { // 주석 처리한 코드는 이전 구현 때 사용했던 코드들인데 다음 기능을 추가할 때 필요할 수 있는 코드들이라 삭제하지 않은 코드들입니다.
 
-    private var _binding: FragmentFilterBinding? = null
+    private var _binding: FragmentClosetItemFilterBinding? = null
     private val binding get() = _binding!!
 
 //    // 선택된 필터 정보를 저장하는 변수
@@ -34,7 +35,7 @@ class FilterFragment : Fragment() { // 주석 처리한 코드는 이전 구현 
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentFilterBinding.inflate(inflater, container, false)
+        _binding = FragmentClosetItemFilterBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -55,8 +56,10 @@ class FilterFragment : Fragment() { // 주석 처리한 코드는 이전 구현 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // 뒤로 가기 버튼 설정
-        binding.backButton.setOnClickListener { requireActivity().supportFragmentManager.popBackStack() }
+        // 이전 Fragment로 이동
+        binding.backButton.setOnClickListener {
+            findNavController().navigateUp()
+        }
 
 //        // 이전 화면에서 전달된 데이터 수신
 //        receiveArguments()
@@ -210,7 +213,8 @@ class FilterFragment : Fragment() { // 주석 처리한 코드는 이전 구현 
         // 테스트용
         Toast.makeText(requireContext(), "선택된 컬러: $filteredColor", Toast.LENGTH_SHORT).show()
 
-        // 필터링된 프래그먼트로 넘어가는 과정 구현
+
+        findNavController().navigate(R.id.closetResultFragment)
 
     }
 

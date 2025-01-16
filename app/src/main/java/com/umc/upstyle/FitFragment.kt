@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
+import androidx.navigation.fragment.findNavController
 import com.google.android.flexbox.FlexboxLayout
 import com.umc.upstyle.databinding.ActivityFitBinding
 
@@ -25,17 +26,20 @@ class FitFragment : Fragment(R.layout.activity_fit) {
 
         _binding = ActivityFitBinding.bind(view)  // 바인딩 초기화
 
-        val goBackButton = binding.backButton
-        goBackButton.setOnClickListener {
-            requireActivity().supportFragmentManager.popBackStack()
-        }
+        val category = arguments?.getString("CATEGORY")
+        val subCategory = arguments?.getString("SUB_CATEGORY")
 
-        // 이전 액티비티에서 전달된 데이터 수신
+        println("DEBUG: Received CATEGORY=$category, SUB_CATEGORY=$subCategory")
+
+        // 뒤로가기 버튼 클릭 이벤트 설정
+        binding.backButton.setOnClickListener { findNavController().navigateUp() }
+
+        // 이전 Fragment에서 전달된 데이터 수신
         selectedCategory = arguments?.getString("CATEGORY")
         selectedSubCategory = arguments?.getString("SUB_CATEGORY")
 
         // 옷 종류에 대한 설명
-        binding.mainTitleTextView.text = selectedCategory
+        binding.mainTitleTextView.text = "$selectedCategory"
 
         // Title 설정
         binding.titleTextView.text = "핏/사이즈를 선택해주세요!"
@@ -92,26 +96,26 @@ class FitFragment : Fragment(R.layout.activity_fit) {
     }
 
     private fun navigateToNextStep() {
-        if (selectedFit.isNullOrEmpty()) {
-            // 선택하지 않았을 경우 사용자에게 알림
-            Toast.makeText(requireContext(), "핏을 선택해주세요.", Toast.LENGTH_SHORT).show()
+        if (selectedCategory.isNullOrEmpty() || selectedSubCategory.isNullOrEmpty() || selectedFit.isNullOrEmpty()) {
+            Toast.makeText(requireContext(), "필수 값을 모두 선택해주세요.", Toast.LENGTH_SHORT).show()
+            println("DEBUG: category=$selectedCategory, subCategory=$selectedSubCategory, fit=$selectedFit")
             return
         }
 
-        // 다음 Fragment로 이동
-        val fragment = ColorFragment().apply {
-            arguments = Bundle().apply {
-                putString("CATEGORY", selectedCategory)
-                putString("SUB_CATEGORY", selectedSubCategory)
-                putString("FIT", selectedFit)
-            }
+        // 데이터를 Bundle에 추가
+        val bundle = Bundle().apply {
+            putString("CATEGORY", selectedCategory)
+            putString("SUB_CATEGORY", selectedSubCategory)
+            putString("FIT", selectedFit)
         }
 
-        requireActivity().supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container, fragment)  // fragment_container는 해당 Fragment를 포함할 컨테이너의 ID
-            .addToBackStack(null)  // 백 스택에 추가하여 뒤로가기를 사용할 수 있게 함
-            .commit()
+        val action = R.id.action_fitFragment_to_colorFragment
+
+        // 네비게이션 액션 수행
+        findNavController().navigate(action, bundle)
     }
+
+
 
     override fun onDestroyView() {
         super.onDestroyView()

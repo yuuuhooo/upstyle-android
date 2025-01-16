@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import androidx.navigation.fragment.findNavController
 import com.umc.upstyle.databinding.ActivityClosetBinding
 
 class ClosetFragment : Fragment() {
@@ -24,56 +25,39 @@ class ClosetFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.backButton.setOnClickListener {
-            parentFragmentManager.popBackStack() // 이전 Fragment로 이동
+            findNavController().navigate(R.id.mainFragment) // 이전 Fragment로 이동
         }
 
         binding.btnGoOuter.setOnClickListener {
-            val fragment = ClosetItemFragment.newInstance("OUTER") // 카테고리 전달
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, fragment)
-                .addToBackStack(null)
-                .commit()
+            val action = ClosetFragmentDirections.actionClosetFragmentToClosetItemFragment(category = "OUTER")
+            findNavController().navigate(action)
         }
 
         binding.btnGoTop.setOnClickListener {
-            val fragment = ClosetItemFragment.newInstance("TOP") // 카테고리 전달
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, fragment)
-                .addToBackStack(null)
-                .commit()
+            val action = ClosetFragmentDirections.actionClosetFragmentToClosetItemFragment(category = "TOP")
+            findNavController().navigate(action)
         }
 
         binding.btnGoBottom.setOnClickListener {
-            val fragment = ClosetItemFragment.newInstance("BOTTOM") // 카테고리 전달
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, fragment)
-                .addToBackStack(null)
-                .commit()
+            val action = ClosetFragmentDirections.actionClosetFragmentToClosetItemFragment(category = "BOTTOM")
+            findNavController().navigate(action)
         }
 
         binding.btnGoShoes.setOnClickListener {
-            val fragment = ClosetItemFragment.newInstance("SHOES") // 카테고리 전달
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, fragment)
-                .addToBackStack(null)
-                .commit()
+            val action = ClosetFragmentDirections.actionClosetFragmentToClosetItemFragment(category = "SHOES")
+            findNavController().navigate(action)
         }
 
         binding.btnGoBag.setOnClickListener {
-            val fragment = ClosetItemFragment.newInstance("BAG") // 카테고리 전달
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, fragment)
-                .addToBackStack(null)
-                .commit()
+            val action = ClosetFragmentDirections.actionClosetFragmentToClosetItemFragment(category = "BAG")
+            findNavController().navigate(action)
         }
 
         binding.btnGoOther.setOnClickListener {
-            val fragment = ClosetItemFragment.newInstance("OTHER") // 카테고리 전달
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, fragment)
-                .addToBackStack(null)
-                .commit()
+            val action = ClosetFragmentDirections.actionClosetFragmentToClosetItemFragment(category = "OTHER")
+            findNavController().navigate(action)
         }
+
 
     }
 

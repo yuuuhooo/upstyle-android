@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
+import androidx.navigation.fragment.findNavController
 import com.google.android.flexbox.FlexboxLayout
 import com.umc.upstyle.databinding.ActivityColorBinding
 
@@ -36,11 +37,8 @@ class ColorFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // 뒤로 가기 버튼 처리
-        val goBackButton = binding.backButton
-        goBackButton.setOnClickListener {
-            activity?.onBackPressed()  // Fragment에서 back 버튼 처리
-        }
+        // 뒤로가기 버튼 클릭 이벤트 설정
+        binding.backButton.setOnClickListener { findNavController().navigateUp() }
 
         // 이전 액티비티에서 전달된 데이터 수신
         selectedCategory = arguments?.getString("CATEGORY")
@@ -154,29 +152,21 @@ class ColorFragment : Fragment() {
             return
         }
 
-        // TodayOotdFragment로 데이터 전달
-        val todayOotdFragment = TodayOotdFragment().apply {
-            arguments = Bundle().apply {
-                putString("CATEGORY", selectedCategory)
-                putString("SUB_CATEGORY", selectedSubCategory)
-                putString("FIT", selectedFit)
-                putString("SIZE", selectedSize)
-                putString("COLOR", selectedColor)
-            }
+        // 데이터를 Bundle에 추가
+        val bundle = Bundle().apply {
+            putString("CATEGORY", selectedCategory)
+            putString("SUB_CATEGORY", selectedSubCategory)
+            putString("FIT", selectedFit)
+            putString("SIZE", selectedSize)
+            putString("COLOR", selectedColor)
         }
 
-        // FragmentManager를 사용해 Fragment를 교체
-        parentFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container, todayOotdFragment) // `fragment_container`는 현재 Fragment가 들어있는 레이아웃 ID
-            .addToBackStack(null) // 뒤로가기 버튼 사용 가능
-            .commit()
 
-        Log.d(
-            "DebugResult",
-            "Navigated to TodayOotdFragment with data: $selectedCategory, $selectedSubCategory, $selectedFit, $selectedSize, $selectedColor"
-        )
+        val action = R.id.action_colorFragment_to_todayOotdFragment
+
+        // 네비게이션 액션 수행
+        findNavController().navigate(action, bundle)
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()

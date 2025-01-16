@@ -12,6 +12,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
 import androidx.core.content.edit
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.umc.upstyle.databinding.ActivityTodayOotdBinding
 import java.io.File
 import java.text.SimpleDateFormat
@@ -45,11 +46,7 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
 
         // 뒤로가기 버튼 클릭 이벤트 설정
         binding.backButton.setOnClickListener {
-            if (parentFragmentManager.backStackEntryCount > 0) {
-                parentFragmentManager.popBackStack() // 이전 프래그먼트로 이동
-            } else {
-                requireActivity().finish() // 더 이상 스택이 없으면 액티비티 종료
-            }
+            findNavController().navigate(R.id.mainFragment)
         }
     }
 
@@ -138,13 +135,8 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
 
     // 카테고리 이동 함수
     private fun navigateToCategory(category: String) {
-        val fragment = CategoryFragment().apply {
-            arguments = Bundle().apply { putString("CATEGORY", category) }
-        }
-        requireActivity().supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container, fragment)
-            .addToBackStack(null)
-            .commit()
+        val action = TodayOotdFragmentDirections.actionTodayOotdFragmentToCategoryFragment(category)
+        findNavController().navigate(action)
     }
 
     // 사진 관련 코드 시작

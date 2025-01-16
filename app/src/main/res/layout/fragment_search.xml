@@ -64,7 +64,7 @@
                 android:orientation="horizontal">
 
                 <com.google.android.material.button.MaterialButton
-                    android:layout_width="65dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="30dp"
                     android:backgroundTint="@color/circle_gray"
                     android:text="분류"
@@ -74,8 +74,8 @@
                     android:fontFamily="@font/pretendard_medium"
                     android:textColor="@color/black"
                     app:iconTint="@color/black"
-                    android:paddingStart="8dp"
-                    android:paddingEnd="8dp"
+                    android:paddingStart="0dp"
+                    android:paddingEnd="0dp"
 
                     android:insetTop="0dp"
                     android:insetLeft="0dp"
@@ -86,7 +86,7 @@
                 </com.google.android.material.button.MaterialButton>
 
                 <com.google.android.material.button.MaterialButton
-                    android:layout_width="90dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="30dp"
                     android:backgroundTint="@color/circle_gray"
                     android:text="카테고리"
@@ -108,7 +108,7 @@
                 </com.google.android.material.button.MaterialButton>
 
                 <com.google.android.material.button.MaterialButton
-                    android:layout_width="95dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="30dp"
                     android:backgroundTint="@color/circle_gray"
                     android:text="핏/사이즈"
@@ -130,7 +130,7 @@
                 </com.google.android.material.button.MaterialButton>
 
                 <com.google.android.material.button.MaterialButton
-                    android:layout_width="65dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="30dp"
                     android:backgroundTint="@color/circle_gray"
                     android:text="컬러"

@@ -23,9 +23,17 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
     private var _binding: ActivityTodayOotdBinding? = null
     private val binding get() = _binding!!
 
+    private var calendar = Calendar.getInstance()
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = ActivityTodayOotdBinding.bind(view)
+
+        // 날짜 표시
+        val month = calendar.get(Calendar.MONTH) + 1 // Calendar.MONTH는 0부터 시작하므로 1을 더함
+        val day = calendar.get(Calendar.DATE)
+
+        binding.date.text = "${month.toString().padStart(2, '0')}${day.toString().padStart(2, '0')}"
 
         val preferences = requireActivity().getSharedPreferences("AppData", Context.MODE_PRIVATE)
 

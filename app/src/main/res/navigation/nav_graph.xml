@@ -173,6 +173,19 @@
         <action
             android:id="@+id/action_closetItemFragment_to_filterFragment"
             app:destination="@id/closetItemFilterFragment" />
+        <action
+            android:id="@+id/action_searchFragment_to_SearchItemFragment"
+            app:destination="@id/SearchItemFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/SearchItemFragment"
+        android:name="com.umc.upstyle.SearchItemFragment"
+        android:label="fragment_search_item"
+        tools:layout="@layout/fragment_search_item" >
+        <action
+            android:id="@+id/action_SearchItemFragment_to_searchResultFragment"
+            app:destination="@id/searchResultFragment" />
     </fragment>
 
     <fragment
@@ -180,6 +193,5 @@
         android:name="com.umc.upstyle.ClosetItemFilterFragment"
         android:label="Filter"
         tools:layout="@layout/fragment_closet_item_filter" />
-
 
 </navigation>

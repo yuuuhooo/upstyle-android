@@ -6,7 +6,7 @@
     android:background="#000000">
 
     <!-- 아이템 이미지 -->
-    <Button
+    <ImageButton
         android:id="@+id/item_button"
         android:layout_width="match_parent"
         android:layout_height="160dp"

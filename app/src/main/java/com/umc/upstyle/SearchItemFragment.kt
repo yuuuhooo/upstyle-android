@@ -8,12 +8,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.umc.upstyle.databinding.FragmentSearchItemBinding
 import java.io.File
 
 class SearchItemFragment : Fragment() {
-
 
     private var _binding: FragmentSearchItemBinding? = null
     private val binding get() = _binding!!
@@ -22,15 +22,14 @@ class SearchItemFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Arguments로 전달된 category 값 가져오기
+        // Safe Args로 전달된 category 값 가져오기
         category = arguments?.getString("CATEGORY")
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // 뷰 바인딩 초기화
+    ): View {
         _binding = FragmentSearchItemBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -38,37 +37,24 @@ class SearchItemFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // 뒤로가기 버튼 클릭 이벤트
         binding.backButton.setOnClickListener {
-            parentFragmentManager.popBackStack() // 이전 Fragment로 이동
-
-            // 카테고리 설정 및 버튼 클릭 이벤트
-            binding.titleText.text = category ?: "CATEGORY"
-            binding.backButton.setOnClickListener {
-                // SearchResultFragment로 이동
-                val searchResultFragment = SearchResultFragment.newInstance(category ?: "DEFAULT")
-                parentFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, searchResultFragment)
-                    .addToBackStack(null)
-                    .commit()
-            }
+            requireActivity().onBackPressedDispatcher.onBackPressed()
         }
 
-
-        // 상단 텍스트 표시
-        binding.titleText.text = when (category) {
-            "OUTER" -> "OUTER"
-            "TOP" -> "TOP"
-            "SHOES" -> "SHOES"
-            "BOTTOM" -> "BOTTOM"
-            else -> "OTHER"
-        }
+        // 상단 제목 설정
+        binding.titleText.text = category ?: "CATEGORY"
 
         // RecyclerView 설정
         val items = loadItemsFromPreferences()
+        setupRecyclerView(items)
+    }
+
+    private fun setupRecyclerView(items: List<Item_search>) {
         binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
-        binding.recyclerView.adapter = RecyclerAdapter_Search(items)
-
-
+        binding.recyclerView.adapter = RecyclerAdapter_Search(items) { selectedItem ->
+            navigateToClosetResultFragment(selectedItem) // 아이템 클릭 시 처리
+        }
     }
 
 
@@ -85,7 +71,7 @@ class SearchItemFragment : Fragment() {
             Item_search("샘플 2", "https://example.com/image2.jpg")
         )
 
-        // 저장된 데이터 추가 + 없으면 걍 안뜨게
+        // 저장된 데이터 추가
         if (!savedImagePath.isNullOrEmpty() && !description.isNullOrEmpty() && description != "없음") {
             val file = File(savedImagePath)
             if (file.exists()) {
@@ -97,14 +83,24 @@ class SearchItemFragment : Fragment() {
         return itemSearchs
     }
 
+    private fun navigateToClosetResultFragment(item: Item_search) {
+        val action = SearchItemFragmentDirections
+            .actionSearchItemFragmentToSearchResultFragment(
+                imageUrl = item.imageUrl,
+                description = item.description
+            )
+        findNavController().navigate(action)
+    }
+
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null // 뷰 바인딩 해제
     }
 
     companion object {
-        fun newInstance(category: String): SearchResultFragment {
-            val fragment = SearchResultFragment()
+        fun newInstance(category: String): SearchItemFragment {
+            val fragment = SearchItemFragment()
             val args = Bundle()
             args.putString("CATEGORY", category)
             fragment.arguments = args

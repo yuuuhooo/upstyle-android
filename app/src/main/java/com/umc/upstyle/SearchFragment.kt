@@ -5,18 +5,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
+import androidx.navigation.fragment.findNavController
 import com.umc.upstyle.databinding.FragmentSearchBinding
 
 class SearchFragment : Fragment() {
 
     private var _binding: FragmentSearchBinding? = null
-    private val binding get() = _binding!! // Non-nullable로 사용하기 위한 접근자
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-        // 뷰 바인딩 초기화
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -24,77 +23,19 @@ class SearchFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
-        binding.btnGoToOuter.setOnClickListener {
-            val fragment = SearchItemFragment.newInstance("OUTER") // 카테고리 전달
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, fragment)
-                .addToBackStack(null)
-                .commit()
-        }
-
-
-        binding.btnGoToTop.setOnClickListener {
-            val fragment = SearchItemFragment.newInstance("TOP") // 카테고리 전달
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, fragment)
-                .addToBackStack(null)
-                .commit()
-        }
-
-        binding.btnGoToBottom.setOnClickListener {
-            val fragment = SearchItemFragment.newInstance("BOTTOM") // 카테고리 전달
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, fragment)
-                .addToBackStack(null)
-                .commit()
-        }
-
-        binding.btnGoToShoes.setOnClickListener {
-            val fragment = SearchItemFragment.newInstance("SHOES") // 카테고리 전달
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, fragment)
-                .addToBackStack(null)
-                .commit()
-        }
-
-        binding.btnGoToBag.setOnClickListener {
-            val fragment = SearchItemFragment.newInstance("BAG") // 카테고리 전달
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, fragment)
-                .addToBackStack(null)
-                .commit()
-        }
-
-        binding.btnGoToOther.setOnClickListener {
-            val fragment = SearchItemFragment.newInstance("OTHER") // 카테고리 전달
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, fragment)
-                .addToBackStack(null)
-                .commit()
-        }
+        // 공통 클릭 이벤트 처리
+        binding.btnGoToOuter.setOnClickListener { navigateToSearchItemFragment("OUTER") }
+        binding.btnGoToTop.setOnClickListener { navigateToSearchItemFragment("TOP") }
+        binding.btnGoToBottom.setOnClickListener { navigateToSearchItemFragment("BOTTOM") }
+        binding.btnGoToShoes.setOnClickListener { navigateToSearchItemFragment("SHOES") }
+        binding.btnGoToBag.setOnClickListener { navigateToSearchItemFragment("BAG") }
+        binding.btnGoToOther.setOnClickListener { navigateToSearchItemFragment("OTHER") }
     }
 
-    // 프래그먼트로 문자열 전달 함수
+    // Navigation Component를 통한 전환 함수
     private fun navigateToSearchItemFragment(category: String) {
-
-        val fragment = SearchItemFragment().apply {
-            arguments = Bundle().apply {
-                putString("category", category) // 카테고리 문자열 전달
-            }
-        }
-
-        // 현재는 그냥 프래그먼트 매니저
-        requireActivity().supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container, fragment)
-            .addToBackStack(null) // 뒤로가기 시 이전 프래그먼트로 돌아가도록 추가
-            .commit()
-
-
-        // navigation component로 수정하는 게 좋아보여서 일단 써둠
-//            val navController = findNavController()
-//            navController.navigate(R.id.action_searchFragment_to_closetResultFragment)
-
+        val action = SearchFragmentDirections.actionSearchFragmentToSearchItemFragment(category)
+        findNavController().navigate(action)
     }
 
     override fun onDestroyView() {

@@ -18,10 +18,18 @@
         android:name="com.umc.upstyle.SearchFragment"
         android:label="fragment_search"
         tools:layout="@layout/fragment_search" >
+
         <action
             android:id="@+id/action_searchFragment_to_SearchItemFragment"
-            app:destination="@id/SearchItemFragment" />
+            app:destination="@id/SearchItemFragment" >
+            <argument
+                android:name="category"
+                app:argType="string"
+                app:nullable="false" />
+        </action>
+
     </fragment>
+
 
     <!-- 홈 -->
     <fragment
@@ -162,7 +170,16 @@
         android:id="@+id/searchResultFragment"
         android:name="com.umc.upstyle.SearchResultFragment"
         android:label="fragment_search_result"
-        tools:layout="@layout/fragment_search_result" />
+        tools:layout="@layout/fragment_search_result">
+    <argument
+        android:name="imageUrl"
+        app:argType="string"
+        app:nullable="true" />
+    <argument
+        android:name="description"
+        app:argType="string"
+        app:nullable="true" />
+    </fragment>
 
 
     <fragment

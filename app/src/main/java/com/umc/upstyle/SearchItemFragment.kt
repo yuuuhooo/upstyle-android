@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.umc.upstyle.databinding.FragmentSearchItemBinding
 import java.io.File
@@ -51,8 +52,11 @@ class SearchItemFragment : Fragment() {
 
     private fun setupRecyclerView(items: List<Item_search>) {
         binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
-        binding.recyclerView.adapter = RecyclerAdapter_Search(items)
+        binding.recyclerView.adapter = RecyclerAdapter_Search(items) { selectedItem ->
+            navigateToClosetResultFragment(selectedItem) // 아이템 클릭 시 처리
+        }
     }
+
 
     private fun loadItemsFromPreferences(): List<Item_search> {
         val preferences = requireActivity().getSharedPreferences("AppData", Context.MODE_PRIVATE)
@@ -78,6 +82,16 @@ class SearchItemFragment : Fragment() {
 
         return itemSearchs
     }
+
+    private fun navigateToClosetResultFragment(item: Item_search) {
+        val action = SearchItemFragmentDirections
+            .actionSearchItemFragmentToSearchResultFragment(
+                imageUrl = item.imageUrl,
+                description = item.description
+            )
+        findNavController().navigate(action)
+    }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

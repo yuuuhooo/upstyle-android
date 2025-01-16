@@ -12,13 +12,14 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 
-class RecyclerAdapter_Search(private val itemSearchList: List<Item_search>) :
-    RecyclerView.Adapter<RecyclerAdapter_Search.ViewHolder>() {
+class RecyclerAdapter_Search(
+    private val itemSearchList: List<Item_search>,
+    private val onItemClick: (Item_search) -> Unit
+) : RecyclerView.Adapter<RecyclerAdapter_Search.ViewHolder>() {
 
-    // ViewHolder 클래스
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val title: TextView = itemView.findViewById(R.id.item_title) // 제목 TextView
-        val image: ImageView = itemView.findViewById(R.id.item_image) // 이미지 ImageView
+        val title: TextView = itemView.findViewById(R.id.item_title)
+        val image: ImageView = itemView.findViewById(R.id.item_image)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -29,14 +30,15 @@ class RecyclerAdapter_Search(private val itemSearchList: List<Item_search>) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = itemSearchList[position]
-
-        // 텍스트 설정
         holder.title.text = item.description
-
-        // Glide를 사용해 이미지 로드
         Glide.with(holder.itemView.context)
             .load(item.imageUrl)
             .into(holder.image)
+
+        // 클릭 이벤트 설정
+        holder.itemView.setOnClickListener {
+            onItemClick(item)
+        }
     }
 
     override fun getItemCount(): Int = itemSearchList.size

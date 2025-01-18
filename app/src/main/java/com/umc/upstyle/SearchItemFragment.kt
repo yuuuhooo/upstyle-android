@@ -53,7 +53,7 @@ class SearchItemFragment : Fragment() {
             }
         }
 
-<<<<<<< Updated upstream
+
 
         // 상단 텍스트 표시
         binding.titleText.text = when (category) {
@@ -63,7 +63,6 @@ class SearchItemFragment : Fragment() {
             "BOTTOM" -> "BOTTOM"
             else -> "OTHER"
         }
-=======
         val category = arguments?.getString("category") // 전달된 데이터 수신
 
         val bundle = Bundle().apply {
@@ -77,8 +76,6 @@ class SearchItemFragment : Fragment() {
 
         // 상단 제목 설정
         binding.titleText.text = "$category"
-
->>>>>>> Stashed changes
 
         // RecyclerView 설정
         val items = loadItemsFromPreferences()

@@ -23,17 +23,9 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
     private var _binding: ActivityTodayOotdBinding? = null
     private val binding get() = _binding!!
 
-    private var calendar = Calendar.getInstance()
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = ActivityTodayOotdBinding.bind(view)
-
-        // 날짜 표시
-        val month = calendar.get(Calendar.MONTH) + 1 // Calendar.MONTH는 0부터 시작하므로 1을 더함
-        val day = calendar.get(Calendar.DATE)
-
-        binding.date.text = "${month.toString().padStart(2, '0')}${day.toString().padStart(2, '0')}"
 
         val preferences = requireActivity().getSharedPreferences("AppData", Context.MODE_PRIVATE)
 
@@ -54,7 +46,11 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
 
         // 뒤로가기 버튼 클릭 이벤트 설정
         binding.backButton.setOnClickListener {
-            findNavController().navigate(R.id.mainFragment)
+            if (parentFragmentManager.backStackEntryCount > 0) {
+                parentFragmentManager.popBackStack() // 이전 프래그먼트로 이동
+            } else {
+                requireActivity().finish() // 더 이상 스택이 없으면 액티비티 종료
+            }
         }
     }
 
@@ -103,29 +99,8 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
         )
 
         buttons.forEach { (button, category) ->
-            button.setOnClickListener { showLoadItemPopup(category, preferences) }
+            button.setOnClickListener { navigateToClosetItemFragment(category) }
         }
-    }
-
-    // LoadItemPopupDialog 표시
-    private fun showLoadItemPopup(category: String, preferences: SharedPreferences) {
-        val dialog = LoadItemPopupDialog(
-            context = requireContext(),
-            onCreateNewClicked = {
-                // 새로 생성: 선택된 카테고리 프래그먼트로 이동
-                navigateToCategory(category)
-            },
-            onLoadPreviousClicked = {
-                // 이전 데이터 불러오기: LoadItemFragment로 이동
-                navigateToLoadItemFragment(category)
-            }
-        )
-        dialog.show()
-    }
-
-    private fun navigateToLoadItemFragment(category: String) {
-        val action = TodayOotdFragmentDirections.actionTodayOotdFragmentToLoadItemFragment(category)
-        findNavController().navigate(action)
     }
 
     // UI 업데이트 함수
@@ -141,23 +116,32 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
         if (!savedPath.isNullOrEmpty()) {
             val file = File(savedPath)
             if (file.exists()) {
-
-                // 이미지가 있을 경우 이미지를 표시하고 "사진등록" 글자 숨기기
                 binding.photoImageView.visibility = View.VISIBLE
-                binding.uploadText.visibility = View.GONE
                 binding.photoImageView.setImageURI(Uri.fromFile(file))
-            } else {
-                // 이미지 파일이 없을 경우 "사진등록" 글자 표시
-                binding.photoImageView.visibility = View.GONE
-                binding.uploadText.visibility = View.VISIBLE
             }
-        } else {
-            // 저장된 경로가 없을 경우 "사진등록" 글자 표시
-            binding.photoImageView.visibility = View.GONE
-            binding.uploadText.visibility = View.VISIBLE
         }
+        // "저장하기" 버튼 표시 여부 업데이트
+        updateSaveButtonVisibility(preferences)
     }
 
+
+    private fun updateSaveButtonVisibility(preferences: SharedPreferences) {
+        val savedPath = preferences.getString("SAVED_IMAGE_PATH", null)
+        val categories = listOf(
+            preferences.getString("OUTER", "없음"),
+            preferences.getString("TOP", "없음"),
+            preferences.getString("BOTTOM", "없음"),
+            preferences.getString("SHOES", "없음"),
+            preferences.getString("BAG", "없음"),
+            preferences.getString("OTHER", "없음")
+        )
+
+        // 사진이 등록되었거나 카테고리 중 하나 이상이 입력되었는지 확인
+        val isSaveEnabled =
+            (!savedPath.isNullOrEmpty() && File(savedPath).exists()) || categories.any { it != "없음" }
+
+        binding.saveButton.visibility = if (isSaveEnabled) View.VISIBLE else View.GONE
+    }
 
     // 데이터 저장 함수
     private fun saveData(preferences: SharedPreferences) {
@@ -176,37 +160,52 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
 
     // 카테고리 이동 함수
     private fun navigateToCategory(category: String) {
-        val action = TodayOotdFragmentDirections.actionTodayOotdFragmentToCategoryFragment(category)
-        findNavController().navigate(action)
+        val fragment = CategoryFragment().apply {
+            arguments = Bundle().apply { putString("CATEGORY", category) }
+        }
+        requireActivity().supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, fragment)
+            .addToBackStack(null)
+            .commit()
+
     }
+    private fun navigateToClosetItemFragment(category: String) {
+        val action =
+            TodayOotdFragmentDirections.actionTodayOotdFragmentToClosetItemFragment(category)
+        findNavController().navigate(action)
+
+    }
+
 
     // 사진 관련 코드 시작
     private lateinit var photoUri: Uri // 사진 촬영 URI
 
-    private val takePictureLauncher = registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
-        if (success) {
-            binding.photoImageView.visibility = View.VISIBLE
-            binding.photoImageView.setImageURI(photoUri) // 촬영한 사진 표시
-            saveImageUri(photoUri) // URI 저장
-            Toast.makeText(requireContext(), "사진 촬영 성공!", Toast.LENGTH_SHORT).show()
-        } else {
-            Toast.makeText(requireContext(), "사진 촬영 실패", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-        uri?.let {
-            val savedPath = saveImageToInternalStorage(it)
-            if (savedPath != null) {
+    private val takePictureLauncher =
+        registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
+            if (success) {
                 binding.photoImageView.visibility = View.VISIBLE
-                binding.photoImageView.setImageURI(Uri.parse(savedPath))
-                saveImagePath(savedPath)
-                Toast.makeText(requireContext(), "사진 선택 완료!", Toast.LENGTH_SHORT).show()
+                binding.photoImageView.setImageURI(photoUri) // 촬영한 사진 표시
+                saveImageUri(photoUri) // URI 저장
+                Toast.makeText(requireContext(), "사진 촬영 성공!", Toast.LENGTH_SHORT).show()
             } else {
-                Toast.makeText(requireContext(), "이미지 저장 실패", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "사진 촬영 실패", Toast.LENGTH_SHORT).show()
             }
-        } ?: Toast.makeText(requireContext(), "사진 선택 취소", Toast.LENGTH_SHORT).show()
-    }
+        }
+
+    private val pickImageLauncher =
+        registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+            uri?.let {
+                val savedPath = saveImageToInternalStorage(it)
+                if (savedPath != null) {
+                    binding.photoImageView.visibility = View.VISIBLE
+                    binding.photoImageView.setImageURI(Uri.parse(savedPath))
+                    saveImagePath(savedPath)
+                    Toast.makeText(requireContext(), "사진 선택 완료!", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(requireContext(), "이미지 저장 실패", Toast.LENGTH_SHORT).show()
+                }
+            } ?: Toast.makeText(requireContext(), "사진 선택 취소", Toast.LENGTH_SHORT).show()
+        }
 
     private fun showPhotoOptions() {
         val photoPopup = PhotoPopupDialog(
@@ -215,12 +214,15 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
             onCancel = { /* 취소 버튼 동작 */ }
         )
         photoPopup.show(parentFragmentManager, "PhotoPopupDialog")
+
     }
 
     private fun takePhoto() {
         try {
-            val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
-            val storageDir = requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+            val timestamp =
+                SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+            val storageDir =
+                requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
             val photoFile = File.createTempFile("JPEG_${timestamp}_", ".jpg", storageDir)
 
             // photoUri 초기화
@@ -233,21 +235,22 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
             takePictureLauncher.launch(photoUri)
         } catch (e: Exception) {
             e.printStackTrace()
-            Toast.makeText(requireContext(), "사진 촬영 준비 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "사진 촬영 준비 중 오류가 발생했습니다.", Toast.LENGTH_SHORT)
+                .show()
         }
     }
 
     private fun saveImageUri(photoUri: Uri?) {
         if (photoUri != null) {
-            val preferences = requireActivity().getSharedPreferences("AppData", Context.MODE_PRIVATE)
+            val preferences =
+                requireActivity().getSharedPreferences("AppData", Context.MODE_PRIVATE)
             preferences.edit().putString("SAVED_IMAGE_PATH", photoUri.toString()).apply()
             Toast.makeText(requireContext(), "이미지 경로가 저장되었습니다.", Toast.LENGTH_SHORT).show()
         } else {
-            Toast.makeText(requireContext(), "이미지 경로 저장 실패: URI가 null입니다.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "이미지 경로 저장 실패: URI가 null입니다.", Toast.LENGTH_SHORT)
+                .show()
         }
     }
-
-
 
     private fun selectImageFromGallery() {
         pickImageLauncher.launch("image/*")
@@ -272,7 +275,8 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
     }
 
     private fun saveImagePath(path: String) {
-        val preferences = requireActivity().getSharedPreferences("AppData", Context.MODE_PRIVATE)
+        val preferences =
+            requireActivity().getSharedPreferences("AppData", Context.MODE_PRIVATE)
         preferences.edit().putString("SAVED_IMAGE_PATH", path).apply()
     }
 

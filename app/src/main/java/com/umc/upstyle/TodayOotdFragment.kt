@@ -103,8 +103,29 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
         )
 
         buttons.forEach { (button, category) ->
-            button.setOnClickListener { navigateToCategory(category) }
+            button.setOnClickListener { showLoadItemPopup(category, preferences) }
         }
+    }
+
+    // LoadItemPopupDialog 표시
+    private fun showLoadItemPopup(category: String, preferences: SharedPreferences) {
+        val dialog = LoadItemPopupDialog(
+            context = requireContext(),
+            onCreateNewClicked = {
+                // 새로 생성: 선택된 카테고리 프래그먼트로 이동
+                navigateToCategory(category)
+            },
+            onLoadPreviousClicked = {
+                // 이전 데이터 불러오기: LoadItemFragment로 이동
+                navigateToLoadItemFragment(category)
+            }
+        )
+        dialog.show()
+    }
+
+    private fun navigateToLoadItemFragment(category: String) {
+        val action = TodayOotdFragmentDirections.actionTodayOotdFragmentToLoadItemFragment(category)
+        findNavController().navigate(action)
     }
 
     // UI 업데이트 함수

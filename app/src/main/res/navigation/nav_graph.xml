@@ -78,6 +78,9 @@
                 app:argType="string"
                 app:nullable="false" />
         </action>
+        <action
+            android:id="@+id/action_todayOotdFragment_to_loadItemFragment"
+            app:destination="@id/loadItemFragment" />
     </fragment>
 
     <!-- 카테고리 선택 -->
@@ -216,5 +219,16 @@
         android:name="com.umc.upstyle.ClosetResultFilterFragment"
         android:label="Closet Result Filter"
         tools:layout="@layout/fragment_closet_result_filter" />
+
+
+    <fragment
+        android:id="@+id/loadItemFragment"
+        android:name="com.umc.upstyle.LoadItemFragment"
+        tools:layout="@layout/fragment_load_item">
+        <argument
+            android:name="category"
+            app:argType="string" />
+    </fragment>
+
 
 </navigation>

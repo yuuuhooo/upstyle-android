@@ -1,5 +1,7 @@
 package com.umc.upstyle
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -22,6 +24,10 @@ class PhotoPopupDialog(
         savedInstanceState: Bundle?
     ): View {
         _binding = PhotoPopupBinding.inflate(inflater, container, false)
+
+        // 배경을 투명하게 설정
+        dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
         return binding.root
     }
 

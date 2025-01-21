@@ -88,10 +88,16 @@
                 android:name="category"
                 app:argType="string"
                 android:defaultValue="DEFAULT" />
+
         </action>
+
         <action
             android:id="@+id/action_todayOotdFragmentToClosetItemFragment"
             app:destination="@id/closetItemFragment">
+        <argument
+            android:name="category"
+            app:argType="string"
+            android:defaultValue="DEFAULT" />
         </action>
     </fragment>
 

@@ -155,6 +155,12 @@
             app:destination="@id/colorFragment"/>
     </fragment>
 
+    <!-- 기타 선택 -->
+    <fragment
+        android:id="@+id/etcFragment"
+        android:name="com.umc.upstyle.EtcFragment" >
+    </fragment>
+
 
     <fragment
         android:id="@+id/closetResultFragment"

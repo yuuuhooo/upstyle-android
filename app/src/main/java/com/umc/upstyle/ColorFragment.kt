@@ -162,7 +162,7 @@ class ColorFragment : Fragment() {
         }
 
 
-        val action = R.id.action_colorFragment_to_todayOotdFragment
+        val action = R.id.etcFragment
 
         // 네비게이션 액션 수행
         findNavController().navigate(action, bundle)

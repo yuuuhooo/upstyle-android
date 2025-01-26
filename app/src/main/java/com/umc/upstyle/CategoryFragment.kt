@@ -24,14 +24,14 @@ class CategoryFragment : Fragment(R.layout.activity_category) {
         _binding = ActivityCategoryBinding.bind(view)  // 바인딩 초기화
 
         // 삭제하기
-        val test = binding.test
+        /*val test = binding.test
         test.setOnClickListener {
             val filterFragment = FilterFragment()
             requireActivity().supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, filterFragment) // fragment_container는 해당 Fragment를 포함할 컨테이너의 ID
                 .addToBackStack(null) // 백 스택에 추가하여 뒤로 가기 가능
                 .commit()
-        }
+        }*/
 
 
         val goBackButton = binding.backButton

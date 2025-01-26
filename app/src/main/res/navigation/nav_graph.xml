@@ -18,14 +18,25 @@
         android:name="com.umc.upstyle.SearchFragment"
         android:label="fragment_search"
         tools:layout="@layout/fragment_search" >
-
+        <argument
+            android:name="category"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="imageUrl"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="description"
+            app:argType="string"
+            app:nullable="true" />
         <action
             android:id="@+id/action_searchFragment_to_SearchItemFragment"
             app:destination="@id/SearchItemFragment" >
             <argument
                 android:name="category"
                 app:argType="string"
-                app:nullable="false" />
+                app:nullable="true" />
         </action>
 
     </fragment>
@@ -74,13 +85,14 @@
             android:id="@+id/action_todayOotdFragmentToCategoryFragment"
             app:destination="@id/categoryFragment">
             <argument
-                android:name="CATEGORY"
+                android:name="category"
                 app:argType="string"
-                app:nullable="false" />
+                android:defaultValue="DEFAULT" />
         </action>
         <action
-            android:id="@+id/action_todayOotdFragment_to_loadItemFragment"
-            app:destination="@id/loadItemFragment" />
+            android:id="@+id/action_todayOotdFragmentToClosetItemFragment"
+            app:destination="@id/closetItemFragment">
+        </action>
     </fragment>
 
     <!-- 카테고리 선택 -->
@@ -167,6 +179,7 @@
         <action
             android:id="@+id/action_closetResultFragment_to_searchResultFragment"
             app:destination="@id/searchResultFragment" />
+
     </fragment>
 
     <fragment
@@ -182,6 +195,10 @@
             android:name="description"
             app:argType="string"
             app:nullable="true" />
+        <argument
+            android:name="category"
+            app:argType="string"
+            android:defaultValue="DEFAULT" />
     </fragment>
 
 
@@ -190,12 +207,27 @@
         android:name="com.umc.upstyle.ClosetItemFragment"
         android:label="Closet Item"
         tools:layout="@layout/fragment_closet_item">
+        <argument
+            android:name="category"
+            app:argType="string"
+            android:defaultValue="DEFAULT" />
         <action
             android:id="@+id/action_closetItemFragment_to_filterFragment"
-            app:destination="@id/closetItemFilterFragment" />
+            app:destination="@id/closetItemFilterFragment" >
+            <argument
+                android:name="category"
+                app:argType="string"
+                android:defaultValue="DEFAULT"/>
+        </action>
+
         <action
-            android:id="@+id/action_searchFragment_to_SearchItemFragment"
-            app:destination="@id/SearchItemFragment" />
+            android:id="@+id/action_closetItemFragment_to_closetResultFragment"
+            app:destination="@id/closetResultFragment" >
+            <argument
+                android:name="category"
+                app:argType="string"
+                android:defaultValue="DEFAULT" />
+        </action>
     </fragment>
 
     <fragment
@@ -203,9 +235,31 @@
         android:name="com.umc.upstyle.SearchItemFragment"
         android:label="fragment_search_item"
         tools:layout="@layout/fragment_search_item" >
+        <argument
+            android:name="category"
+            app:argType="string"
+            android:defaultValue="DEFAULT" />
+        <argument
+            android:name="imageUrl"
+            app:argType="string"
+            android:defaultValue="DEFAULT"/>
+        <argument
+            android:name="description"
+            app:argType="string"
+            android:defaultValue="DEFAULT"/>
+
         <action
-            android:id="@+id/action_SearchItemFragment_to_searchResultFragment"
+            android:id="@+id/actionSearchItemFragmentToSearchResultFragment"
             app:destination="@id/searchResultFragment" />
+        <action
+            android:id="@+id/action_searchItemFragment_to_closetItemFilterFragment"
+            app:destination="@id/closetItemFilterFragment" >
+            <argument
+                android:name="category"
+                app:argType="string"
+                android:defaultValue="DEFAULT"
+                app:nullable="true"/>
+        </action>
     </fragment>
 
     <fragment
@@ -219,16 +273,5 @@
         android:name="com.umc.upstyle.ClosetResultFilterFragment"
         android:label="Closet Result Filter"
         tools:layout="@layout/fragment_closet_result_filter" />
-
-
-    <fragment
-        android:id="@+id/loadItemFragment"
-        android:name="com.umc.upstyle.LoadItemFragment"
-        tools:layout="@layout/fragment_load_item">
-        <argument
-            android:name="category"
-            app:argType="string" />
-    </fragment>
-
 
 </navigation>

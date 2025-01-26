@@ -1,6 +1,7 @@
 package com.umc.upstyle
 
 import Item_search
+import RecyclerAdapter_Search
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
@@ -22,8 +23,9 @@ class SearchItemFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Safe Args로 전달된 category 값 가져오기
-        category = arguments?.getString("CATEGORY")
+        // Safe Args로 전달된 데이터 수신
+        val args = SearchItemFragmentArgs.fromBundle(requireArguments())
+        category = args.category // Safe Args로 데이터 수신
     }
 
     override fun onCreateView(
@@ -44,14 +46,19 @@ class SearchItemFragment : Fragment() {
 
         val category = arguments?.getString("category") // 전달된 데이터 수신
 
+
         val bundle = Bundle().apply {
             putString("category", category)
         }
 
         // 컬러 필터링 filterButton
         binding.filterButton.setOnClickListener {
-            findNavController().navigate(R.id.closetItemFilterFragment, bundle)
+            val action = SearchItemFragmentDirections
+                .actionSearchItemFragmentToClosetItemFilterFragment(category ?: "DEFAULT")
+            findNavController().navigate(action)
         }
+
+
 
         // 상단 제목 설정
         binding.titleText.text = "$category"
@@ -65,8 +72,9 @@ class SearchItemFragment : Fragment() {
     private fun setupRecyclerView(items: List<Item_search>) {
         binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.recyclerView.adapter = RecyclerAdapter_Search(items) { selectedItem ->
-            navigateToClosetResultFragment(selectedItem) // 아이템 클릭 시 처리
+            navigateToClosetResultFragment(selectedItem)
         }
+
     }
 
 
@@ -103,6 +111,9 @@ class SearchItemFragment : Fragment() {
             )
         findNavController().navigate(action)
     }
+
+
+
 
 
     override fun onDestroyView() {

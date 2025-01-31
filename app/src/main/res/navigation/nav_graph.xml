@@ -230,5 +230,23 @@
             app:argType="string" />
     </fragment>
 
+    <fragment
+        android:id="@+id/createVoteFragment"
+        android:name="com.umc.upstyle.CreateVoteFragment"
+        android:label="create_vote"
+        tools:layout="@layout/fragment_create_vote">
+    </fragment>
+
+    <fragment
+        android:id="@id/chatFragment"
+        android:name="com.umc.upstyle.ChatFragment"
+        android:label="Chat"
+        tools:layout="@layout/fragment_chat">
+
+        <action
+            android:id="@+id/action_chatFragment_to_createVoteFragment"
+            app:destination="@id/createVoteFragment" />
+    </fragment>
+
 
 </navigation>

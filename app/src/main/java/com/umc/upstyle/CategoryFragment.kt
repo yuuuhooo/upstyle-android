@@ -87,6 +87,7 @@ class CategoryFragment : Fragment(R.layout.activity_category) {
                 setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
                 setPadding(40, 10, 40, 10)
 
+
                 setOnClickListener {
                     layout.children.forEach { (it as Button).background =
                         ContextCompat.getDrawable(requireContext(), R.drawable.button_background)
@@ -104,8 +105,11 @@ class CategoryFragment : Fragment(R.layout.activity_category) {
             }
 
             layout.addView(button, layoutParams)
+
         }
     }
+
+
 
     private fun navigateToNextStep(selectedCategory: String) {
         if (selectedSubCategory.isNullOrEmpty()) {

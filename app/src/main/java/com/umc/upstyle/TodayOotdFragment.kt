@@ -57,12 +57,13 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
         val selectedFit = arguments?.getString("FIT")
         val selectedSize = arguments?.getString("SIZE")
         val selectedColor = arguments?.getString("COLOR")
+        val selectedEtc = arguments?.getString("ETC")
 
         if (!selectedCategory.isNullOrEmpty()) {
             val categoryText = when (selectedCategory) {
-                "OUTER", "TOP", "BOTTOM" -> "$selectedSubCategory $selectedFit $selectedColor"
-                "SHOES", "OTHER" -> "$selectedSubCategory $selectedColor"
-                "BAG" -> "$selectedSubCategory $selectedSize $selectedColor"
+                "OUTER", "TOP", "BOTTOM" -> "$selectedSubCategory $selectedFit $selectedColor $selectedEtc"
+                "SHOES", "OTHER" -> "$selectedSubCategory $selectedColor $selectedEtc"
+                "BAG" -> "$selectedSubCategory $selectedSize $selectedColor $selectedEtc"
                 else -> ""
             }
 

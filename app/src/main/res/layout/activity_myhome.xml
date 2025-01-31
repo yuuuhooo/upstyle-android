@@ -41,6 +41,7 @@
                 android:layout_margin="16dp"
                 android:fontFamily="@font/roboto_medium"/>
 
+
             <!-- 사용자 정보 섹션 (A) -->
             <LinearLayout
                 android:id="@+id/closetSection"

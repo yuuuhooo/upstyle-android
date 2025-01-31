@@ -31,7 +31,7 @@ class VoteFragment : Fragment() {
         val adapter = PostAdapter(postList) { post ->
             val fragment = PostDetailFragment.newInstance(post.title)
             parentFragmentManager.beginTransaction()
-                .replace(R.id.fragmentContainer, fragment)
+//                .replace(R.id.fragmentContainer, fragment)
                 .addToBackStack(null)
                 .commit()
         }

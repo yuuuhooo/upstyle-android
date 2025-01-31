@@ -61,6 +61,7 @@ class MyHomeFragment : Fragment() {
         binding.todayOOTDSection.setOnClickListener {
             findNavController().navigate(R.id.todayOotdFragment)
         }
+
     }
 
     override fun onDestroyView() {

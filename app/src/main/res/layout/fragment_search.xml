@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/searchFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_black"
@@ -64,6 +66,7 @@
                 android:orientation="horizontal">
 
                 <com.google.android.material.button.MaterialButton
+                    android:id="@+id/categoryfilterbtn"
                     android:layout_width="wrap_content"
                     android:layout_height="30dp"
                     android:backgroundTint="@color/circle_gray"
@@ -86,6 +89,7 @@
                 </com.google.android.material.button.MaterialButton>
 
                 <com.google.android.material.button.MaterialButton
+                    android:id="@+id/subcategoryfilterbtn"
                     android:layout_width="wrap_content"
                     android:layout_height="30dp"
                     android:backgroundTint="@color/circle_gray"
@@ -108,6 +112,7 @@
                 </com.google.android.material.button.MaterialButton>
 
                 <com.google.android.material.button.MaterialButton
+                    android:id="@+id/fitsizefilterbtn"
                     android:layout_width="wrap_content"
                     android:layout_height="30dp"
                     android:backgroundTint="@color/circle_gray"
@@ -130,6 +135,7 @@
                 </com.google.android.material.button.MaterialButton>
 
                 <com.google.android.material.button.MaterialButton
+                    android:id="@+id/colorfilterbtn"
                     android:layout_width="wrap_content"
                     android:layout_height="30dp"
                     android:backgroundTint="@color/circle_gray"

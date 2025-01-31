@@ -30,6 +30,10 @@ class SearchFragment : Fragment() {
         binding.btnGoToShoes.setOnClickListener { navigateToSearchItemFragment("SHOES") }
         binding.btnGoToBag.setOnClickListener { navigateToSearchItemFragment("BAG") }
         binding.btnGoToOther.setOnClickListener { navigateToSearchItemFragment("OTHER") }
+        binding.categoryfilterbtn.setOnClickListener { findNavController().navigate(R.id.searchCategoryFragment) }
+        binding.subcategoryfilterbtn.setOnClickListener { findNavController().navigate(R.id.searchCategoryFragment) }
+        binding.fitsizefilterbtn.setOnClickListener { findNavController().navigate(R.id.searchCategoryFragment) }
+        binding.colorfilterbtn.setOnClickListener { findNavController().navigate(R.id.searchCategoryFragment) }
     }
 
     // Navigation Component를 통한 전환 함수

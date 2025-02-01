@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
-    android:id="@+id/closetItemFilterFragment"
+    android:id="@+id/searchSubcategoryFragment"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#000000"
-    android:padding="16dp"
-    tools:context=".ClosetItemFilterFragment">
+    android:background="#000000">
 
     <ImageButton
         android:id="@+id/backButton"
@@ -17,7 +14,7 @@
         android:src="@drawable/arrow_left"
         android:background="@null"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="31dp"
+        android:layout_marginLeft="11dp"
         android:layout_alignParentTop="true"
         android:layout_marginTop="24dp"
         app:layout_constraintTop_toTopOf="parent"
@@ -28,7 +25,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="71dp"
+        android:layout_marginLeft="51dp"
         android:layout_alignParentTop="true"
         android:layout_marginTop="32dp"
         android:text="필터"
@@ -38,19 +35,19 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <!-- 컬러 텍스트 1 -->
+    <!-- 카테고리  텍스트 -->
     <TextView
-        android:id="@+id/subTitleTextView1"
+        android:id="@+id/subTitleTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="컬러"
+        android:text="카테고리"
         android:textSize="15sp"
         android:textStyle="bold"
         android:textColor="@color/login_yellow"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="99dp"
+        android:layout_marginLeft="110dp"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="70dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -67,19 +64,66 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/mainTitleTextView" />
 
-    <!-- 컬러 텍스트 2 -->
+    <!-- 분류 텍스트 -->
     <TextView
-        android:id="@+id/subTitleTextView2"
+        android:id="@+id/categoryTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="분류"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="11dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="130dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <!-- 카테고리 텍스트 -->
+    <TextView
+        android:id="@+id/subcategoryTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="카테고리"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        android:textColor="@color/login_yellow"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="11dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="190dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <!-- 핏/사이즈 텍스트 -->
+    <TextView
+        android:id="@+id/fitsizeTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="핏/사이즈"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="11dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="250dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <!-- 컬러 텍스트 -->
+    <TextView
+        android:id="@+id/colorTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="컬러"
         android:textSize="13sp"
         android:textStyle="bold"
-        android:textColor="@color/login_yellow"
+        android:textColor="@color/white"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="31dp"
+        android:layout_marginLeft="11dp"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="130dp"
+        android:layout_marginTop="310dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -92,7 +136,7 @@
         app:layout_constraintTop_toBottomOf="@id/topDivider"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginRight="220dp" />
+        android:layout_marginRight="200dp" />
 
 
     <com.google.android.flexbox.FlexboxLayout
@@ -103,21 +147,11 @@
         android:fontFamily="@font/pretendard_medium"
         app:flexWrap="wrap"
         app:justifyContent="flex_start"
-        app:layout_constraintBottom_toTopOf="@id/resetOffButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/topDivider"
         android:layout_marginLeft="100dp"/>
 
-    <ImageButton
-        android:id="@+id/resetOffButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="94dp"
-        android:layout_marginBottom="28dp"
-        android:background="@drawable/reset_off"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
 
     <ImageButton
         android:id="@+id/compOffButton"

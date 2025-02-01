@@ -8,6 +8,7 @@
     - Glide: 이미지 처리를 위해 사용
     - Retrofit: HTTP API를 쉽게 호출하기 위해 사용
     - flexbox: 레이아웃 구성을 위해 사용
+    - navigation component: Fragment 전환을 위해 사용
 
 ---
 #### Branch 전략
@@ -43,6 +44,7 @@ Git-Flow 전략을 사용.
     - Refactor : 코드 리펙토링
     - Test : 테스트 코드, 리펙토링 테스트 코드 추가
     - Chore : 빌드 업무 수정, 패키지 매니저 수정
+    - Style : 사용자 UI 디자인 수정
  
 ---
 

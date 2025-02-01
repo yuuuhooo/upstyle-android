@@ -110,5 +110,8 @@ dependencies {
     implementation("com.github.prolificinteractive:material-calendarview:2.0.1") {
         exclude(group = "com.android.support")
     }
+
+    // Viewmodel
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1")
 }
 

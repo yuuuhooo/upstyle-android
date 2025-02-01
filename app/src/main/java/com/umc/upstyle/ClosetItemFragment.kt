@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.umc.upstyle.databinding.FragmentClosetItemBinding
 import java.io.File
@@ -22,9 +21,11 @@ class ClosetItemFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Arguments로 전달된 category 값 가져오기
-        //category = arguments?.getString("category")
+        val args = ClosetItemFragmentArgs.fromBundle(requireArguments())
+        category = args.category // Safe Args로 전달된 CATEGORY 값
     }
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,33 +39,19 @@ class ClosetItemFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // 이전 Fragment로 이동
         binding.backButton.setOnClickListener {
-            findNavController().navigate(R.id.closetFragment)
+            parentFragmentManager.popBackStack() // 이전 Fragment로 이동
         }
 
-
-        val category = arguments?.getString("category") // 전달된 데이터 수신
-
-        val bundle = Bundle().apply {
-            putString("category", category)
-        }
-
-        // 컬러 필터링 filterButton
-        binding.filterButton.setOnClickListener {
-            findNavController().navigate(R.id.closetItemFilterFragment, bundle)
-        }
 
         // 상단 텍스트 표시
-        binding.titleText.text = "$category"
-//        binding.titleText.text = when (category) {
-//            "OUTER" -> "OUTER"
-//            "TOP" -> "TOP"
-//            "SHOES" -> "SHOES"
-//            "BOTTOM" -> "BOTTOM"
-//            else -> "OTHER"
-//        }
-
+        binding.titleText.text = when (category) {
+            "OUTER" -> "OUTER"
+            "TOP" -> "TOP"
+            "SHOES" -> "SHOES"
+            "BOTTOM" -> "BOTTOM"
+            else -> "OTHER"
+        }
 
         // RecyclerView 설정
         val items = loadItemsFromPreferences()
@@ -74,10 +61,7 @@ class ClosetItemFragment : Fragment() {
 
     }
 
-    private fun setupRecyclerView(items: List<Item_closet>) {
-        binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
-        binding.recyclerView.adapter = RecyclerAdapter_Closet(items)
-    }
+
 
     private fun loadItemsFromPreferences(): List<Item_closet> {
         val preferences = requireActivity().getSharedPreferences("AppData", Context.MODE_PRIVATE)
@@ -109,13 +93,13 @@ class ClosetItemFragment : Fragment() {
         _binding = null // 뷰 바인딩 해제
     }
 
-//    companion object {
-//        fun newInstance(category: String): ClosetItemFragment {
-//            val fragment = ClosetItemFragment()
-//            val args = Bundle()
-//            args.putString("CATEGORY", category) // 카테고리 전달
-//            fragment.arguments = args
-//            return fragment
-//        }
-//    }
+    companion object {
+        fun newInstance(category: String): ClosetItemFragment {
+            val fragment = ClosetItemFragment()
+            val args = Bundle()
+            args.putString("CATEGORY", category) // 카테고리 전달
+            fragment.arguments = args
+            return fragment
+        }
+    }
 }

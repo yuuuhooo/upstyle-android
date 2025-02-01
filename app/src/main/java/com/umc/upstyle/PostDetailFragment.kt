@@ -6,30 +6,33 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import com.umc.upstyle.databinding.FragmentPostDetailBinding
 
 class PostDetailFragment : Fragment() {
+    private var _binding: FragmentPostDetailBinding? = null
+    private val binding get() = _binding!!
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.fragment_post_detail, container, false)
+        _binding = FragmentPostDetailBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val title = arguments?.getString("title") ?: "상세 정보 없음"
-        val tvPostTitle: TextView = view.findViewById(R.id.tvPostTitle)
-        tvPostTitle.text = title
+        // Safe Args로 전달된 값 받기
+        val args = PostDetailFragmentArgs.fromBundle(requireArguments())
+
+        binding.tvPostTitle.text = args.title
+        binding.tvVoteCount.text = "${args.voteCount}명 투표"
     }
 
-    companion object {
-        fun newInstance(title: String): PostDetailFragment {
-            val fragment = PostDetailFragment()
-            val args = Bundle()
-            args.putString("title", title)
-            fragment.arguments = args
-            return fragment
-        }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
+

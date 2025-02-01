@@ -85,21 +85,18 @@
             android:name="category"
             app:argType="string"
             android:defaultValue="DEFAULT" />
-
         <action
-            android:id="@+id/action_todayOotdFragment_to_categoryFragment"
+            android:id="@+id/action_todayOotdFragmentToCategoryFragment"
             app:destination="@id/categoryFragment">
             <argument
                 android:name="category"
                 app:argType="string"
                 android:defaultValue="DEFAULT" />
         </action>
-
         <action
-            android:id="@+id/action_todayOotdFragment_to_closetItemFragment"
+            android:id="@+id/action_todayOotdFragmentToClosetItemFragment"
             app:destination="@id/closetItemFragment">
         </action>
-
         <action
             android:id="@+id/action_todayOotdFragment_to_loadItemFragment"
             app:destination="@id/loadItemFragment">
@@ -183,6 +180,12 @@
         <action
             android:id="@+id/action_sizeFragment_to_colorFragment"
             app:destination="@id/colorFragment"/>
+    </fragment>
+
+    <!-- 기타 선택 -->
+    <fragment
+        android:id="@+id/etcFragment"
+        android:name="com.umc.upstyle.EtcFragment" >
     </fragment>
 
 
@@ -288,6 +291,36 @@
         android:name="com.umc.upstyle.ClosetResultFilterFragment"
         android:label="Closet Result Filter"
         tools:layout="@layout/fragment_closet_result_filter" />
+
+    <fragment
+        android:id="@+id/searchCategoryFragment"
+        android:name="com.umc.upstyle.SearchCategoryFragment"
+        android:label="Search Category Fragment"
+        tools:layout="@layout/fragment_search_category" />
+
+    <fragment
+        android:id="@+id/searchSubcategoryFragment"
+        android:name="com.umc.upstyle.SearchSubcategoryFragment"
+        android:label="Search Subcategory Fragment"
+        tools:layout="@layout/fragment_search_subcategory" />
+
+    <fragment
+        android:id="@+id/searchFitSizeFragment"
+        android:name="com.umc.upstyle.SearchFitSizeFragment"
+        android:label="Search FitSize Fragment"
+        tools:layout="@layout/fragment_search_fit_size" />
+
+    <fragment
+        android:id="@+id/searchColorFragment"
+        android:name="com.umc.upstyle.SearchColorFragment"
+        android:label="Search Color Fragment"
+        tools:layout="@layout/fragment_search_color" />
+
+    <fragment
+        android:id="@+id/searchFilterFragment"
+        android:name="com.umc.upstyle.SearchFilterFragment"
+        android:label="Search Filter Fragment"
+        tools:layout="@layout/fragment_search_filter" />
 
     <!--로드 아이템-->
     <fragment

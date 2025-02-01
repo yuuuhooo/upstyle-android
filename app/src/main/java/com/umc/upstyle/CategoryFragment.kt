@@ -1,5 +1,6 @@
 package com.umc.upstyle
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -7,7 +8,6 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
-import androidx.navigation.fragment.findNavController
 import com.umc.upstyle.databinding.ActivityCategoryBinding
 import com.google.android.flexbox.FlexboxLayout
 
@@ -23,9 +23,21 @@ class CategoryFragment : Fragment(R.layout.activity_category) {
 
         _binding = ActivityCategoryBinding.bind(view)  // 바인딩 초기화
 
+        // 삭제하기
+        /*val test = binding.test
+        test.setOnClickListener {
+            val filterFragment = FilterFragment()
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, filterFragment) // fragment_container는 해당 Fragment를 포함할 컨테이너의 ID
+                .addToBackStack(null) // 백 스택에 추가하여 뒤로 가기 가능
+                .commit()
+        }*/
 
-        // 뒤로가기 버튼 클릭 이벤트 설정
-        binding.backButton.setOnClickListener { findNavController().navigateUp() }
+
+        val goBackButton = binding.backButton
+        goBackButton.setOnClickListener {
+            requireActivity().supportFragmentManager.popBackStack()  // 이전 화면으로 돌아가기
+        }
 
         val selectedCategory = arguments?.getString("CATEGORY")
         if (selectedCategory.isNullOrEmpty()) {
@@ -100,35 +112,44 @@ class CategoryFragment : Fragment(R.layout.activity_category) {
 
 
     private fun navigateToNextStep(selectedCategory: String) {
-
         if (selectedSubCategory.isNullOrEmpty()) {
             Toast.makeText(requireContext(), "서브 카테고리를 선택해주세요.", Toast.LENGTH_SHORT).show()
             return
         }
 
-        println("DEBUG: Navigating to next fragment with category=$selectedCategory, subCategory=$selectedSubCategory")
-
-        // 데이터를 Bundle에 추가 -> safea args가 안돼서 임시로 사용
-        val bundle = Bundle().apply {
-            putString("CATEGORY", selectedCategory)
-            putString("SUB_CATEGORY", selectedSubCategory)
-        }
-
-        // action_categoryFragment_to_fitFragment
-        // Fragment 전환 처리
-        val action = when (selectedCategory) {
-            "OUTER", "TOP", "BOTTOM" -> R.id.fitFragment
-            "SHOES", "OTHER" -> R.id.colorFragment
-            "BAG" -> R.id.sizeFragment
+        val nextFragment = when (selectedCategory) {
+            "OUTER", "TOP", "BOTTOM" -> FitFragment().apply {
+                arguments = Bundle().apply {
+                    putString("CATEGORY", selectedCategory)
+                    putString("SUB_CATEGORY", selectedSubCategory)
+                }
+            }
+            "SHOES", "OTHER" -> ColorFragment().apply {
+                arguments = Bundle().apply {
+                    putString("CATEGORY", selectedCategory)
+                    putString("SUB_CATEGORY", selectedSubCategory)
+                }
+            }
+            "BAG" -> SizeFragment().apply { // SizeFragment로 수정 필요
+                arguments = Bundle().apply {
+                    putString("CATEGORY", selectedCategory)
+                    putString("SUB_CATEGORY", selectedSubCategory)
+                }
+            }
             else -> {
                 Toast.makeText(requireContext(), "올바른 카테고리를 선택해주세요.", Toast.LENGTH_SHORT).show()
                 return
             }
         }
 
-        // 네비게이션 액션 수행
-        findNavController().navigate(action, bundle)
+        // Fragment 전환 처리
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, nextFragment) // fragment_container는 FrameLayout ID
+            .addToBackStack(null) // 뒤로 가기 지원
+            .commit()
     }
+
+
 
 
     override fun onDestroyView() {

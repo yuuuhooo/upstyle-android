@@ -80,7 +80,7 @@ class SearchResultFragment : Fragment() {
         _binding = null
     }
 
-    companion object {
+    /*companion object {
         fun newInstance(category: String): ClosetItemFragment {
             val fragment = ClosetItemFragment()
             val args = Bundle()
@@ -88,6 +88,6 @@ class SearchResultFragment : Fragment() {
             fragment.arguments = args
             return fragment
         }
-    }
+    }*/
 
 }

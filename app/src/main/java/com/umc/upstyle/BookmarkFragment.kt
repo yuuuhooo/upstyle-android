@@ -6,6 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 
-class BookmarkFragment : Fragment(R.layout.activity_outer_1) {
+class BookmarkFragment : Fragment(R.layout.fragment_bookmark) {
     // 필요한 UI 요소와 동작을 여기에 추가할 수 있습니다
 }

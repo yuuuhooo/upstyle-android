@@ -27,7 +27,6 @@ class AdapterMonth : RecyclerView.Adapter<AdapterMonth.MonthView>() {
         calendar.add(Calendar.MONTH, position - center)
 
         // 바인딩을 이용해 텍스트 설정
-        holder.binding.itemMonthText.text = "${calendar.get(Calendar.YEAR)}년 ${calendar.get(Calendar.MONTH) + 1}월"
         val tempMonth = calendar.get(Calendar.MONTH)
 
         // 날짜 리스트 생성

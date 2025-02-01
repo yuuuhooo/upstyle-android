@@ -49,12 +49,6 @@
         android:label="activity_myhome"
         tools:layout="@layout/activity_myhome" />
 
-    <!-- 채팅 -->
-    <fragment
-        android:id="@+id/chatFragment"
-        android:name="com.umc.upstyle.ChatFragment"
-        android:label="Chat"
-        tools:layout="@layout/fragment_chat" />
 
     <!-- 계정 -->
     <fragment
@@ -326,6 +320,34 @@
         <action
             android:id="@+id/action_chatFragment_to_createVoteFragment"
             app:destination="@id/createVoteFragment" />
+        <action
+            android:id="@+id/action_chatFragment_to_postDetailFragment"
+            app:destination="@id/postDetailFragment">
+
+        </action>
+    </fragment>
+    <fragment
+        android:id="@+id/postDetailFragment"
+        android:name="com.umc.upstyle.PostDetailFragment"
+        android:label="fragment_post_detail"
+        tools:layout="@layout/fragment_post_detail">
+        <argument
+            android:name="id"
+            app:argType="integer" />
+        <argument
+            android:name="title"
+            app:argType="string" />
+        <argument
+            android:name="voteCount"
+            app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/voteFragment"
+        android:name="com.umc.upstyle.VoteFragment"
+        android:label="VoteFragment" >
+        <action
+            android:id="@+id/action_voteFragment_to_postDetailFragment"
+            app:destination="@id/postDetailFragment" />
     </fragment>
 
 

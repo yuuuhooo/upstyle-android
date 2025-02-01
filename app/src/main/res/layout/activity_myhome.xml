@@ -34,10 +34,11 @@
                 android:id="@+id/topUserName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="님"
+                android:text="강빈 님"
                 android:textColor="#FFFFFF"
                 android:textSize="24sp"
                 android:textStyle="bold"
+                android:paddingTop="27dp"
                 android:layout_margin="16dp"
                 android:fontFamily="@font/roboto_medium"/>
 
@@ -59,7 +60,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="님의 옷장"
+                    android:text="강빈 님의 옷장"
                     android:fontFamily="@font/roboto_medium"
                     android:textColor="#000000"
                     android:textStyle="bold"

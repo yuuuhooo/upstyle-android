@@ -22,12 +22,12 @@ class ChatFragment : Fragment() {
         return binding.root
     }
 
-//        val tabLayout: TabLayout = binding.tabLayout
-//        val viewPager: ViewPager2 = binding.viewPager
+        val tabLayout: TabLayout = binding.tabLayout
+        val viewPager: ViewPager2 = binding.viewPager
 //
-//        val adapter = TabPagerAdapter(this)
+        val adapter = TabPagerAdapter(this)
 //        viewPager.adapter = adapter
-//
+
 //        // 탭 이름 설정
 //        val tabTitles = arrayOf("투표", "코디 요청")
 //
@@ -40,11 +40,11 @@ class ChatFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//        val tabLayout = binding.tabLayout
+        val tabLayout = binding.tabLayout
 //
-//        // '코디 요청' 탭 가져오기 (Index 확인 필요)
-//        val tabRequest = tabLayout.getTabAt(1)  // 'tab_request'는 두 번째 탭이므로 index 1
-//
+        // '코디 요청' 탭 가져오기 (Index 확인 필요)
+        val tabRequest = tabLayout.getTabAt(1)  // 'tab_request'는 두 번째 탭이므로 index 1
+
 //        // 탭 클릭 이벤트 설정 (예제)
 //        tabRequest?.let {
 //            it.select()  // 기본적으로 선택되도록 설정 가능
@@ -60,11 +60,18 @@ class ChatFragment : Fragment() {
 //            })
 //        }
 
+
+
         binding.btnWritePost.setOnClickListener {
             findNavController().navigate(R.id.createVoteFragment)
         }
     }
 
+    // Navigation Component를 통한 전환 함수
+    private fun navigateToCreateVoteFragment() {
+        val action = ChatFragmentDirections.actionChatFragmentToCreateVoteFragment()
+        findNavController().navigate(action)
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()

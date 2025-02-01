@@ -42,8 +42,8 @@
     <fragment
         android:id="@+id/chatFragment"
         android:name="com.umc.upstyle.ChatFragment"
-        android:label="activity_myhome"
-        tools:layout="@layout/activity_myhome" />
+        android:label="Chat"
+        tools:layout="@layout/fragment_chat" />
 
     <!-- 계정 -->
     <fragment

@@ -126,7 +126,7 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
             requireContext(),
             onCreateNewClicked = {
                 // "새로 생성" 클릭 시 카테고리 생성 화면으로 이동
-                navigateToCategory(category)
+                navigateToCategoryFragment(category)
             },
             onLoadPreviousClicked = {
                 // "불러오기" 클릭 시 LoadItemFragment로 이동
@@ -134,6 +134,13 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
             }
         )
         dialog.show()
+    }
+
+    //categoryFragment로 이동
+    private fun navigateToCategoryFragment(category: String) {
+        val action = TodayOotdFragmentDirections.actionTodayOotdFragmentToCategoryFragment(category)
+        findNavController().navigate(action)
+
     }
 
     // LoadItemFragment로 이동

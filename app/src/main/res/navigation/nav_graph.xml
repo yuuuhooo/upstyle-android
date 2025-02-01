@@ -87,17 +87,19 @@
             android:defaultValue="DEFAULT" />
 
         <action
-            android:id="@+id/action_todayOotdFragmen_to_categoryFragment"
+            android:id="@+id/action_todayOotdFragment_to_categoryFragment"
             app:destination="@id/categoryFragment">
             <argument
                 android:name="category"
                 app:argType="string"
                 android:defaultValue="DEFAULT" />
         </action>
+
         <action
             android:id="@+id/action_todayOotdFragment_to_closetItemFragment"
             app:destination="@id/closetItemFragment">
         </action>
+
         <action
             android:id="@+id/action_todayOotdFragment_to_loadItemFragment"
             app:destination="@id/loadItemFragment">

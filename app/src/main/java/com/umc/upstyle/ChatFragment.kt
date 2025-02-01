@@ -11,11 +11,7 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.umc.upstyle.databinding.FragmentChatBinding
 
-<<<<<<< HEAD
-class ChatFragment : Fragment(R.layout.fragment_others_ootd) {
-    // 필요한 UI 요소와 동작을 여기에 추가할 수 있습니다
-}
-=======
+
 class ChatFragment : Fragment() {
     private var _binding: FragmentChatBinding? = null
     private val binding get() = _binding!!
@@ -83,4 +79,4 @@ class ChatFragment : Fragment() {
         _binding = null // 메모리 누수 방지
     }
 }
->>>>>>> 9516dee9eaffc49974e0559eb922d422125d288b
+

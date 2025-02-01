@@ -68,9 +68,9 @@ class OthersOotdFragment : Fragment() {
         // 북마크
         var isBookmarked = false
 
-        binding.bookmarkImg.setOnClickListener {
-            if (isBookmarked) { binding.bookmarkImg.setBackgroundResource(R.drawable.bookmark_off) }
-            else { binding.bookmarkImg.setBackgroundResource(R.drawable.bookmark_on) }
+        binding.bookmarkOuter.setOnClickListener {
+            if (isBookmarked) { binding.bookmarkOuter.setBackgroundResource(R.drawable.bookmark_off) }
+            else { binding.bookmarkOuter.setBackgroundResource(R.drawable.bookmark_on) }
             isBookmarked = !isBookmarked
         }
 
@@ -126,7 +126,7 @@ class OthersOotdFragment : Fragment() {
             // 아이템을 부모 레이아웃에 추가
             rowLayout.addView(iconView)
             rowLayout.addView(textView)
-            binding.parentLayout.addView(rowLayout) // ViewBinding 사용
+            //binding.parentLayout.addView(rowLayout) // ViewBinding 사용
         }
     }
 

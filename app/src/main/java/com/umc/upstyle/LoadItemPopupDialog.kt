@@ -37,6 +37,8 @@ class LoadItemPopupDialog(
         val btnCreateNew: Button = findViewById(R.id.btn_create_new)
         val btnLoadPrevious: Button = findViewById(R.id.btn_load_previous)
 
+
+
         // "새로 생성" 버튼 클릭 리스너
         btnCreateNew.setOnClickListener {
             onCreateNewClicked.invoke()
@@ -49,4 +51,6 @@ class LoadItemPopupDialog(
             dismiss() // 다이얼로그 닫기
         }
     }
+
+
 }

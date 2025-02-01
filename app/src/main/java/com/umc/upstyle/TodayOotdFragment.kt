@@ -29,6 +29,19 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
 
         val preferences = requireActivity().getSharedPreferences("AppData", Context.MODE_PRIVATE)
 
+        //LoadItemFragment 에서 UI업데이트
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<String>("SELECTED_ITEM")
+            ?.observe(viewLifecycleOwner) { selectedText ->
+                val selectedCategory = findNavController().currentBackStackEntry?.savedStateHandle?.get<String>("CATEGORY")
+
+                if (!selectedText.isNullOrEmpty() && !selectedCategory.isNullOrEmpty()) {
+                    updateSelectedCategory(preferences, selectedCategory, selectedText)
+                }
+            }
+
+        // 기존 UI 업데이트
+        updateUIWithPreferences(preferences)
+
         // 이전 Fragment나 Activity에서 전달된 데이터 처리
         handleReceivedData(preferences)
 
@@ -45,10 +58,18 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
         binding.saveButton.setOnClickListener { saveData(preferences) }
 
         // 뒤로가기 버튼 클릭 이벤트 설정
+
+
         binding.backButton.setOnClickListener {
             findNavController().navigate(R.id.mainFragment)
         }
     }
+
+
+
+
+
+
 
     // 이전 Fragment나 Activity에서 전달된 데이터 처리
     private fun handleReceivedData(preferences: SharedPreferences) {
@@ -57,13 +78,12 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
         val selectedFit = arguments?.getString("FIT")
         val selectedSize = arguments?.getString("SIZE")
         val selectedColor = arguments?.getString("COLOR")
-        val selectedEtc = arguments?.getString("ETC")
 
         if (!selectedCategory.isNullOrEmpty()) {
             val categoryText = when (selectedCategory) {
-                "OUTER", "TOP", "BOTTOM" -> "$selectedSubCategory $selectedFit $selectedColor $selectedEtc"
-                "SHOES", "OTHER" -> "$selectedSubCategory $selectedColor $selectedEtc"
-                "BAG" -> "$selectedSubCategory $selectedSize $selectedColor $selectedEtc"
+                "OUTER", "TOP", "BOTTOM" -> "$selectedSubCategory $selectedFit $selectedColor"
+                "SHOES", "OTHER" -> "$selectedSubCategory $selectedColor"
+                "BAG" -> "$selectedSubCategory $selectedSize $selectedColor"
                 else -> ""
             }
 
@@ -96,9 +116,59 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
         )
 
         buttons.forEach { (button, category) ->
-            button.setOnClickListener { navigateToCategory(category) }
+            button.setOnClickListener {
+                showLoadItemPopupDialog(category)
+            }
         }
     }
+    private fun showLoadItemPopupDialog(category: String) {
+        val dialog = LoadItemPopupDialog(
+            requireContext(),
+            onCreateNewClicked = {
+                // "새로 생성" 클릭 시 카테고리 생성 화면으로 이동
+                navigateToCategoryFragment(category)
+            },
+            onLoadPreviousClicked = {
+                // "불러오기" 클릭 시 LoadItemFragment로 이동
+                navigateToLoadItemFragment(category)
+            }
+        )
+        dialog.show()
+    }
+
+    //categoryFragment로 이동
+    private fun navigateToCategoryFragment(category: String) {
+        val action = TodayOotdFragmentDirections.actionTodayOotdFragmentToCategoryFragment(category)
+        findNavController().navigate(action)
+
+    }
+
+    // LoadItemFragment로 이동
+    private fun navigateToLoadItemFragment(category: String) {
+        val action = TodayOotdFragmentDirections.actionTodayOotdFragmentToLoadItemFragment(category)
+        findNavController().navigate(action)
+    }
+
+    //LoadItemFragment에서 받아온 데이터 UI업데이트 함수
+    private fun updateSelectedCategory(preferences: SharedPreferences, category: String, selectedText: String) {
+        // SharedPreferences에 저장
+        preferences.edit().putString(category, selectedText).apply()
+
+        // UI 업데이트
+        when (category) {
+            "OUTER" -> binding.outerText.text = selectedText
+            "TOP" -> binding.topText.text = selectedText
+            "BOTTOM" -> binding.bottomText.text = selectedText
+            "SHOES" -> binding.shoesText.text = selectedText
+            "BAG" -> binding.bagText.text = selectedText
+            "OTHER" -> binding.otherText.text = selectedText
+        }
+
+        updateSaveButtonVisibility(preferences) // 저장 버튼 활성화 여부 확인
+    }
+
+
+
 
     // UI 업데이트 함수
     private fun updateUIWithPreferences(preferences: SharedPreferences) {
@@ -163,12 +233,12 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
             .addToBackStack(null)
             .commit()
     }
-        private fun navigateToClosetItemFragment(category: String) {
-            val action =
-                TodayOotdFragmentDirections.actionTodayOotdFragmentToClosetItemFragment(category)
-            findNavController().navigate(action)
+    private fun navigateToClosetItemFragment(category: String) {
+        val action =
+            TodayOotdFragmentDirections.actionTodayOotdFragmentToClosetItemFragment(category)
+        findNavController().navigate(action)
 
-        }
+    }
 
     // 사진 관련 코드 시작
     private lateinit var photoUri: Uri // 사진 촬영 URI

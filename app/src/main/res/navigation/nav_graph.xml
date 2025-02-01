@@ -81,17 +81,32 @@
         android:id="@+id/todayOotdFragment"
         android:name="com.umc.upstyle.TodayOotdFragment"
         android:label="Today OOTD">
+        <argument
+            android:name="category"
+            app:argType="string"
+            android:defaultValue="DEFAULT" />
+
         <action
-            android:id="@+id/action_todayOotdFragmentToCategoryFragment"
+            android:id="@+id/action_todayOotdFragment_to_categoryFragment"
             app:destination="@id/categoryFragment">
             <argument
                 android:name="category"
                 app:argType="string"
                 android:defaultValue="DEFAULT" />
         </action>
+
         <action
-            android:id="@+id/action_todayOotdFragmentToClosetItemFragment"
+            android:id="@+id/action_todayOotdFragment_to_closetItemFragment"
             app:destination="@id/closetItemFragment">
+        </action>
+
+        <action
+            android:id="@+id/action_todayOotdFragment_to_loadItemFragment"
+            app:destination="@id/loadItemFragment">
+            <argument
+                android:name="category"
+                app:argType="string"
+                android:defaultValue="DEFAULT" />
         </action>
     </fragment>
 
@@ -168,12 +183,6 @@
         <action
             android:id="@+id/action_sizeFragment_to_colorFragment"
             app:destination="@id/colorFragment"/>
-    </fragment>
-
-    <!-- 기타 선택 -->
-    <fragment
-        android:id="@+id/etcFragment"
-        android:name="com.umc.upstyle.EtcFragment" >
     </fragment>
 
 
@@ -280,35 +289,27 @@
         android:label="Closet Result Filter"
         tools:layout="@layout/fragment_closet_result_filter" />
 
+    <!--로드 아이템-->
     <fragment
-        android:id="@+id/searchCategoryFragment"
-        android:name="com.umc.upstyle.SearchCategoryFragment"
-        android:label="Search Category Fragment"
-        tools:layout="@layout/fragment_search_category" />
+        android:id="@+id/loadItemFragment"
+        android:name="com.umc.upstyle.LoadItemFragment"
+        android:label="Load Item Fragment">
+        <argument
+            android:name="category"
+            app:argType="string"
+            android:defaultValue="DEFAULT"
+            app:nullable="true"/>
 
-    <fragment
-        android:id="@+id/searchSubcategoryFragment"
-        android:name="com.umc.upstyle.SearchSubcategoryFragment"
-        android:label="Search Subcategory Fragment"
-        tools:layout="@layout/fragment_search_subcategory" />
-
-    <fragment
-        android:id="@+id/searchFitSizeFragment"
-        android:name="com.umc.upstyle.SearchFitSizeFragment"
-        android:label="Search FitSize Fragment"
-        tools:layout="@layout/fragment_search_fit_size" />
-
-    <fragment
-        android:id="@+id/searchColorFragment"
-        android:name="com.umc.upstyle.SearchColorFragment"
-        android:label="Search Color Fragment"
-        tools:layout="@layout/fragment_search_color" />
-
-    <fragment
-        android:id="@+id/searchFilterFragment"
-        android:name="com.umc.upstyle.SearchFilterFragment"
-        android:label="Search Filter Fragment"
-        tools:layout="@layout/fragment_search_filter" />
+        <action
+            android:id="@+id/action_loadItemFragment_to_TodayOotdFragment"
+            app:destination="@id/todayOotdFragment" >
+            <argument
+                android:name="category"
+                app:argType="string"
+                android:defaultValue="DEFAULT"
+                app:nullable="true"/>
+        </action>
+    </fragment>
 
     <fragment
         android:id="@+id/createVoteFragment"

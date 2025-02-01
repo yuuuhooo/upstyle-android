@@ -11,6 +11,7 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.umc.upstyle.databinding.FragmentChatBinding
 
+
 class ChatFragment : Fragment() {
     private var _binding: FragmentChatBinding? = null
     private val binding get() = _binding!!
@@ -78,3 +79,4 @@ class ChatFragment : Fragment() {
         _binding = null // 메모리 누수 방지
     }
 }
+

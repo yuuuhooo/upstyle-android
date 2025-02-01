@@ -1,7 +1,6 @@
 package com.umc.upstyle
 
 import Item_search
-import RecyclerAdapter_Search
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle

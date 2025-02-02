@@ -97,6 +97,7 @@
         android:background="@color/main_color_1" />
 
     <TextView
+        android:id="@+id/privacyPolicy"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="개인정보처리방침"
@@ -115,6 +116,7 @@
         android:background="@color/main_color_1" />
 
     <TextView
+        android:id="@+id/termsOfService"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="서비스이용약관"
@@ -170,6 +172,7 @@
         android:background="@color/main_color_1" />
 
     <TextView
+        android:id="@+id/logoutBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="로그아웃"

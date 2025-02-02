@@ -40,6 +40,12 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
                 }
             }
 
+        // 날짜
+        val dateFormat = SimpleDateFormat("MMdd", Locale.getDefault())
+        val todayDate = dateFormat.format(Date())
+
+        binding.date.text = todayDate
+
         // 기존 UI 업데이트
         updateUIWithPreferences(preferences)
 

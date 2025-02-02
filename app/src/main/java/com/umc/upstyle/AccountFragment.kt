@@ -1,9 +1,12 @@
 package com.umc.upstyle
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContentProviderCompat
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.umc.upstyle.databinding.FragmentAccountBinding
@@ -25,7 +28,32 @@ class AccountFragment : Fragment(R.layout.fragment_account) {
         super.onViewCreated(view, savedInstanceState)
 
         binding.myProfileBtn.setOnClickListener { findNavController().navigate(R.id.myProfileFragment) }
+        binding.privacyPolicy.setOnClickListener {
+            val bundle = Bundle().apply { putString("URL", "https://judicious-quiver-042.notion.site/1841ce3fbf8380acb266cd73c4ab72ed")  } // URL을 전달
+            findNavController().navigate(R.id.webViewFragment, bundle)
+        }
+        binding.termsOfService.setOnClickListener {
+            val bundle = Bundle().apply { putString("URL", "https://judicious-quiver-042.notion.site/1841ce3fbf8380d68eeedc8911eb1af0")  } // URL을 전달
+            findNavController().navigate(R.id.webViewFragment, bundle)
+        }
 
+        binding.logoutBtn.setOnClickListener {
+            showLoadItemPopupDialog()
+        }
+    }
+
+    private fun showLoadItemPopupDialog() {
+        val dialog = LogoutPopupDialog(
+            requireContext(),
+            onNoClicked = {
+
+            },
+            onYesClicked = {
+                val intent = Intent(requireContext(), LoginActivity::class.java) // 이동할 액티비티 지정
+                startActivity(intent) // 액티비티 시작
+            }
+        )
+        dialog.show()
     }
 
     override fun onDestroyView() {
@@ -35,5 +63,7 @@ class AccountFragment : Fragment(R.layout.fragment_account) {
     }
 
 }
+
+
 
 

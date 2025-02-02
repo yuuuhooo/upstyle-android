@@ -34,12 +34,9 @@ class CategoryFragment : Fragment(R.layout.activity_category) {
                 .addToBackStack(null) // 백 스택에 추가하여 뒤로 가기 가능
                 .commit()
         }*/
+        
 
-
-        val goBackButton = binding.backButton
-        goBackButton.setOnClickListener {
-            requireActivity().supportFragmentManager.popBackStack()  // 이전 화면으로 돌아가기
-        }
+        binding.backButton.setOnClickListener { findNavController().navigateUp() }
 
         val selectedCategory = arguments?.getString("CATEGORY")
         Log.d("CategoryFragment", "Selected Category: $selectedCategory")

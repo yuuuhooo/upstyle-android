@@ -256,6 +256,7 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
 //
 //    }
 
+
     // 사진 관련 코드 시작
     private lateinit var photoUri: Uri // 사진 촬영 URI
 

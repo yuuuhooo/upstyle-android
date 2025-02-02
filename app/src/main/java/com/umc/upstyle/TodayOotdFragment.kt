@@ -163,12 +163,12 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
             .addToBackStack(null)
             .commit()
     }
-        private fun navigateToClosetItemFragment(category: String) {
-            val action =
-                TodayOotdFragmentDirections.actionTodayOotdFragmentToClosetItemFragment(category)
-            findNavController().navigate(action)
+    private fun navigateToClosetItemFragment(category: String) {
+        val action =
+            TodayOotdFragmentDirections.actionTodayOotdFragmentToClosetItemFragment(category)
+        findNavController().navigate(action)
 
-        }
+    }
 
     // 사진 관련 코드 시작
     private lateinit var photoUri: Uri // 사진 촬영 URI

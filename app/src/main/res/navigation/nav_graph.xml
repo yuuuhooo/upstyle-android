@@ -199,6 +199,24 @@
             android:name="category"
             app:argType="string"
             android:defaultValue="DEFAULT" />
+        <action
+            android:id="@+id/action_searchResultFragment_to_bookmarkOotdtFragment"
+            app:destination="@id/bookmarkOotdFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/bookmarkOotdFragment"
+        android:name="com.umc.upstyle.BookmarkOotdFragment"
+        android:label="Closet Item"
+        tools:layout="@layout/fragment_bookmark_ootd">
+        <argument
+            android:name="imageUrl"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="description"
+            app:argType="string"
+            app:nullable="true" />
     </fragment>
 
 

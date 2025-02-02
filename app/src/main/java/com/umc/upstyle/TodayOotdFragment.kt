@@ -40,6 +40,12 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
                 }
             }
 
+        // 날짜
+        val dateFormat = SimpleDateFormat("MMdd", Locale.getDefault())
+        val todayDate = dateFormat.format(Date())
+
+        binding.date.text = todayDate
+
         // 기존 UI 업데이트
         updateUIWithPreferences(preferences)
 
@@ -199,6 +205,7 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
             val file = File(savedPath)
             if (file.exists()) {
                 binding.photoImageView.visibility = View.VISIBLE
+                binding.uploadText.visibility = View.GONE // "사진 등록" 텍스트 숨김
                 binding.photoImageView.setImageURI(Uri.fromFile(file))
                 binding.uploadText.visibility = View.GONE // "사진 등록" 텍스트 숨김
             }

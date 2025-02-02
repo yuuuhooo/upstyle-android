@@ -115,22 +115,52 @@
             android:textFontWeight="700"
             tools:ignore="MissingConstraints" />
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <!-- 입력창 -->
+            <EditText
+                android:id="@+id/nicknameEditText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="한글, 영문자, 숫자 가능 (최대 8자), 중복 불가"
+                android:textColorHint="#B0B0B0"
+                android:inputType="text"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="20dp"
+                android:textColor="@color/white"
+                android:fontFamily="@font/pretendard_medium"
+                android:textSize="15sp"
+                android:textFontWeight="700"/>
+
+            <ImageView
+                android:id="@+id/namechkimg"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginTop="11dp"
+                android:layout_marginLeft="5dp"
+                android:src="@drawable/ic_namechk_gray"/>
+
+        </LinearLayout>
+
         <TextView
+            android:id="@+id/errorTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="콩콩팥팥"
-            android:textSize="15sp"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="10dp"
-            android:textColor="@color/white"
+            android:layout_marginLeft="24dp"
+            android:text=""
+            android:textColor="#FF0000"
             android:fontFamily="@font/pretendard_medium"
-            android:textFontWeight="700"
-            tools:ignore="MissingConstraints" />
+            android:visibility="visible"/>
+
+        <!-- 닉네임 적합도 이미지 -->
 
         <View
             android:layout_width="420dp"
             android:layout_height="1dp"
-            android:layout_marginTop="17dp"
+            android:layout_marginTop="10dp"
             android:background="@color/main_color_1" />
 
         <!-- 체형정보 -->

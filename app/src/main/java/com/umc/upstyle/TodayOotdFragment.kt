@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.addCallback
@@ -78,12 +79,13 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
         val selectedFit = arguments?.getString("FIT")
         val selectedSize = arguments?.getString("SIZE")
         val selectedColor = arguments?.getString("COLOR")
+        val selectedEtc = arguments?.getString("ETC")
 
         if (!selectedCategory.isNullOrEmpty()) {
             val categoryText = when (selectedCategory) {
-                "OUTER", "TOP", "BOTTOM" -> "$selectedSubCategory $selectedFit $selectedColor"
-                "SHOES", "OTHER" -> "$selectedSubCategory $selectedColor"
-                "BAG" -> "$selectedSubCategory $selectedSize $selectedColor"
+                "OUTER", "TOP", "BOTTOM" -> "$selectedSubCategory $selectedFit $selectedColor $selectedEtc"
+                "SHOES", "OTHER" -> "$selectedSubCategory $selectedColor $selectedEtc"
+                "BAG" -> "$selectedSubCategory $selectedSize $selectedColor $selectedEtc"
                 else -> ""
             }
 
@@ -138,8 +140,21 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
 
     //categoryFragment로 이동
     private fun navigateToCategoryFragment(category: String) {
-        val action = TodayOotdFragmentDirections.actionTodayOotdFragmentToCategoryFragment(category)
-        findNavController().navigate(action)
+
+        val bundle = Bundle().apply {
+            putString("CATEGORY", category)
+        }
+        Log.d("TodayOotdFragment", "Navigating to CategoryFragment with category: $category") // 디버깅 로그 추가
+
+        findNavController().navigate(R.id.categoryFragment, bundle)
+
+//        val action = TodayOotdFragmentDirections.actionTodayOotdFragmentToCategoryFragment(category)
+//        findNavController().navigate(action)
+
+//        // Safe Args로 전달된 값을 Fragment에서도 arguments로 다시 설정
+//        val fragment = CategoryFragment().apply {
+//            arguments = Bundle().apply { putString("CATEGORY", category) }
+//        }
 
     }
 
@@ -223,22 +238,23 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
         Toast.makeText(requireContext(), "카테고리가 저장되었습니다.", Toast.LENGTH_SHORT).show()
     }
 
-    // 카테고리 이동 함수
-    private fun navigateToCategory(category: String) {
-        val fragment = CategoryFragment().apply {
-            arguments = Bundle().apply { putString("CATEGORY", category) }
-        }
-        requireActivity().supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container, fragment)
-            .addToBackStack(null)
-            .commit()
-    }
-    private fun navigateToClosetItemFragment(category: String) {
-        val action =
-            TodayOotdFragmentDirections.actionTodayOotdFragmentToClosetItemFragment(category)
-        findNavController().navigate(action)
 
-    }
+//    // 카테고리 이동 함수
+//    private fun navigateToCategory(category: String) {
+//        val fragment = CategoryFragment().apply {
+//            arguments = Bundle().apply { putString("CATEGORY", category) }
+//        }
+//        requireActivity().supportFragmentManager.beginTransaction()
+//            .replace(R.id.fragment_container, fragment)
+//            .addToBackStack(null)
+//            .commit()
+//    }
+//    private fun navigateToClosetItemFragment(category: String) {
+//        val action =
+//            TodayOotdFragmentDirections.actionTodayOotdFragmentToClosetItemFragment(category)
+//        findNavController().navigate(action)
+//
+//    }
 
     // 사진 관련 코드 시작
     private lateinit var photoUri: Uri // 사진 촬영 URI

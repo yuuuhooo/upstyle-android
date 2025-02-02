@@ -431,6 +431,17 @@
 
     </fragment>
 
+    <fragment
+        android:id="@+id/webViewFragment"
+        android:name="com.umc.upstyle.WebViewFragment"
+        android:label="WebView">
+        <argument
+            android:name="URL"
+            app:argType="string"
+            app:nullable="true" />
+    </fragment>
+
+
 
 </navigation>
 

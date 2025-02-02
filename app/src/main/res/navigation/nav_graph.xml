@@ -94,7 +94,38 @@
             android:id="@+id/action_todayOotdFragmentToClosetItemFragment"
             app:destination="@id/closetItemFragment">
         </action>
+        <action
+            android:id="@+id/action_todayOotdFragment_to_loadItemFragment"
+            app:destination="@id/loadItemFragment">
+            <argument
+                android:name="category"
+                app:argType="string"
+                android:defaultValue="DEFAULT" />
+
+        </action>
     </fragment>
+
+    <fragment
+        android:id="@+id/loadItemFragment"
+        android:name="com.umc.upstyle.LoadItemFragment"
+        android:label="Load Item Fragment">
+        <argument
+            android:name="category"
+            app:argType="string"
+            android:defaultValue="DEFAULT"
+            app:nullable="true"/>
+
+        <action
+            android:id="@+id/action_loadItemFragment_to_TodayOotdFragment"
+            app:destination="@id/todayOotdFragment" >
+            <argument
+                android:name="category"
+                app:argType="string"
+                android:defaultValue="DEFAULT"
+                app:nullable="true"/>
+        </action>
+    </fragment>
+
 
     <!-- 카테고리 선택 -->
     <fragment

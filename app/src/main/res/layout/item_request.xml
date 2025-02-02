@@ -7,7 +7,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="7dp">
+        android:paddingBottom="7dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/btn_box"
@@ -33,7 +33,10 @@
             android:text="코디 추천 요청 포스트 제목"
             android:textSize="14sp"
             android:textStyle="bold"
-            android:textColor="@color/white"/>
+            android:textColor="@color/white"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:lines="1"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

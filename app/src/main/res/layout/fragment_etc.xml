@@ -14,7 +14,7 @@
         android:layout_height="40dp"
         android:background="@drawable/arrow_left"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="31dp"
+        android:layout_marginLeft="26dp"
         android:layout_alignParentTop="true"
         android:layout_marginTop="24dp" />
 
@@ -25,7 +25,7 @@
         android:layout_width="68dp"
         android:layout_height="24dp"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="71dp"
+        android:layout_marginLeft="66dp"
         android:layout_alignParentTop="true"
         android:layout_marginTop="32dp"
         android:textSize="20sp"
@@ -43,7 +43,7 @@
         android:layout_marginLeft="34dp"
         android:layout_alignParentTop="true"
         android:layout_marginTop="135dp"
-        android:text="기타사항을 입력해주세요! (선택)"
+        android:text="기타사항을 입력해주세요!\n(선택)"
         android:textSize="24sp"
         android:textColor="@color/white"
         android:textStyle="bold"
@@ -64,6 +64,8 @@
         android:padding="12dp"
         android:layout_alignParentLeft="true"
         android:layout_marginLeft="24dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="24dp"
         android:layout_alignParentTop="true"
         android:layout_marginTop="218dp"
         android:textColor="@color/black"
@@ -74,10 +76,10 @@
         android:id="@+id/compButton"
         android:layout_width="65dp"
         android:layout_height="28dp"
-        android:layout_alignParentLeft="true"
-        android:layout_marginLeft="271dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="24dp"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="30dp"
+        android:layout_marginBottom="40dp"
         android:background="@drawable/comp_on" />
 
 </RelativeLayout>

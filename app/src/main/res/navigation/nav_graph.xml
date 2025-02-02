@@ -356,6 +356,31 @@
             android:id="@+id/action_voteFragment_to_postDetailFragment"
             app:destination="@id/postDetailFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/requestFragment"
+        android:name="com.umc.upstyle.RequestFragment"
+        android:label="RequestFragment" >
+        <action
+            android:id="@+id/action_requestFragment_to_viewRequestFragment"
+            app:destination="@id/viewRequestFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/viewRequestFragment"
+        android:name="com.umc.upstyle.ViewRequestFragment"
+        android:label="fragment_view_request"
+        tools:layout="@layout/fragment_view_request">
+        <argument
+            android:name="id"
+            app:argType="integer" />
+        <argument
+            android:name="title"
+            app:argType="string" />
+        <argument
+            android:name="commentCount"
+            app:argType="integer" />
+
+    </fragment>
 
 
 </navigation>

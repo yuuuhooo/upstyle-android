@@ -86,7 +86,7 @@
             android:id="@+id/action_todayOotdFragmentToCategoryFragment"
             app:destination="@id/categoryFragment">
             <argument
-                android:name="category"
+                android:name="CATEGORY"
                 app:argType="string"
                 android:defaultValue="DEFAULT" />
         </action>
@@ -359,3 +359,4 @@
 
 
 </navigation>
+

@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.addCallback
@@ -96,8 +97,68 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
         )
 
         buttons.forEach { (button, category) ->
-            button.setOnClickListener { navigateToCategory(category) }
+            button.setOnClickListener {
+                showLoadItemPopupDialog(category)
+            }
         }
+    }
+    private fun showLoadItemPopupDialog(category: String) {
+        val dialog = LoadItemPopupDialog(
+            requireContext(),
+            onCreateNewClicked = {
+                // "새로 생성" 클릭 시 카테고리 생성 화면으로 이동
+                navigateToCategoryFragment(category)
+            },
+            onLoadPreviousClicked = {
+                // "불러오기" 클릭 시 LoadItemFragment로 이동
+                navigateToLoadItemFragment(category)
+            }
+        )
+        dialog.show()
+    }
+
+    //categoryFragment로 이동
+    private fun navigateToCategoryFragment(category: String) {
+
+        val bundle = Bundle().apply {
+            putString("CATEGORY", category)
+        }
+        Log.d("TodayOotdFragment", "Navigating to CategoryFragment with category: $category") // 디버깅 로그 추가
+
+        findNavController().navigate(R.id.categoryFragment, bundle)
+
+//        val action = TodayOotdFragmentDirections.actionTodayOotdFragmentToCategoryFragment(category)
+//        findNavController().navigate(action)
+
+//        // Safe Args로 전달된 값을 Fragment에서도 arguments로 다시 설정
+//        val fragment = CategoryFragment().apply {
+//            arguments = Bundle().apply { putString("CATEGORY", category) }
+//        }
+
+    }
+
+    // LoadItemFragment로 이동
+    private fun navigateToLoadItemFragment(category: String) {
+        val action = TodayOotdFragmentDirections.actionTodayOotdFragmentToLoadItemFragment(category)
+        findNavController().navigate(action)
+    }
+
+    //LoadItemFragment에서 받아온 데이터 UI업데이트 함수
+    private fun updateSelectedCategory(preferences: SharedPreferences, category: String, selectedText: String) {
+        // SharedPreferences에 저장
+        preferences.edit().putString(category, selectedText).apply()
+
+        // UI 업데이트
+        when (category) {
+            "OUTER" -> binding.outerText.text = selectedText
+            "TOP" -> binding.topText.text = selectedText
+            "BOTTOM" -> binding.bottomText.text = selectedText
+            "SHOES" -> binding.shoesText.text = selectedText
+            "BAG" -> binding.bagText.text = selectedText
+            "OTHER" -> binding.otherText.text = selectedText
+        }
+        
+        updateSaveButtonVisibility(preferences) // 저장 버튼 활성화 여부 확인
     }
 
     // UI 업데이트 함수
@@ -153,22 +214,6 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
         Toast.makeText(requireContext(), "카테고리가 저장되었습니다.", Toast.LENGTH_SHORT).show()
     }
 
-    // 카테고리 이동 함수
-    private fun navigateToCategory(category: String) {
-        val fragment = CategoryFragment().apply {
-            arguments = Bundle().apply { putString("CATEGORY", category) }
-        }
-        requireActivity().supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container, fragment)
-            .addToBackStack(null)
-            .commit()
-    }
-        private fun navigateToClosetItemFragment(category: String) {
-            val action =
-                TodayOotdFragmentDirections.actionTodayOotdFragmentToClosetItemFragment(category)
-            findNavController().navigate(action)
-
-        }
 
     // 사진 관련 코드 시작
     private lateinit var photoUri: Uri // 사진 촬영 URI

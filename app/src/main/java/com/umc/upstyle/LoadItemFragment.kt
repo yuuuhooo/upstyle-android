@@ -1,7 +1,9 @@
 package com.umc.upstyle
 
+import Item_result
 import android.content.Context
 import android.os.Bundle
+import android.provider.MediaStore.Video.VideoColumns.CATEGORY
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,7 +35,9 @@ class LoadItemFragment : Fragment() {
         val category = args.category
 
         // 더미 데이터 로드
-        val savedItems = loadPreviousItems(category)
+        val savedItems: List<Item_result> = loadPreviousItems(CATEGORY)
+
+
 
         // 리사이클러뷰 초기화
         val adapter = RecyclerAdapter_Result(savedItems) { clickedItem ->
@@ -49,19 +53,20 @@ class LoadItemFragment : Fragment() {
         }
     }
 
-    private fun loadPreviousItems(category: String): List<Pair<String, String>> {
+    private fun loadPreviousItems(category: String): List<Item_result> {
         val preferences = requireActivity().getSharedPreferences("AppData", Context.MODE_PRIVATE)
         val savedItem = preferences.getString(category, null)
 
         return if (!savedItem.isNullOrEmpty()) {
             savedItem.split(";").map { item ->
                 val parts = item.split(":")
-                Pair(parts[0], parts.getOrElse(1) { "설명 없음" }) // 제목과 설명
+                Item_result(parts[0], parts.getOrElse(1) { "설명 없음" }) // 제목과 이미지 URL
             }
         } else {
             emptyList()
         }
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

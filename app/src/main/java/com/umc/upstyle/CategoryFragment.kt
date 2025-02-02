@@ -2,12 +2,14 @@ package com.umc.upstyle
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
+import androidx.navigation.fragment.findNavController
 import com.umc.upstyle.databinding.ActivityCategoryBinding
 import com.google.android.flexbox.FlexboxLayout
 
@@ -40,6 +42,8 @@ class CategoryFragment : Fragment(R.layout.activity_category) {
         }
 
         val selectedCategory = arguments?.getString("CATEGORY")
+        Log.d("CategoryFragment", "Selected Category: $selectedCategory")
+
         if (selectedCategory.isNullOrEmpty()) {
             Toast.makeText(requireContext(), "카테고리를 선택해주세요.", Toast.LENGTH_SHORT).show()
             requireActivity().supportFragmentManager.popBackStack()
@@ -109,46 +113,26 @@ class CategoryFragment : Fragment(R.layout.activity_category) {
         }
     }
 
-
-
     private fun navigateToNextStep(selectedCategory: String) {
         if (selectedSubCategory.isNullOrEmpty()) {
             Toast.makeText(requireContext(), "서브 카테고리를 선택해주세요.", Toast.LENGTH_SHORT).show()
             return
         }
 
-        val nextFragment = when (selectedCategory) {
-            "OUTER", "TOP", "BOTTOM" -> FitFragment().apply {
-                arguments = Bundle().apply {
-                    putString("CATEGORY", selectedCategory)
-                    putString("SUB_CATEGORY", selectedSubCategory)
-                }
-            }
-            "SHOES", "OTHER" -> ColorFragment().apply {
-                arguments = Bundle().apply {
-                    putString("CATEGORY", selectedCategory)
-                    putString("SUB_CATEGORY", selectedSubCategory)
-                }
-            }
-            "BAG" -> SizeFragment().apply { // SizeFragment로 수정 필요
-                arguments = Bundle().apply {
-                    putString("CATEGORY", selectedCategory)
-                    putString("SUB_CATEGORY", selectedSubCategory)
-                }
-            }
-            else -> {
-                Toast.makeText(requireContext(), "올바른 카테고리를 선택해주세요.", Toast.LENGTH_SHORT).show()
-                return
-            }
+        val bundle = Bundle().apply {
+            putString("CATEGORY", selectedCategory)
+            putString("SUB_CATEGORY", selectedSubCategory)
         }
 
-        // Fragment 전환 처리
-        parentFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container, nextFragment) // fragment_container는 FrameLayout ID
-            .addToBackStack(null) // 뒤로 가기 지원
-            .commit()
-    }
+        Log.d("CategoryFragment", "Navigating with CATEGORY=$selectedCategory, SUB_CATEGORY=$selectedSubCategory")
 
+        when (selectedCategory) {
+            "OUTER", "TOP", "BOTTOM" -> findNavController().navigate(R.id.action_categoryFragment_to_fitFragment, bundle)
+            "SHOES", "OTHER" -> findNavController().navigate(R.id.action_categoryFragment_to_colorFragment, bundle)
+            "BAG" -> findNavController().navigate(R.id.action_categoryFragment_to_sizeFragment, bundle)
+            else -> Toast.makeText(requireContext(), "올바른 카테고리를 선택해주세요.", Toast.LENGTH_SHORT).show()
+        }
+    }
 
 
 

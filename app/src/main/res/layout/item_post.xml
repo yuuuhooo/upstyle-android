@@ -23,7 +23,10 @@
         android:text="포스트 제목"
         android:textSize="14sp"
         android:textStyle="bold"
-        android:textColor="@color/white"/>
+        android:textColor="@color/white"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:lines="1"/>
 
     <TextView
         android:id="@+id/tvVoteCount"

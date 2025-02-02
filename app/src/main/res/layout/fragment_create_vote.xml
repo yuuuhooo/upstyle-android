@@ -113,7 +113,7 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/et_text"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@null"
                     android:hint="내용을 입력해주세요.(10자 이상)"
@@ -130,8 +130,18 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+
+            
         </com.google.android.material.textfield.TextInputLayout>
 
+        <ImageButton
+            android:id="@+id/btn_image_upload"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/ic_plus"
+            app:layout_constraintTop_toBottomOf="@id/til_text"
+            android:layout_marginTop="19dp"
+            android:background="@drawable/bg_2a2a2a_gray"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

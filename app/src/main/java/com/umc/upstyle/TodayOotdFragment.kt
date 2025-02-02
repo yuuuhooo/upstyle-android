@@ -30,19 +30,6 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
 
         val preferences = requireActivity().getSharedPreferences("AppData", Context.MODE_PRIVATE)
 
-        //LoadItemFragment 에서 UI업데이트
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<String>("SELECTED_ITEM")
-            ?.observe(viewLifecycleOwner) { selectedText ->
-                val selectedCategory = findNavController().currentBackStackEntry?.savedStateHandle?.get<String>("CATEGORY")
-
-                if (!selectedText.isNullOrEmpty() && !selectedCategory.isNullOrEmpty()) {
-                    updateSelectedCategory(preferences, selectedCategory, selectedText)
-                }
-            }
-
-        // 기존 UI 업데이트
-        updateUIWithPreferences(preferences)
-
         // 이전 Fragment나 Activity에서 전달된 데이터 처리
         handleReceivedData(preferences)
 
@@ -59,18 +46,10 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
         binding.saveButton.setOnClickListener { saveData(preferences) }
 
         // 뒤로가기 버튼 클릭 이벤트 설정
-
-
         binding.backButton.setOnClickListener {
             findNavController().navigate(R.id.mainFragment)
         }
     }
-
-
-
-
-
-
 
     // 이전 Fragment나 Activity에서 전달된 데이터 처리
     private fun handleReceivedData(preferences: SharedPreferences) {
@@ -178,12 +157,9 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
             "BAG" -> binding.bagText.text = selectedText
             "OTHER" -> binding.otherText.text = selectedText
         }
-
+        
         updateSaveButtonVisibility(preferences) // 저장 버튼 활성화 여부 확인
     }
-
-
-
 
     // UI 업데이트 함수
     private fun updateUIWithPreferences(preferences: SharedPreferences) {
@@ -238,23 +214,6 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
         Toast.makeText(requireContext(), "카테고리가 저장되었습니다.", Toast.LENGTH_SHORT).show()
     }
 
-
-//    // 카테고리 이동 함수
-//    private fun navigateToCategory(category: String) {
-//        val fragment = CategoryFragment().apply {
-//            arguments = Bundle().apply { putString("CATEGORY", category) }
-//        }
-//        requireActivity().supportFragmentManager.beginTransaction()
-//            .replace(R.id.fragment_container, fragment)
-//            .addToBackStack(null)
-//            .commit()
-//    }
-//    private fun navigateToClosetItemFragment(category: String) {
-//        val action =
-//            TodayOotdFragmentDirections.actionTodayOotdFragmentToClosetItemFragment(category)
-//        findNavController().navigate(action)
-//
-//    }
 
     // 사진 관련 코드 시작
     private lateinit var photoUri: Uri // 사진 촬영 URI

@@ -1,14 +1,14 @@
-package com.umc.upstyle
-
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.umc.upstyle.Post
+import com.umc.upstyle.R
 
 class PostAdapter(
     private val postList: List<Post>,
-    private val onPostClick: (Post) -> Unit  // 클릭 이벤트 콜백 추가
+    private val onPostClick: (Post) -> Unit
 ) : RecyclerView.Adapter<PostAdapter.PostViewHolder>() {
 
     inner class PostViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -20,7 +20,7 @@ class PostAdapter(
             tvVoteCount.text = "${post.voteCount}명 투표"
 
             itemView.setOnClickListener {
-                onPostClick(post)  // 클릭 이벤트 실행
+                onPostClick(post) // 클릭 이벤트 실행
             }
         }
     }

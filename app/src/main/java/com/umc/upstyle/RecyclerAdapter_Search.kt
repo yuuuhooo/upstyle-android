@@ -1,5 +1,3 @@
-package com.umc.upstyle
-
 import Item_search
 import android.content.Context
 import android.content.Intent
@@ -58,7 +56,7 @@ class RecyclerAdapter_Search(
             itemClickListener(item) // 아이템 클릭 리스너 호출
         }
     }
-    override fun getItemCount(): Int = itemList.size
+ override fun getItemCount(): Int = itemList.size
 
 
 }

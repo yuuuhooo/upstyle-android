@@ -3,8 +3,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:padding="8dp"
-    android:background="#000000">
+    android:padding="8dp">
 
     <!-- 이미지와 선택 버튼을 감싸는 FrameLayout -->
     <FrameLayout
@@ -28,7 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
-            android:layout_marginEnd="11dp"
+            android:layout_marginEnd="21dp"
             android:layout_marginBottom="13dp"
             android:background="@null"
             android:src="@drawable/bookmark_on"

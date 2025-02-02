@@ -85,14 +85,14 @@ class BookmarkFragment : Fragment() {
 
         when (selectedCategoryId) {
             R.id.btn_all -> { // 모든 북마크된 아이템을 보여줌
-                if (outerBookmarked) bookmarkedItems.add(Item_bookmark("루스한 오버핏 블랙", "https://example.com/outer.jpg"))
-                if (topBookmarked) bookmarkedItems.add(Item_bookmark("오버핏 레귤러 블랙", "https://example.com/top.jpg"))
-                if (bottomBookmarked) bookmarkedItems.add(Item_bookmark("일단 아무 텍스트", "https://example.com/bottom.jpg"))
-                if (bagBookmarked) bookmarkedItems.add(Item_bookmark("숄더백", "https://example.com/bag.jpg"))
-                if (shoesBookmarked) bookmarkedItems.add(Item_bookmark("부츠/워커", "https://example.com/shoes.jpg"))
-                if (otherBookmarked) bookmarkedItems.add(Item_bookmark("기타", "https://example.com/other.jpg"))
+                if (outerBookmarked) bookmarkedItems.add(Item_bookmark("", "https://www.ocokorea.com//upload/images/product/148/148607/Product_1693647123947.jpg"))
+                if (topBookmarked) bookmarkedItems.add(Item_bookmark("", "https://example.com/top.jpg"))
+                if (bottomBookmarked) bookmarkedItems.add(Item_bookmark("", "https://example.com/bottom.jpg"))
+                if (bagBookmarked) bookmarkedItems.add(Item_bookmark("", "https://example.com/bag.jpg"))
+                if (shoesBookmarked) bookmarkedItems.add(Item_bookmark("", "https://example.com/shoes.jpg"))
+                if (otherBookmarked) bookmarkedItems.add(Item_bookmark("", "https://example.com/other.jpg"))
             }
-            R.id.btn_outer -> if (outerBookmarked) bookmarkedItems.add(Item_bookmark("루스한 오버핏 블랙", "https://example.com/outer.jpg"))
+            R.id.btn_outer -> if (outerBookmarked) bookmarkedItems.add(Item_bookmark("루스한 오버핏 블랙", "https://www.ocokorea.com//upload/images/product/148/148607/Product_1693647123947.jpg"))
             R.id.btn_top -> if (topBookmarked) bookmarkedItems.add(Item_bookmark("오버핏 레귤러 블랙", "https://example.com/top.jpg"))
             R.id.btn_bottom -> if (bottomBookmarked) bookmarkedItems.add(Item_bookmark("일단 아무 텍스트", "https://example.com/bottom.jpg"))
             R.id.btn_bag -> if (bagBookmarked) bookmarkedItems.add(Item_bookmark("숄더백", "https://example.com/bag.jpg"))

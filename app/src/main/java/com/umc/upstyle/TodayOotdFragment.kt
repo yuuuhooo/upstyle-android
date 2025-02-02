@@ -205,6 +205,7 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
             val file = File(savedPath)
             if (file.exists()) {
                 binding.photoImageView.visibility = View.VISIBLE
+                binding.uploadText.visibility = View.GONE // "사진 등록" 텍스트 숨김
                 binding.photoImageView.setImageURI(Uri.fromFile(file))
             }
         }
@@ -270,6 +271,7 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
         if (success) {
             binding.photoImageView.visibility = View.VISIBLE
             binding.photoImageView.setImageURI(photoUri) // 촬영한 사진 표시
+            binding.uploadText.visibility = View.GONE // "사진 등록" 텍스트 숨김
             saveImageUri(photoUri) // URI 저장
             Toast.makeText(requireContext(), "사진 촬영 성공!", Toast.LENGTH_SHORT).show()
         } else {
@@ -283,6 +285,7 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
             if (savedPath != null) {
                 binding.photoImageView.visibility = View.VISIBLE
                 binding.photoImageView.setImageURI(Uri.parse(savedPath))
+                binding.uploadText.visibility = View.GONE // "사진 등록" 텍스트 숨김
                 saveImagePath(savedPath)
                 Toast.makeText(requireContext(), "사진 선택 완료!", Toast.LENGTH_SHORT).show()
             } else {

@@ -57,6 +57,7 @@ class LoadItemFragment : Fragment() {
             "TOP" -> "TOP"
             "SHOES" -> "SHOES"
             "BOTTOM" -> "BOTTOM"
+            "BAG" -> "BAG"
             else -> "OTHER"
         }
 

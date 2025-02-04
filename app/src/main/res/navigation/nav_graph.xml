@@ -365,6 +365,9 @@
         android:name="com.umc.upstyle.CreateVoteFragment"
         android:label="create_vote"
         tools:layout="@layout/fragment_create_vote">
+        <action
+            android:id="@+id/action_createVoteFragment_to_loadCategoryFragment"
+            app:destination="@id/loadCategoryFragment" />
     </fragment>
 
     <fragment
@@ -381,6 +384,9 @@
             app:destination="@id/postDetailFragment">
 
         </action>
+        <action
+            android:id="@+id/action_chatFragment_to_createRequestFragment"
+            app:destination="@id/createRequestFragment" />
     </fragment>
     <fragment
         android:id="@+id/postDetailFragment"
@@ -440,7 +446,35 @@
             app:argType="string"
             app:nullable="true" />
     </fragment>
+    <fragment
+        android:id="@+id/createRequestFragment"
+        android:name="com.umc.upstyle.CreateRequestFragment"
+        android:label="fragment_create_request"
+        tools:layout="@layout/fragment_create_request" >
+        <action
+            android:id="@+id/action_createRequestFragment_to_loadCategoryFragment"
+            app:destination="@id/loadCategoryFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/loadCategoryFragment"
+        android:name="com.umc.upstyle.LoadCategoryFragment"
+        android:label="LoadCategoryFragment" >
+        <action
+            android:id="@+id/action_loadCategoryFragment_to_loadItemFragment"
+            app:destination="@id/loadItemFragment">
+            <argument
+                android:name="category"
+                app:argType="string"
+                android:defaultValue="DEFAULT" />
 
+        </action>
+        <action
+            android:id="@+id/action_loadCategoryFragment_to_createRequestFragment"
+            app:destination="@id/createRequestFragment" />
+        <action
+            android:id="@+id/action_loadCategoryFragment_to_createVoteFragment"
+            app:destination="@id/createVoteFragment" />
+    </fragment>
 
 
 </navigation>

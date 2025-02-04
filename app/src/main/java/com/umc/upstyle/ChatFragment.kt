@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.umc.upstyle.databinding.FragmentChatBinding
 
@@ -37,7 +38,45 @@ class ChatFragment : Fragment(R.layout.fragment_chat) {
             }
         }.attach()
 
-        binding.btnWritePost.setOnClickListener { findNavController().navigate(R.id.createVoteFragment) }
+//        binding.btnWritePost.setOnClickListener { findNavController().navigate(R.id.createVoteFragment) }
+
+
+
+        // TabLayout 선택 상태에 따른 버튼 동작 처리
+        binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                when (tab?.position) {
+                    0 -> {
+                        // 첫 번째 탭(투표) 선택 시
+                        binding.btnWritePost.setOnClickListener {
+                            // 투표 작성 화면으로 이동
+                            findNavController().navigate(R.id.createVoteFragment)
+                        }
+                    }
+
+                    1 -> {
+                        // 두 번째 탭(코디 요청) 선택 시
+                        binding.btnWritePost.setOnClickListener {
+                            // 코디 요청 화면으로 이동 (예시로 다른 프래그먼트로 이동)
+                            findNavController().navigate(R.id.createRequestFragment)
+                        }
+                    }
+                }
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+            }
+        })
+
+
+
+        binding.btnWritePost.setOnClickListener {
+            // 투표 작성 화면으로 이동
+            findNavController().navigate(R.id.createVoteFragment)
+        }
 
     }
 
@@ -45,4 +84,5 @@ class ChatFragment : Fragment(R.layout.fragment_chat) {
         super.onDestroyView()
         _binding = null
     }
+
 }

@@ -1,5 +1,6 @@
 package com.umc.upstyle
 
+import Item_load
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
@@ -12,6 +13,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import com.umc.upstyle.databinding.FragmentCreateRequestBinding
 import java.io.File
 import java.text.SimpleDateFormat
@@ -38,6 +40,28 @@ class CreateRequestFragment : Fragment() {
 
         binding.backButton.setOnClickListener {
             findNavController().navigateUp() // 이전 Fragment로 이동
+        }
+
+        findNavController().currentBackStackEntry?.savedStateHandle?.get<String>("SELECTED_ITEM")?.let { description ->
+            findNavController().currentBackStackEntry?.savedStateHandle?.get<String>("SELECTED_ITEM_IMAGE_URL")
+                ?.let { imageUrl ->
+                    findNavController().currentBackStackEntry?.savedStateHandle?.get<String>("CATEGORY")
+                        ?.let { category ->
+                            // 이제 description과 imageUrl을 사용해서 필요한 작업을 처리
+                            val item = Item_load(description, imageUrl) // 아이템 객체 생성
+                            // 이미지 로드 처리
+
+                            binding.imageContainer.visibility = View.VISIBLE
+                            binding.imgSelected.visibility = View.VISIBLE
+                            binding.btnRemoveImage.visibility = View.VISIBLE // x 버튼 표시
+                            binding.btnImageUpload.visibility = View.INVISIBLE
+                            saveImageUri(Uri.parse(item.imageUrl)) // ✅ photoUri가 null이 아닐 때 저장
+
+                            Glide.with(requireContext())
+                                .load(item.imageUrl)
+                                .into(binding.imgSelected)
+                        }
+                }
         }
 
         // 사진 등록 버튼 이벤트

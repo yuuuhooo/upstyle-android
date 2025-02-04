@@ -459,6 +459,9 @@
         android:id="@+id/loadCategoryFragment"
         android:name="com.umc.upstyle.LoadCategoryFragment"
         android:label="LoadCategoryFragment" >
+        <argument
+            android:name="category"
+            app:argType="string"/>
         <action
             android:id="@+id/action_loadCategoryFragment_to_loadItemFragment"
             app:destination="@id/loadItemFragment">

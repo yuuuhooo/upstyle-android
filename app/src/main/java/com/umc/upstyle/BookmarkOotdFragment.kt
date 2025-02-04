@@ -9,6 +9,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import com.umc.upstyle.data.Item
 import com.umc.upstyle.databinding.FragmentBookmarkOotdBinding
 
@@ -62,20 +63,44 @@ class BookmarkOotdFragment : Fragment() {
             findNavController().navigateUp()
         }
 
+        // XML에 정의된 ootdImage를 찾기
+        val ootdImageView: ImageView = view.findViewById(R.id.ootdImage)
+
+        // 데이터 수신
+        val itemName = arguments?.getString("item_name") ?: "아이템 이름 없음"
+        val ootdImage = arguments?.getString("item_image") ?: ""
+        //아이템 구분 위해 username을 넣긴 했지만 나중에는 번호 부여 해야할듯..
+        val userName = arguments?.getString("user_name") ?: "사용자"
+
+
+        // 이미지가 존재하면 Glide를 사용해 ootdImageView에 로드
+        if (ootdImage.isNotEmpty()) {
+            Glide.with(this)
+                .load(ootdImage)
+                .into(ootdImageView)
+        }
+
         // 사용자 이름 받기
         binding.userName.text = "$userName"
+
+
+        // OUTER 항목 옆에 이름 추가 / 일단 추가
+        binding.outerText.text = itemName
+
+
 
         // 북마크
         var isBookmarked = false
 
         val bookmarkButtons = listOf(
-            binding.bookmarkOuter to "bookmark_outer",
-            binding.bookmarkTop to "bookmark_top",
-            binding.bookmarkBottom to "bookmark_bottom",
-            binding.bookmarkBag to "bookmark_bag",
-            binding.bookmarkShoes to "bookmark_shoes",
-            binding.bookmarkOther to "bookmark_other"
+            binding.bookmarkOuter to "bookmark_outer_$itemName",
+            binding.bookmarkTop to "bookmark_top_$itemName",
+            binding.bookmarkBottom to "bookmark_bottom_$itemName",
+            binding.bookmarkBag to "bookmark_bag_$itemName",
+            binding.bookmarkShoes to "bookmark_shoes_$itemName",
+            binding.bookmarkOther to "bookmark_other_$itemName"
         )
+
 
         // 초기 상태 불러오기
         val bookmarkStates = mutableMapOf<String, Boolean>()
@@ -84,13 +109,15 @@ class BookmarkOotdFragment : Fragment() {
             bookmarkStates[key] = isBookmarked
             button.setImageResource(if (isBookmarked) R.drawable.bookmark_on else R.drawable.bookmark_off)
 
-            // 클릭 이벤트 설정
             button.setOnClickListener {
                 val newState = !bookmarkStates[key]!!
                 bookmarkStates[key] = newState
                 button.setImageResource(if (newState) R.drawable.bookmark_on else R.drawable.bookmark_off)
-                saveBookmarkState(key, newState) // 상태 저장
+
+                //saveBookmarkState를 호출할 때 itemName과 ootdImage를 전달
+                saveBookmarkState(key, newState, itemName, ootdImage)
             }
+
 
 
             // 데이터 리스트
@@ -187,12 +214,24 @@ class BookmarkOotdFragment : Fragment() {
         }
     }
 
-    private fun saveBookmarkState(key: String, isBookmarked: Boolean) {
+    private fun saveBookmarkState(key: String, isBookmarked: Boolean, itemName: String, ootdImage: String) {
         val preferences = requireActivity().getSharedPreferences("BookmarkPrefs", android.content.Context.MODE_PRIVATE)
         val editor = preferences.edit()
-        editor.putBoolean(key, isBookmarked)
+
+        // 북마크 ON이면 아이템 정보 저장, OFF이면 삭제
+        if (isBookmarked) {
+            editor.putBoolean(key, true)
+            editor.putString("${key}_name", itemName) // 아이템 이름 저장
+            editor.putString("${key}_image", ootdImage) // 이미지 URL 저장
+        } else {
+            editor.remove(key)
+            editor.remove("${key}_name")
+            editor.remove("${key}_image")
+        }
         editor.apply()
     }
+
+
 
     private fun loadBookmarkState(key: String): Boolean {
         val preferences = requireActivity().getSharedPreferences("BookmarkPrefs", android.content.Context.MODE_PRIVATE)

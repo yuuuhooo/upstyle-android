@@ -55,16 +55,20 @@ class SearchResultFragment : Fragment() {
 
     private fun setupRecyclerView(items: List<Item_result>) {
         binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
-        binding.recyclerView.adapter = RecyclerAdapter_Result(items) {
-            navigateToBookmarkOotdFragment()
+        binding.recyclerView.adapter = RecyclerAdapter_Result(items) { selectedItem ->
+            navigateToBookmarkOotdFragment(selectedItem)
         }
-
     }
 
-
-    private fun navigateToBookmarkOotdFragment() {
-        findNavController().navigate(R.id.action_searchResultFragment_to_bookmarkOotdtFragment)
+    // 선택한 아이템을 전달하는 함수 추가
+    private fun navigateToBookmarkOotdFragment(selectedItem: Item_result) {
+        val bundle = Bundle().apply {
+            putString("item_name", selectedItem.description)  // 아이템 이름
+            putString("item_image", selectedItem.imageUrl)  // 이미지 URL
+        }
+        findNavController().navigate(R.id.action_searchResultFragment_to_bookmarkOotdtFragment, bundle)
     }
+
 
 
 
@@ -89,13 +93,13 @@ class SearchResultFragment : Fragment() {
         )
 
         // 저장된 데이터 추가
-        if (!savedImagePath.isNullOrEmpty() && !description.isNullOrEmpty() && description != "없음") {
+        /*if (!savedImagePath.isNullOrEmpty() && !description.isNullOrEmpty() && description != "없음") {
             val file = File(savedImagePath)
             if (file.exists()) {
                 val fileUri = Uri.fromFile(file)
                 itemResults.add(0, Item_result(description, fileUri.toString()))
             }
-        }
+        }*/
 
         return itemResults
     }

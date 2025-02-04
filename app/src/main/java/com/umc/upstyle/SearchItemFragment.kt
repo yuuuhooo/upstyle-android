@@ -41,7 +41,7 @@ class SearchItemFragment : Fragment() {
 
         // 뒤로가기 버튼 클릭 이벤트
         binding.backButton.setOnClickListener {
-            requireActivity().onBackPressedDispatcher.onBackPressed()
+            findNavController().navigate(R.id.searchFragment)
         }
 
         val category = arguments?.getString("category") // 전달된 데이터 수신

@@ -57,6 +57,7 @@ class LoadItemFragment : Fragment() {
             "TOP" -> "TOP"
             "SHOES" -> "SHOES"
             "BOTTOM" -> "BOTTOM"
+            "BAG" -> "BAG"
             else -> "OTHER"
         }
 
@@ -82,6 +83,7 @@ class LoadItemFragment : Fragment() {
     private fun sendSelectedItemToPreviousFragment(selectedItem: Item_load) {
         val category = this.category ?: return
         findNavController().previousBackStackEntry?.savedStateHandle?.set("SELECTED_ITEM", selectedItem.description)
+        findNavController().previousBackStackEntry?.savedStateHandle?.set("SELECTED_ITEM_IMAGE_URL", selectedItem.imageUrl)
         findNavController().previousBackStackEntry?.savedStateHandle?.set("CATEGORY", category) // ✅ CATEGORY 추가
         findNavController().popBackStack()
     }
@@ -98,7 +100,7 @@ class LoadItemFragment : Fragment() {
 
         // 기본 샘플 데이터
         val itemLoads = mutableListOf(
-            Item_load("샘플 1", "https://example.com/image1.jpg"),
+            Item_load("케로로", "https://image.cine21.com/resize/cine21/still/2005/1121/M0020066_focus52804[W578-].jpg"),
             Item_load("샘플 2", "https://example.com/image2.jpg"),
             Item_load("샘플 1", "https://example.com/image1.jpg"),
             Item_load("샘플 2", "https://example.com/image2.jpg"),

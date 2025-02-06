@@ -6,6 +6,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.umc.upstyle.databinding.FragmentOotdDetailBinding
 import retrofit2.Call
@@ -24,6 +26,8 @@ class OotdDetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.backButton.setOnClickListener { findNavController().navigateUp() }
 
         // 전달된 OOTD ID 받기
         val ootdId = arguments?.getInt("SELECTED_OOTD_ID")
@@ -52,7 +56,19 @@ class OotdDetailFragment : Fragment() {
     }
 
     private fun displayOotdData(ootd: OOTD) {
-        Glide.with(this).load(ootd.imageUrl).into(binding.photoImageView)
+        binding.date.text = formatDateKey(ootd.date)
+
+//        Glide.with(this).load(ootd.imageUrl).into(binding.photoImageView)
+
+        // OOTD 이미지 적용
+        val imageUrl = ootd.imageUrl
+        if (imageUrl != null) {
+            binding.photoImageView.visibility = View.VISIBLE
+            loadImage(binding.photoImageView, imageUrl.toString())
+            Log.e("PIC", ootd.imageUrl)
+        } else {
+            binding.photoImageView.visibility = View.GONE
+        }
 
         val textViewList = listOf(
             binding.outerText,
@@ -74,9 +90,22 @@ class OotdDetailFragment : Fragment() {
         }
 
         for (i in ootd.clothList.size until textViewList.size) {
-            textViewList[i].text = "No Cloth Data Available"
+            textViewList[i].text = "옷에 대한 정보가 없습니다"
         }
     }
+
+    private fun formatDateKey(dateString: String): String {
+        val parts = dateString.split("-")
+        return parts[1] + parts[2]
+    }
+
+    // Glide를 이용한 이미지 로드
+    private fun loadImage(imageView: ImageView, url: String) {
+        Glide.with(imageView.context)
+            .load(url)
+            .into(imageView)
+    }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

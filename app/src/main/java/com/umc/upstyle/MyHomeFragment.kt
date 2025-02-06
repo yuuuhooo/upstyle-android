@@ -5,17 +5,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
-import androidx.recyclerview.widget.RecyclerView
-import androidx.navigation.fragment.findNavController
-import com.umc.upstyle.databinding.ActivityMyhomeBinding
-import java.util.Calendar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
-import java.util.Date
+import androidx.recyclerview.widget.RecyclerView
+import androidx.navigation.fragment.findNavController
+import com.umc.upstyle.api.ApiService
+import com.umc.upstyle.databinding.ActivityMyhomeBinding
+import com.umc.upstyle.model.ClosetResponse
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.util.Calendar
+
 
 
 class MyHomeFragment : Fragment() {
+
     private var _binding: ActivityMyhomeBinding? = null
     private val binding get() = _binding!!
     private lateinit var monthListManager: LinearLayoutManager
@@ -31,6 +36,26 @@ class MyHomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val apiService = RetrofitClient.createService(ApiService::class.java)
+
+        apiService.getUserCloset(userId = 1L).enqueue(object : Callback<ClosetResponse> {
+            override fun onResponse(call: Call<ClosetResponse>, response: Response<ClosetResponse>) {
+                if (response.isSuccessful) {
+                    val userName = response.body()?.result?.userName
+                    binding.wardrobeText.text = "${userName}님의 옷장"
+                    binding.topUserName.text ="${userName} 님"
+                } else {
+                    binding.wardrobeText.text = "오류"
+                    binding.topUserName.text ="오류"
+                }
+            }
+
+            override fun onFailure(call: Call<ClosetResponse>, t: Throwable) {
+                binding.wardrobeText.text = "API 실패"
+                binding.topUserName.text ="API 실패"
+            }
+        })
 
         // 리사이클러뷰 설정
         monthListManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)

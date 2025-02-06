@@ -8,13 +8,20 @@ import android.os.Environment
 import android.util.Log
 import android.view.View
 import android.widget.Toast
-import androidx.activity.addCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
 import androidx.core.content.edit
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.google.firebase.storage.FirebaseStorage
+import com.umc.upstyle.data.model.ClothRequestDTO
+import com.umc.upstyle.data.model.OOTDRequest
+import com.umc.upstyle.data.network.OOTDService
+import com.umc.upstyle.data.viewmodel.ClothViewModel
 import com.umc.upstyle.databinding.ActivityTodayOotdBinding
+import kotlinx.coroutines.launch
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -24,11 +31,24 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
     private var _binding: ActivityTodayOotdBinding? = null
     private val binding get() = _binding!!
 
+    // ViewModel을 프래그먼트 간 공유하기 위해 activityViewModels 사용
+    private val clothViewModel: ClothViewModel by activityViewModels()
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = ActivityTodayOotdBinding.bind(view)
 
         val preferences = requireActivity().getSharedPreferences("AppData", Context.MODE_PRIVATE)
+
+
+        val dateFormatServer = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val dateServer = dateFormatServer.format(Date())
+
+        val clothList = mutableListOf<ClothRequestDTO>()
+
+
+
 
         //LoadItemFragment 에서 UI업데이트
         findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<String>("SELECTED_ITEM")
@@ -46,6 +66,10 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
 
         binding.date.text = todayDate
 
+
+
+
+
         // 기존 UI 업데이트
         updateUIWithPreferences(preferences)
 
@@ -62,19 +86,107 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
         binding.photoUploadFrame.setOnClickListener { showPhotoOptions() }
 
         // 저장 버튼 이벤트
-        binding.saveButton.setOnClickListener { saveData(preferences) }
+        binding.saveButton.setOnClickListener {
+            // saveData(preferences)
+
+            val ootdRequest = OOTDRequest(
+                userId = 1,
+                date = dateServer,
+                ootdImages = "",
+                clothViewModel.clothList
+            )
+
+            // 이미지 URI를 가져옴 (선택된 이미지 URI)
+            val imageUri = Uri.parse(preferences.getString("SAVED_IMAGE_PATH", null))
+
+            // 이미지가 선택되어 있다면 uploadOOTD 함수 호출
+            if (imageUri != null) {
+                uploadOOTD(ootdRequest, imageUri)
+            } else {
+                Toast.makeText(requireContext(), "이미지를 선택해주세요.", Toast.LENGTH_SHORT).show()
+            }
+        }
 
         // 뒤로가기 버튼 클릭 이벤트 설정
-
-
         binding.backButton.setOnClickListener {
-            findNavController().navigate(R.id.mainFragment)
+            findNavController().navigateUp()
         }
     }
 
 
+    private fun uploadOOTD(request: OOTDRequest, imageUri: Uri?) {
+        lifecycleScope.launch {
+            try {
+                // Firebase에 이미지를 업로드하고 URL을 받기 위한 비동기 작업
+                val uploadedImageUrls = mutableListOf<String>()
+
+                if (imageUri != null) {
+                    uploadImageToFirebase(imageUri) { imageUrl ->
+                        if (imageUrl != null) {
+                            uploadedImageUrls.add(imageUrl)
+                            Log.d("Firebase", "이미지 업로드 성공: $imageUrl")
+                        } else {
+                            Log.e("Firebase", "이미지 업로드 실패")
+                        }
+                    }
+                }
+
+                // Firebase 업로드가 성공적으로 완료되면, 업로드된 이미지 URL을 OOTDRequest에 추가하여 서버로 전송
+                if (uploadedImageUrls.isNotEmpty()) {
+                    val updatedRequest = request.copy(ootdImages = uploadedImageUrls.first()) // 첫 번째 이미지만 사용
+                    sendToServer(updatedRequest)
+                } else {
+                    Log.e("Upload", "이미지 업로드에 실패했습니다.")
+                }
+
+            } catch (e: Exception) {
+                Log.e("Retrofit", "에러 발생: ${e.message}")
+            }
+        }
+    }
+
+    // Firebase에 이미지를 업로드하는 함수
+    private fun uploadImageToFirebase(uri: Uri, callback: (String?) -> Unit) {
+        try {
+            val storageRef = FirebaseStorage.getInstance().reference
+            val fileName = "images/${UUID.randomUUID()}.jpg" // 랜덤 파일명 생성
+            val imageRef = storageRef.child(fileName)
+
+            val uploadTask = imageRef.putFile(uri)
+
+            uploadTask.addOnSuccessListener {
+                // 업로드 성공 후 이미지 URL 가져오기
+                imageRef.downloadUrl.addOnSuccessListener { downloadUri ->
+                    callback(downloadUri.toString()) // URL 반환
+                }.addOnFailureListener {
+                    callback(null)
+                }
+            }.addOnFailureListener {
+                callback(null)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            callback(null)
+        }
+    }
 
 
+    // 서버로 OOTDRequest를 전송하는 함수
+    private fun sendToServer(updatedRequest: OOTDRequest) {
+        val ootdService = RetrofitClient.createService(OOTDService::class.java)
+        lifecycleScope.launch {
+            try {
+                val response = ootdService.uploadOOTD(updatedRequest)
+                if (response.isSuccessful) {
+                    Log.d("Retrofit", "업로드 성공!")
+                } else {
+                    Log.e("Retrofit", "업로드 실패: ${response.errorBody()?.string()}")
+                }
+            } catch (e: Exception) {
+                Log.e("Retrofit", "서버 요청 에러: ${e.message}")
+            }
+        }
+    }
 
 
 

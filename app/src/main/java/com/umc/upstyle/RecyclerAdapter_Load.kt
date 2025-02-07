@@ -1,6 +1,6 @@
 package com.umc.upstyle
 
-import com.umc.upstyle.data.network.Item_load
+import com.umc.upstyle.utils.Item_load
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup

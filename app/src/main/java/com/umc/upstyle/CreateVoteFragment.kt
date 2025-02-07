@@ -1,6 +1,6 @@
 package com.umc.upstyle
 
-import com.umc.upstyle.data.network.Item_load
+import com.umc.upstyle.utils.Item_load
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle

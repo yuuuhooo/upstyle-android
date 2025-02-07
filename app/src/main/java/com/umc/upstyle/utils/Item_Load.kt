@@ -1,4 +1,4 @@
-package com.umc.upstyle.data.network
+package com.umc.upstyle.utils
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize

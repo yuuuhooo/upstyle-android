@@ -10,7 +10,7 @@ import android.widget.ImageView
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.umc.upstyle.data.model.ApiResponse
-import com.umc.upstyle.data.model.OOTD
+import com.umc.upstyle.data.model.Ootd
 import com.umc.upstyle.data.network.OotdApiService
 import com.umc.upstyle.databinding.FragmentOotdDetailBinding
 import retrofit2.Call
@@ -41,8 +41,8 @@ class OotdDetailFragment : Fragment() {
     }
 
     private fun fetchOotdData(ootdId: Int) {
-        apiService.getOOTDById(ootdId).enqueue(object : Callback<ApiResponse<OOTD>> {
-            override fun onResponse(call: Call<ApiResponse<OOTD>>, response: Response<ApiResponse<OOTD>>) {
+        apiService.getOOTDById(ootdId).enqueue(object : Callback<ApiResponse<Ootd>> {
+            override fun onResponse(call: Call<ApiResponse<Ootd>>, response: Response<ApiResponse<Ootd>>) {
                 if (response.isSuccessful) {
                     response.body()?.result?.let { ootd ->
                         displayOotdData(ootd) // 데이터를 화면에 표시
@@ -52,13 +52,13 @@ class OotdDetailFragment : Fragment() {
                 }
             }
 
-            override fun onFailure(call: Call<ApiResponse<OOTD>>, t: Throwable) {
+            override fun onFailure(call: Call<ApiResponse<Ootd>>, t: Throwable) {
                 Log.e("API_ERROR", "Request failed", t)
             }
         })
     }
 
-    private fun displayOotdData(ootd: OOTD) {
+    private fun displayOotdData(ootd: Ootd) {
         binding.date.text = formatDateKey(ootd.date)
 
 //        Glide.with(this).load(ootd.imageUrl).into(binding.photoImageView)

@@ -14,6 +14,7 @@ import androidx.core.view.children
 import androidx.navigation.fragment.findNavController
 import com.google.android.flexbox.FlexboxLayout
 import com.umc.upstyle.databinding.ActivityColorBinding
+import com.umc.upstyle.util.ColorUtil
 
 class ColorFragment : Fragment() {
 
@@ -25,6 +26,11 @@ class ColorFragment : Fragment() {
     private var selectedFit: String? = null
     private var selectedSize: String? = null
     private var selectedColor: String? = null
+
+
+    private var kindId: Int? = null
+    private var categoryId: Int? = null
+    private var fitId: Int? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,6 +51,10 @@ class ColorFragment : Fragment() {
         selectedSubCategory = arguments?.getString("SUB_CATEGORY")
         selectedFit = arguments?.getString("FIT")
         selectedSize = arguments?.getString("SIZE")
+
+        kindId = arguments?.getInt("KIND_ID")
+        categoryId = arguments?.getInt("CATEGORY_ID")
+        fitId = arguments?.getInt("FIT_ID")
 
         // 옷 종류에 대한 설명
         binding.mainTitleTextView.text = "$selectedCategory"
@@ -147,10 +157,15 @@ class ColorFragment : Fragment() {
     }
 
     private fun saveAndFinish() {
-        if (selectedColor.isNullOrEmpty()) {
+        val color = selectedColor // 지역 변수로 값 고정
+
+        if (color.isNullOrEmpty()) {
             Toast.makeText(requireContext(), "컬러를 선택해주세요.", Toast.LENGTH_SHORT).show()
             return
         }
+
+        val colorId = ColorUtil.getColorIdByName(color)
+
 
         // 데이터를 Bundle에 추가
         val bundle = Bundle().apply {
@@ -158,15 +173,25 @@ class ColorFragment : Fragment() {
             putString("SUB_CATEGORY", selectedSubCategory)
             putString("FIT", selectedFit)
             putString("SIZE", selectedSize)
-            putString("COLOR", selectedColor)
-        }
+            putString("COLOR", color)
 
+
+
+            kindId?.let { putInt("KIND_ID", it) }
+            categoryId?.let { putInt("CATEGORY_ID", it) }
+            fitId?.let { putInt("FIT_ID", it) }
+            if (colorId != null) {
+                putInt("COLOR_ID", colorId)
+            }
+
+        }
 
         val action = R.id.etcFragment
 
         // 네비게이션 액션 수행
         findNavController().navigate(action, bundle)
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

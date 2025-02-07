@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.flexbox.FlexboxLayout
 import com.umc.upstyle.databinding.ActivitySizeBinding
+import com.umc.upstyle.utils.SizeUtil
 
 class SizeFragment : Fragment() {
 
@@ -22,6 +23,9 @@ class SizeFragment : Fragment() {
     private var selectedSubCategory: String? = null
     private var selectedFit: String? = null
     private var selectedSize: String? = null
+
+    private var kindId: Int? = null
+    private var categoryId: Int? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -37,6 +41,9 @@ class SizeFragment : Fragment() {
         selectedCategory = arguments?.getString("CATEGORY")
         selectedSubCategory = arguments?.getString("SUB_CATEGORY")
         selectedFit = arguments?.getString("FIT")
+
+        kindId = arguments?.getInt("KIND_ID")
+        categoryId = arguments?.getInt("CATEGORY_ID")
 
         // 옷 종류에 대한 설명
         binding.mainTitleTextView.text = selectedCategory
@@ -100,12 +107,20 @@ class SizeFragment : Fragment() {
             return
         }
 
+        val sizeId = SizeUtil.getSizeIdByName(selectedSize) ?: -1 // 기본값 -1 설정
+
+
         // 데이터를 Bundle에 추가
         val bundle = Bundle().apply {
             putString("CATEGORY", selectedCategory)
             putString("SUB_CATEGORY", selectedSubCategory)
             putString("FIT", selectedFit)
             putString("SIZE", selectedSize)
+
+
+            kindId?.let { putInt("KIND_ID", it) }
+            categoryId?.let { putInt("CATEGORY_ID", it) }
+            putInt("FIT_ID", sizeId)
         }
         val action = R.id.action_sizeFragment_to_colorFragment
 

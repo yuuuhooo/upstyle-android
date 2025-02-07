@@ -1,7 +1,7 @@
-package com.umc.upstyle.api
+package com.umc.upstyle.data.network
 
-import com.umc.upstyle.model.ClosetCategoryResponse
-import com.umc.upstyle.model.ClosetResponse
+import com.umc.upstyle.data.model.ClosetCategoryResponse
+import com.umc.upstyle.data.model.ClosetResponse
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query

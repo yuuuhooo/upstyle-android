@@ -1,13 +1,12 @@
 package com.umc.upstyle
 
-import Item_load
+import com.umc.upstyle.data.network.Item_load
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageButton
-import androidx.navigation.Navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 

@@ -9,6 +9,9 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
+import com.umc.upstyle.data.model.ApiResponse
+import com.umc.upstyle.data.model.OOTD
+import com.umc.upstyle.data.network.OotdApiService
 import com.umc.upstyle.databinding.FragmentOotdDetailBinding
 import retrofit2.Call
 import retrofit2.Callback

@@ -10,20 +10,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.navigation.fragment.findNavController
-import com.umc.upstyle.api.ApiService
+import com.umc.upstyle.data.model.ApiResponse
+import com.umc.upstyle.data.network.ApiService
 import com.umc.upstyle.databinding.ActivityMyhomeBinding
-import com.umc.upstyle.model.ClosetResponse
+import com.umc.upstyle.data.model.ClosetResponse
+import com.umc.upstyle.data.model.OOTDCalendar
+import com.umc.upstyle.data.model.OOTDPreview
+import com.umc.upstyle.data.network.OotdApiService
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.util.Calendar
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.PagerSnapHelper
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import java.util.Date
-
 
 
 class MyHomeFragment : Fragment() {

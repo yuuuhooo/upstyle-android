@@ -1,16 +1,14 @@
 package com.umc.upstyle
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
 import androidx.navigation.fragment.findNavController
-import com.umc.upstyle.api.ApiService
+import com.umc.upstyle.data.network.ApiService
 import com.umc.upstyle.databinding.ActivityClosetBinding
-import com.umc.upstyle.model.ClosetResponse
+import com.umc.upstyle.data.model.ClosetResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

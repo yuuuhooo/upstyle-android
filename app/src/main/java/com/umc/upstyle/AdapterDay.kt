@@ -6,13 +6,16 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.Toast
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
+import com.umc.upstyle.data.model.ApiResponse
+import com.umc.upstyle.data.model.OOTDCalendar
+import com.umc.upstyle.data.model.OOTDPreview
+import com.umc.upstyle.data.network.OotdApiService
 import com.umc.upstyle.databinding.ListItemDayBinding
 import java.util.*
 import retrofit2.Call

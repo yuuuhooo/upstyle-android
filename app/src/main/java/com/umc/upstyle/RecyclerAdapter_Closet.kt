@@ -7,7 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.umc.upstyle.model.ClothPreview
+import com.umc.upstyle.data.model.ClothPreview
 
 class RecyclerAdapter_Closet(private val itemClosetList: List<ClothPreview>) :
     RecyclerView.Adapter<RecyclerAdapter_Closet.ViewHolder>() {

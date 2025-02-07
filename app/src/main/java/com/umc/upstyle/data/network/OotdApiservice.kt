@@ -1,7 +1,10 @@
-package com.umc.upstyle
+package com.umc.upstyle.data.network
 
 // OotdApiService.kt
 
+import com.umc.upstyle.data.model.ApiResponse
+import com.umc.upstyle.data.model.OOTD
+import com.umc.upstyle.data.model.OOTDCalendar
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path

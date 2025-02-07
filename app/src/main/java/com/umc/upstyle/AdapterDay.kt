@@ -1,20 +1,31 @@
 package com.umc.upstyle
 
-
 import android.graphics.Color
+import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.Toast
-import java.util.Calendar
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestOptions
 import com.umc.upstyle.databinding.ListItemDayBinding
 import java.util.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class AdapterDay(private val tempMonth: Int, private val dayList: MutableList<Date>) :
     RecyclerView.Adapter<AdapterDay.DayView>() {
 
     private val ROW = 6
+    private val ootdMap = mutableMapOf<String, Pair<Int, String>>() // 날짜별 (ootdId, imageUrl) 저장
+
+    init { fetchOOTDDataFromAPI(1) }
 
     // ViewHolder에 뷰 바인딩 추가
     inner class DayView(val binding: ListItemDayBinding) : RecyclerView.ViewHolder(binding.root)
@@ -30,18 +41,43 @@ class AdapterDay(private val tempMonth: Int, private val dayList: MutableList<Da
     val month = calendar.get(Calendar.MONTH) + 1 // MONTH는 0부터 시작하므로 1을 더함
     val day = calendar.get(Calendar.DAY_OF_MONTH)
 
-
-
     override fun onBindViewHolder(holder: DayView, position: Int) {
+
+        val currentDate = dayList[position]
+        val currentDay = currentDate.date
+
+        // dateKey를 통해 해당 날짜에 이미지 로드
+        val formattedMonth = String.format("%02d", currentDate.month + 1)
+        val formattedDay = String.format("%02d", currentDay)
+        val dateKey = "${currentDate.year + 1900}-$formattedMonth-$formattedDay"
 
         // 클릭 리스너 설정
         holder.binding.itemDayLayout.setOnClickListener {
             Toast.makeText(holder.binding.root.context, "${dayList[position]}", Toast.LENGTH_SHORT)
                 .show()
+            val context = holder.binding.root.context
+            val ootdId = getOOTDIdByDate(dateKey)
+
+            if (ootdId != null) {
+                val bundle = Bundle().apply { putInt("SELECTED_OOTD_ID", ootdId) }
+                val navController = Navigation.findNavController(holder.binding.root)
+                navController.navigate(R.id.ootdDetailFragment, bundle)
+            } else {
+                Toast.makeText(context, "해당 날짜에 대한 OOTD가 없습니다.", Toast.LENGTH_SHORT).show()
+                val bundle = Bundle().apply { putString("DATE", dateKey) }
+                val navController = Navigation.findNavController(holder.binding.root)
+                navController.navigate(R.id.todayOotdFragment, bundle)
+            }
         }
 
-        val currentDate = dayList[position]
-        val currentDay = currentDate.date
+        // OOTD 이미지 적용
+        val imageUrl = ootdMap[dateKey]?.second
+        if (imageUrl != null) {
+            loadBackgroundImage(holder.binding.itemDayLayout, imageUrl)
+        } else {
+            holder.binding.itemDayLayout.setBackgroundResource(R.drawable.bg_other_day)
+        }
+
 
         // 현재 아이템의 달과 비교
         val isOtherMonth = tempMonth != currentDate.month
@@ -103,4 +139,62 @@ class AdapterDay(private val tempMonth: Int, private val dayList: MutableList<Da
     override fun getItemCount(): Int {
         return ROW * 7
     }
+
+    fun fetchOOTDDataFromAPI(userId: Int) {
+        val apiService = RetrofitClient.createService(OotdApiService::class.java)
+
+        for (year in 2022..Calendar.getInstance().get(Calendar.YEAR)) {
+            for (month in 1..12) {
+                apiService.getOOTDCalendar(userId, year, month).enqueue(object : Callback<ApiResponse<OOTDCalendar>> {
+                    override fun onResponse(call: Call<ApiResponse<OOTDCalendar>>, response: Response<ApiResponse<OOTDCalendar>>) {
+                        if (response.isSuccessful) {
+                            response.body()?.result?.let { ootdCalendar ->
+                                updateOOTDData(ootdCalendar.ootdPreviewList)
+                            }
+                        }
+                    }
+
+                    override fun onFailure(call: Call<ApiResponse<OOTDCalendar>>, t: Throwable) {
+                        Log.e("API_ERROR", "API Request failed: ${t.message}")
+                    }
+                })
+            }
+        }
+    }
+
+
+    // OOTD 데이터를 저장하는 함수
+    fun updateOOTDData(ootdList: List<OOTDPreview>) {
+        for (ootd in ootdList) {
+            if (!ootdMap.containsKey(ootd.date)) { // 중복 방지
+                ootdMap[ootd.date] = Pair(ootd.id, ootd.imageUrl)
+            }
+        }
+        notifyDataSetChanged()
+    }
+
+    // 날짜를 기반으로 OOTD ID 가져오는 함수
+    private fun getOOTDIdByDate(dateKey: String): Int? {
+        return ootdMap[dateKey]?.first // 날짜를 기반으로 OOTD ID 반환
+    }
+
+
+    private fun loadBackgroundImage(view: View, url: String) {
+        val cornerRadius = 40
+
+        Glide.with(view.context)
+            .load(url)
+            .apply(RequestOptions().transform(RoundedCorners(cornerRadius)))
+            .into(object : com.bumptech.glide.request.target.CustomTarget<android.graphics.drawable.Drawable>() {
+                override fun onResourceReady(resource: android.graphics.drawable.Drawable, transition: com.bumptech.glide.request.transition.Transition<in android.graphics.drawable.Drawable>?) {
+                    view.background = resource
+                }
+
+                override fun onLoadCleared(placeholder: android.graphics.drawable.Drawable?) {
+                    view.background = placeholder
+                }
+            })
+    }
+
+
 }

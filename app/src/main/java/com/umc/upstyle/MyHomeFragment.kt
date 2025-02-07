@@ -1,6 +1,7 @@
 package com.umc.upstyle
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +17,12 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.util.Calendar
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.PagerSnapHelper
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.util.Date
 
 
 
@@ -25,6 +32,8 @@ class MyHomeFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var monthListManager: LinearLayoutManager
     private val center = Int.MAX_VALUE / 2 // 중앙 위치 값 (Adapter에서 사용한 값)
+    private val apiService = RetrofitClient.createService(OotdApiService::class.java)
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -89,6 +98,8 @@ class MyHomeFragment : Fragment() {
 
         binding.calendarMonth.text = "${year}년 ${month}월"
 
+        fetchOOTDCalendarData(userId = 1, year, month)
+
         // 섹션 이동 버튼 리스너
         binding.closetSection.setOnClickListener {
             findNavController().navigate(R.id.closetFragment)
@@ -97,6 +108,40 @@ class MyHomeFragment : Fragment() {
             findNavController().navigate(R.id.todayOotdFragment)
         }
 
+    }
+
+    // OOTD 캘린더 데이터 가져오기
+    private fun fetchOOTDCalendarData(userId: Int, year: Int, month: Int) {
+        apiService.getOOTDCalendar(userId, year, month).enqueue(object :
+            Callback<ApiResponse<OOTDCalendar>> {
+            override fun onResponse(
+                call: Call<ApiResponse<OOTDCalendar>>,
+                response: Response<ApiResponse<OOTDCalendar>>
+            ) {
+                if (response.isSuccessful) {
+                    val responseData = response.body()
+                    if (responseData != null) {
+                        Log.d("API_SUCCESS", "Response: ${responseData}")
+                    }
+
+                    response.body()?.result?.ootdPreviewList?.let { ootdList ->
+                        updateCalendarWithOOTD(ootdList)
+                    }
+                } else {
+                    Log.e("API_ERROR", "Response Failed: ${response.code()}")
+                }
+            }
+
+            override fun onFailure(call: Call<ApiResponse<OOTDCalendar>>, t: Throwable) {
+                Log.e("API_ERROR", "Request Failed", t)
+            }
+        })
+    }
+
+    // 데이터를 Adapter로 전달하여 UI 업데이트
+    private fun updateCalendarWithOOTD(ootdList: List<OOTDPreview>) {
+        val adapter = binding.calendarCustom.adapter as? AdapterDay
+        adapter?.updateOOTDData(ootdList)
     }
 
     private fun updateYearMonth() {
@@ -118,8 +163,6 @@ class MyHomeFragment : Fragment() {
         binding.calendarMonth.text = "${year}년 ${month}월"
 
     }
-
-
 
     override fun onDestroyView() {
         super.onDestroyView()

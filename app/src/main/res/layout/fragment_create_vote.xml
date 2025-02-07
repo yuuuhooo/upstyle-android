@@ -79,6 +79,7 @@
                 android:layout_height="wrap_content">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@null"
@@ -108,19 +109,19 @@
             tools:ignore="MissingConstraints">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_text"
+                android:id="@+id/et_content"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@android:color/transparent"
+                android:gravity="top|start"
                 android:hint="내용을 입력해주세요.(10자 이상)"
                 android:padding="10dp"
                 android:textColorHint="#66FFFFFF"
                 android:textSize="12sp"
-                android:gravity="top|start"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            
+
         </com.google.android.material.textfield.TextInputLayout>
 
 

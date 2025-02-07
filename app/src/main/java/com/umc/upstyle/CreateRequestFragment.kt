@@ -9,11 +9,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
+import com.umc.upstyle.data.viewmodel.RequestViewModel
 import com.umc.upstyle.databinding.FragmentCreateRequestBinding
 import java.io.File
 import java.text.SimpleDateFormat
@@ -26,10 +29,26 @@ class CreateRequestFragment : Fragment() {
 
     private var photoUri: Uri? = null // ✅ lateinit 제거 및 nullable 변경
 
+    private lateinit var viewModel: RequestViewModel
+    private lateinit var editTextTitle: EditText
+    private lateinit var editTextContent: EditText
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = FragmentCreateRequestBinding.inflate(inflater, container, false)
+
+        editTextTitle = binding.etTitle
+        editTextContent = binding.etContent
+
+
+        // ViewModel 가져오기
+        viewModel = ViewModelProvider(requireActivity()).get(RequestViewModel::class.java)
+
+        // ViewModel에 저장된 데이터가 있으면 복원
+        editTextTitle.setText(viewModel.requestTitle)
+        editTextContent.setText(viewModel.requestContent)
+
         return binding.root
     }
 

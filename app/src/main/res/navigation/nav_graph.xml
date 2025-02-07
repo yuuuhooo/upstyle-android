@@ -479,6 +479,12 @@
             app:destination="@id/createVoteFragment" />
     </fragment>
 
+    <!-- OOTD 상세페이지 -->
+    <fragment
+        android:id="@+id/ootdDetailFragment"
+        android:name="com.umc.upstyle.OotdDetailFragment"
+        tools:layout="@layout/fragment_ootd_detail" />
+
 
 </navigation>
 

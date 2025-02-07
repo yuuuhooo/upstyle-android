@@ -8,37 +8,39 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 
-class RecyclerAdapter_Bookmark(private var items: List<Item_bookmark>) :
-    RecyclerView.Adapter<RecyclerAdapter_Bookmark.BookmarkViewHolder>() {
+class RecyclerAdapter_Bookmark(
+    private var itemBookmarkList: List<Item_bookmark>
+) : RecyclerView.Adapter<RecyclerAdapter_Bookmark.ViewHolder>() {
 
-    class BookmarkViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val itemImage: ImageView = itemView.findViewById(R.id.item_image)
-        val itemTitle: TextView = itemView.findViewById(R.id.item_title)
+    // ViewHolder 클래스
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val title: TextView = itemView.findViewById(R.id.item_title) // 제목 TextView
+        val image: ImageView = itemView.findViewById(R.id.item_image) // 이미지 ImageView
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BookmarkViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.recycler_item_bookmark, parent, false)
-        return BookmarkViewHolder(view)
+        return ViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: BookmarkViewHolder, position: Int) {
-        val item = items[position]
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val item = itemBookmarkList[position]
 
-        // 아이템 정보 설정
-        holder.itemTitle.text = item.description
+        // 텍스트 설정 (description -> name으로 변경)
+        holder.title.text = item.name
 
-        // Glide로 이미지 로드
+        // Glide를 사용해 이미지 로드 (URL 또는 로컬 파일 모두 처리 가능)
         Glide.with(holder.itemView.context)
-            .load(item.imageUrl)
-            .into(holder.itemImage)
+            .load(item.image)
+            .into(holder.image)
     }
 
-    override fun getItemCount(): Int = items.size
+    override fun getItemCount(): Int = itemBookmarkList.size
 
-    // 북마크된 아이템 목록 업데이트
-    fun updateList(newItems: List<Item_bookmark>) {
-        items = newItems
-        notifyDataSetChanged()
+    // ✅ 리스트 업데이트를 위한 함수
+    fun updateList(filteredItems: List<Item_bookmark>) {
+        itemBookmarkList = filteredItems // 리스트 변경
+        notifyDataSetChanged() // RecyclerView 갱신
     }
 }

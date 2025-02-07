@@ -98,6 +98,18 @@
             app:layout_constraintTop_toBottomOf="@id/ootdText"
             android:src="@drawable/text_outer"/>
 
+        <TextView
+            android:id="@+id/outer_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="텍스트 예시"
+            android:gravity="center_vertical"
+            android:layout_marginStart="24dp"
+            app:layout_constraintStart_toEndOf="@id/outer_black"
+            app:layout_constraintTop_toTopOf="@id/outer_black"/>
+
+
+
         <ImageView
             android:id="@+id/bookmark_outer"
             android:layout_width="24dp"

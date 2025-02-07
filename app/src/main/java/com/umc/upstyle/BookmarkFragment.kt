@@ -1,6 +1,7 @@
 package com.umc.upstyle
 
 import android.os.Bundle
+import android.provider.MediaStore.Video.VideoColumns.CATEGORY
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +11,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.umc.upstyle.databinding.FragmentBookmarkBinding
+import java.util.Locale.Category
 
 class BookmarkFragment : Fragment() {
 
@@ -29,10 +31,6 @@ class BookmarkFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // RecyclerView 설정
-        adapter = RecyclerAdapter_Bookmark(emptyList())
-        binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
-        binding.recyclerView.adapter = adapter
 
         // 버튼 ID 리스트
         val buttonIds = listOf(
@@ -52,6 +50,16 @@ class BookmarkFragment : Fragment() {
                 filterBookmarks(id)
             }
         }
+
+        // RecyclerView 설정
+        adapter = RecyclerAdapter_Bookmark(emptyList())
+        binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
+        binding.recyclerView.adapter = adapter
+
+        //아이템 간격 추가 (아이템끼리 5dp, 화면 양끝 12.5dp)
+        val spacingInPixels = (5 * resources.displayMetrics.density).toInt() // 5dp → px 변환
+        val edgeSpacingInPixels = (12.5 * resources.displayMetrics.density).toInt() // 12.5dp → px 변환
+        binding.recyclerView.addItemDecoration(LayoutSpace(2, spacingInPixels, edgeSpacingInPixels))
 
         // 초기 상태 불러오기
         filterBookmarks(R.id.btn_all)
@@ -74,35 +82,45 @@ class BookmarkFragment : Fragment() {
     }
 
     private fun filterBookmarks(selectedCategoryId: Int) {
-        val outerBookmarked = loadBookmarkState("bookmark_outer")
-        val topBookmarked = loadBookmarkState("bookmark_top")
-        val bottomBookmarked = loadBookmarkState("bookmark_bottom")
-        val bagBookmarked = loadBookmarkState("bookmark_bag")
-        val shoesBookmarked = loadBookmarkState("bookmark_shoes")
-        val otherBookmarked = loadBookmarkState("bookmark_other")
+        val preferences = requireActivity().getSharedPreferences("BookmarkPrefs", android.content.Context.MODE_PRIVATE)
 
         val bookmarkedItems = mutableListOf<Item_bookmark>()
 
-        when (selectedCategoryId) {
-            R.id.btn_all -> { // 모든 북마크된 아이템을 보여줌
-                if (outerBookmarked) bookmarkedItems.add(Item_bookmark("", "https://www.ocokorea.com//upload/images/product/148/148607/Product_1693647123947.jpg"))
-                if (topBookmarked) bookmarkedItems.add(Item_bookmark("", "https://example.com/top.jpg"))
-                if (bottomBookmarked) bookmarkedItems.add(Item_bookmark("", "https://example.com/bottom.jpg"))
-                if (bagBookmarked) bookmarkedItems.add(Item_bookmark("", "https://example.com/bag.jpg"))
-                if (shoesBookmarked) bookmarkedItems.add(Item_bookmark("", "https://example.com/shoes.jpg"))
-                if (otherBookmarked) bookmarkedItems.add(Item_bookmark("", "https://example.com/other.jpg"))
+        val uniqueItems = mutableSetOf<String>() // 중복 제거를 위해
+        val allKeys = preferences.all.keys.filter { it.endsWith("_name") }
+
+        for (key in allKeys) {
+            val itemKey = key.removeSuffix("_name") // _name 제거하여 실제 북마크 키 획득
+            if (preferences.getBoolean(itemKey, false)) {
+                val name = preferences.getString("${itemKey}_name", null)
+                val image = preferences.getString("${itemKey}_image", null)
+                if (!name.isNullOrEmpty() && !image.isNullOrEmpty()) {
+                    val category = itemKey.split("_")[1] // 예: "bookmark_outer_아이템이름" → "outer"
+                    bookmarkedItems.add(Item_bookmark(name, image, category))
+                }
             }
-            R.id.btn_outer -> if (outerBookmarked) bookmarkedItems.add(Item_bookmark("루스한 오버핏 블랙", "https://www.ocokorea.com//upload/images/product/148/148607/Product_1693647123947.jpg"))
-            R.id.btn_top -> if (topBookmarked) bookmarkedItems.add(Item_bookmark("오버핏 레귤러 블랙", "https://example.com/top.jpg"))
-            R.id.btn_bottom -> if (bottomBookmarked) bookmarkedItems.add(Item_bookmark("일단 아무 텍스트", "https://example.com/bottom.jpg"))
-            R.id.btn_bag -> if (bagBookmarked) bookmarkedItems.add(Item_bookmark("숄더백", "https://example.com/bag.jpg"))
-            R.id.btn_shoes -> if (shoesBookmarked) bookmarkedItems.add(Item_bookmark("부츠/워커", "https://example.com/shoes.jpg"))
-            R.id.btn_other -> if (otherBookmarked) bookmarkedItems.add(Item_bookmark("기타", "https://example.com/other.jpg"))
+        }
+
+        // 선택된 카테고리에 따라 필터링
+        val filteredItems = when (selectedCategoryId) {
+            R.id.btn_all -> {
+                // 중복 제거하여 리스트 생성 (이미지만 표시, name을 null로 설정)
+                bookmarkedItems.filter { uniqueItems.add(it.image) }
+                    .map { Item_bookmark("", it.image, it.category) }
+            }
+            R.id.btn_outer -> bookmarkedItems.filter { it.category == "outer" }
+            R.id.btn_top -> bookmarkedItems.filter { it.category == "top" }
+            R.id.btn_bottom -> bookmarkedItems.filter { it.category == "bottom" }
+            R.id.btn_bag -> bookmarkedItems.filter { it.category == "bag" }
+            R.id.btn_shoes -> bookmarkedItems.filter { it.category == "shoes" }
+            R.id.btn_other -> bookmarkedItems.filter { it.category == "other" }
+            else -> bookmarkedItems
         }
 
         // RecyclerView 업데이트
-        adapter.updateList(bookmarkedItems)
+        adapter.updateList(filteredItems)
     }
+
 
     private fun loadBookmarkState(key: String): Boolean {
         val preferences = requireActivity().getSharedPreferences("BookmarkPrefs", android.content.Context.MODE_PRIVATE)

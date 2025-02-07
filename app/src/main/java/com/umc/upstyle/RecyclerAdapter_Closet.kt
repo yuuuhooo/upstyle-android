@@ -7,8 +7,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.umc.upstyle.model.ClothPreview
 
-class RecyclerAdapter_Closet(private val itemClosetList: List<Item_closet>) :
+class RecyclerAdapter_Closet(private val itemClosetList: List<ClothPreview>) :
     RecyclerView.Adapter<RecyclerAdapter_Closet.ViewHolder>() {
 
     // ViewHolder 클래스
@@ -26,13 +27,19 @@ class RecyclerAdapter_Closet(private val itemClosetList: List<Item_closet>) :
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = itemClosetList[position]
 
-        // 텍스트 설정
-        holder.title.text = item.description
+        // ✅ 텍스트 설정 (kindName이나 categoryName으로 설정)
+        holder.title.text = item.kindName ?: "이름 없음"
 
-        // Glide를 사용해 이미지 로드 (URL 또는 로컬 파일 모두 처리 가능)
-        Glide.with(holder.itemView.context)
-            .load(item.imageUrl)
-            .into(holder.image)
+        // ✅ 이미지 설정 (ootd.imageUrl이 있으면 표시, 없으면 기본 이미지)
+        val imageUrl = item.ootd?.imageUrl
+
+        if (!imageUrl.isNullOrEmpty()) {
+            Glide.with(holder.itemView.context)
+                .load(imageUrl)
+                .into(holder.image)
+        } else {
+            holder.image.setImageResource(R.drawable.placeholder_image)  // 기본 이미지 설정
+        }
     }
 
     override fun getItemCount(): Int = itemClosetList.size

@@ -3,13 +3,20 @@ package com.umc.upstyle
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
+import com.umc.upstyle.api.ApiService
 import com.umc.upstyle.databinding.FragmentClosetItemBinding
+import com.umc.upstyle.model.ClosetCategoryResponse
 import java.io.File
+import com.umc.upstyle.model.ClothPreview
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class ClosetItemFragment : Fragment() {
 
@@ -17,14 +24,16 @@ class ClosetItemFragment : Fragment() {
     private var _binding: FragmentClosetItemBinding? = null
     private val binding get() = _binding!!
 
+    private var categoryId: Long? = null  // API에서 사용할 categoryId
     private var category: String? = null
+    private var userId: Long = 1L // 기본 userId 값 (필요 시 수정)
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val args = ClosetItemFragmentArgs.fromBundle(requireArguments())
         category = args.category // Safe Args로 전달된 CATEGORY 값
     }
-
 
 
     override fun onCreateView(
@@ -45,21 +54,46 @@ class ClosetItemFragment : Fragment() {
 
 
         // 상단 텍스트 표시
-        binding.titleText.text = when (category) {
-            "OUTER" -> "OUTER"
-            "TOP" -> "TOP"
-            "SHOES" -> "SHOES"
-            "BOTTOM" -> "BOTTOM"
+        binding.titleText.text = when (categoryId) {
+            1L -> "OUTER"
+            2L -> "TOP"
+            3L -> "BOTTOM"
+            4L -> "SHOES"
             else -> "OTHER"
         }
 
-        // RecyclerView 설정
-        val items = loadItemsFromPreferences()
-        binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
-        binding.recyclerView.adapter = RecyclerAdapter_Closet(items)
-
-
+        // ✅ API 호출로 데이터 불러오기
+        fetchClosetItems()
     }
+
+    private fun fetchClosetItems() {
+        val apiService = RetrofitClient.createService(ApiService::class.java)
+
+        apiService.getClosetByCategory(userId = 1L, categoryId = categoryId)
+            .enqueue(object : Callback<ClosetCategoryResponse> {
+                override fun onResponse(
+                    call: Call<ClosetCategoryResponse>,
+                    response: Response<ClosetCategoryResponse>
+                ) {
+                    if (response.isSuccessful && response.body()?.isSuccess == true) {
+                        val items = response.body()?.result?.clothPreviewList ?: emptyList()
+                        setupRecyclerView(items)
+                    } else {
+                        binding.titleText.text = "데이터 불러오기 실패"
+
+
+                    }
+                }
+
+                override fun onFailure(call: Call<ClosetCategoryResponse>, t: Throwable) {
+                }
+            })
+    }
+        // RecyclerView 설정
+        private fun setupRecyclerView(items: List<ClothPreview>) {
+            binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
+            binding.recyclerView.adapter = RecyclerAdapter_Closet(items)
+        }
 
 
 

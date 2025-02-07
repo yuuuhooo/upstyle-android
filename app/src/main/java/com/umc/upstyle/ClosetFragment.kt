@@ -1,13 +1,19 @@
 package com.umc.upstyle
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.navigation.fragment.findNavController
+import com.umc.upstyle.api.ApiService
 import com.umc.upstyle.databinding.ActivityClosetBinding
+import com.umc.upstyle.model.ClosetResponse
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class ClosetFragment : Fragment() {
     private var _binding: ActivityClosetBinding? = null
@@ -23,6 +29,27 @@ class ClosetFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val apiService = RetrofitClient.createService(ApiService::class.java)
+
+        apiService.getUserCloset(userId = 1L).enqueue(object : Callback<ClosetResponse> {
+            override fun onResponse(call: Call<ClosetResponse>, response: Response<ClosetResponse>) {
+                if (response.isSuccessful) {
+                    val userName = response.body()?.result?.userName
+                    binding.tvUsername.text = "${userName}"
+
+
+                } else {
+                    binding.tvUsername.text = "오류"
+
+                }
+            }
+
+            override fun onFailure(call: Call<ClosetResponse>, t: Throwable) {
+                binding.tvUsername.text = "API 실패"
+
+            }
+        })
 
         binding.backButton.setOnClickListener {
             findNavController().navigate(R.id.mainFragment) // 이전 Fragment로 이동

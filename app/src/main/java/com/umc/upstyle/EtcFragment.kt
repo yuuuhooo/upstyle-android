@@ -21,6 +21,12 @@ class EtcFragment : Fragment(R.layout.fragment_etc) {
     private var selectedColor: String? = null
     private var selectedEtc: String? = null
 
+
+    private var kindId: Int? = null
+    private var categoryId: Int? = null
+    private var fitId: Int? = null
+    private var colorId: Int? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -44,6 +50,12 @@ class EtcFragment : Fragment(R.layout.fragment_etc) {
         selectedColor = arguments?.getString("COLOR")
 
 
+        kindId = arguments?.getInt("KIND_ID")
+        categoryId = arguments?.getInt("CATEGORY_ID")
+        fitId = arguments?.getInt("FIT_ID")
+        colorId = arguments?.getInt("COLOR_ID")
+
+
         // 옷 종류에 대한 설명
         binding.mainTitleTextView.text = "$selectedCategory"
 
@@ -64,6 +76,13 @@ class EtcFragment : Fragment(R.layout.fragment_etc) {
             putString("SIZE", selectedSize)
             putString("COLOR", selectedColor)
             putString("ETC", selectedEtc)
+
+            putInt("CLOTH_ID", 0)
+            kindId?.let { putInt("KIND_ID", it) }
+            categoryId?.let { putInt("CATEGORY_ID", it) }
+            fitId?.let { putInt("FIT_ID", it) }
+            colorId?.let { putInt("COLOR_ID", it) }
+            putString("ADD_INFO", selectedEtc)
         }
 
         val action = R.id.todayOotdFragment

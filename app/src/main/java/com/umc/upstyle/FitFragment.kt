@@ -11,6 +11,7 @@ import androidx.core.view.children
 import androidx.navigation.fragment.findNavController
 import com.google.android.flexbox.FlexboxLayout
 import com.umc.upstyle.databinding.ActivityFitBinding
+import com.umc.upstyle.utils.FitUtil
 
 class FitFragment : Fragment(R.layout.activity_fit) {
 
@@ -21,6 +22,9 @@ class FitFragment : Fragment(R.layout.activity_fit) {
     private var selectedSubCategory: String? = null
     private var selectedFit: String? = null
 
+    private var kindId: Int? = null
+    private var categoryId: Int? = null
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -28,6 +32,9 @@ class FitFragment : Fragment(R.layout.activity_fit) {
 
         val category = arguments?.getString("CATEGORY")
         val subCategory = arguments?.getString("SUB_CATEGORY")
+
+        kindId = arguments?.getInt("KIND_ID")
+        categoryId = arguments?.getInt("CATEGORY_ID")
 
         println("DEBUG: Received CATEGORY=$category, SUB_CATEGORY=$subCategory")
 
@@ -102,11 +109,21 @@ class FitFragment : Fragment(R.layout.activity_fit) {
             return
         }
 
+        val fit = selectedFit  // 지역 변수로 값 고정
+        val fitId = FitUtil.getFitIdByName(fit) ?: -1 // 기본값 -1 설정
+
+
         // 데이터를 Bundle에 추가
         val bundle = Bundle().apply {
             putString("CATEGORY", selectedCategory)
             putString("SUB_CATEGORY", selectedSubCategory)
             putString("FIT", selectedFit)
+
+
+            kindId?.let { putInt("KIND_ID", it) }
+            categoryId?.let { putInt("CATEGORY_ID", it) }
+            putInt("FIT_ID", fitId)  // Int 값 추가
+
         }
 
         val action = R.id.action_fitFragment_to_colorFragment

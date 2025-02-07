@@ -42,23 +42,18 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
         val preferences = requireActivity().getSharedPreferences("AppData", Context.MODE_PRIVATE)
 
 
-        val dateFormatServer = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-        val dateServer = dateFormatServer.format(Date())
+        // 이전 Fragment나 Activity에서 전달된 데이터 처리
+        handleReceivedData()
 
-        val clothList = mutableListOf<ClothRequestDTO>()
-
-
-
-
-        //LoadItemFragment 에서 UI업데이트
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<String>("SELECTED_ITEM")
-            ?.observe(viewLifecycleOwner) { selectedText ->
-                val selectedCategory = findNavController().currentBackStackEntry?.savedStateHandle?.get<String>("CATEGORY")
-
-                if (!selectedText.isNullOrEmpty() && !selectedCategory.isNullOrEmpty()) {
-                    updateSelectedCategory(preferences, selectedCategory, selectedText)
-                }
-            }
+        // 카테고리 UI 업데이트
+        clothViewModel.categoryData.observe(viewLifecycleOwner) { categoryData ->
+            binding.outerText.text = categoryData["OUTER"]
+            binding.topText.text = categoryData["TOP"]
+            binding.bottomText.text = categoryData["BOTTOM"]
+            binding.shoesText.text = categoryData["SHOES"]
+            binding.bagText.text = categoryData["BAG"]
+            binding.otherText.text = categoryData["OTHER"]
+        }
 
         // 날짜
         val dateFormat = SimpleDateFormat("MMdd", Locale.getDefault())
@@ -67,39 +62,26 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
         binding.date.text = todayDate
 
 
-
-
-
-        // 기존 UI 업데이트
-        updateUIWithPreferences(preferences)
-
-        // 이전 Fragment나 Activity에서 전달된 데이터 처리
-        handleReceivedData(preferences)
-
         // 저장된 데이터 복원
         updateUIWithPreferences(preferences)
 
         // 카테고리 버튼 이벤트 설정
-        setupCategoryButtons(preferences)
+        setupCategoryButtons()
 
         // 사진 등록 버튼 이벤트
         binding.photoUploadFrame.setOnClickListener { showPhotoOptions() }
 
         // 저장 버튼 이벤트
         binding.saveButton.setOnClickListener {
-            // saveData(preferences)
-
+            val dateServer = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
             val ootdRequest = OOTDRequest(
                 userId = 1,
                 date = dateServer,
                 ootdImages = "",
-                clothViewModel.clothList
+                clothViewModel.clothList.value ?: emptyList()
             )
 
-            // 이미지 URI를 가져옴 (선택된 이미지 URI)
-            val imageUri = Uri.parse(preferences.getString("SAVED_IMAGE_PATH", null))
-
-            // 이미지가 선택되어 있다면 uploadOOTD 함수 호출
+            val imageUri = Uri.parse(clothViewModel.categoryData.value?.get("SAVED_IMAGE_PATH"))
             if (imageUri != null) {
                 uploadOOTD(ootdRequest, imageUri)
             } else {
@@ -191,13 +173,37 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
 
 
     // 이전 Fragment나 Activity에서 전달된 데이터 처리
-    private fun handleReceivedData(preferences: SharedPreferences) {
+    private fun handleReceivedData() {
         val selectedCategory = arguments?.getString("CATEGORY")
         val selectedSubCategory = arguments?.getString("SUB_CATEGORY")
         val selectedFit = arguments?.getString("FIT")
         val selectedSize = arguments?.getString("SIZE")
         val selectedColor = arguments?.getString("COLOR")
         val selectedEtc = arguments?.getString("ETC")
+
+
+        val clothId = arguments?.getInt("CLOTH_ID") ?:0
+        val kindId = arguments?.getInt("KIND_ID") ?:0
+        val categoryId = arguments?.getInt("CATEGORY_ID") ?:0
+        val fitId = arguments?.getInt("FIT_ID") ?:0
+        val colorId = arguments?.getInt("COLOR_ID") ?:0
+        val addInfo = arguments?.getString("ADD_INFO") ?:""
+
+
+        // 새로 받아온 아이템 정보가 있다면
+        if(kindId != 0) {
+            // DTO 생성
+            val clothRequestDTO = ClothRequestDTO(
+                clothId = clothId,
+                clothKindId = kindId,
+                clothCategoryId = categoryId,
+                fitCategoryId = fitId,
+                colorCategoryId = colorId,
+                additionalInfo = addInfo
+            )
+
+            clothViewModel.addClothRequest(clothRequestDTO)
+        }
 
         if (!selectedCategory.isNullOrEmpty()) {
             val categoryText = when (selectedCategory) {
@@ -207,25 +213,13 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
                 else -> ""
             }
 
-            // 데이터를 SharedPreferences에 저장
-            preferences.edit {
-                putString(selectedCategory, categoryText)
-            }
 
-            // UI 업데이트
-            when (selectedCategory) {
-                "OUTER" -> binding.outerText.text = categoryText
-                "TOP" -> binding.topText.text = categoryText
-                "BOTTOM" -> binding.bottomText.text = categoryText
-                "SHOES" -> binding.shoesText.text = categoryText
-                "BAG" -> binding.bagText.text = categoryText
-                "OTHER" -> binding.otherText.text = categoryText
-            }
+            // UI 업데이트 되도록
+            clothViewModel.updateCategory(selectedCategory, categoryText)
         }
     }
 
-    // 카테고리 버튼 초기화
-    private fun setupCategoryButtons(preferences: SharedPreferences) {
+    private fun setupCategoryButtons() {
         val buttons = listOf(
             binding.outerButton to "OUTER",
             binding.topButton to "TOP",
@@ -241,6 +235,7 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
             }
         }
     }
+
     private fun showLoadItemPopupDialog(category: String) {
         val dialog = LoadItemPopupDialog(
             requireContext(),
@@ -255,6 +250,7 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
         )
         dialog.show()
     }
+
 
     //categoryFragment로 이동
     private fun navigateToCategoryFragment(category: String) {
@@ -281,25 +277,6 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
         val action = TodayOotdFragmentDirections.actionTodayOotdFragmentToLoadItemFragment(category)
         findNavController().navigate(action)
     }
-
-    //LoadItemFragment에서 받아온 데이터 UI업데이트 함수
-    private fun updateSelectedCategory(preferences: SharedPreferences, category: String, selectedText: String) {
-        // SharedPreferences에 저장
-        preferences.edit().putString(category, selectedText).apply()
-
-        // UI 업데이트
-        when (category) {
-            "OUTER" -> binding.outerText.text = selectedText
-            "TOP" -> binding.topText.text = selectedText
-            "BOTTOM" -> binding.bottomText.text = selectedText
-            "SHOES" -> binding.shoesText.text = selectedText
-            "BAG" -> binding.bagText.text = selectedText
-            "OTHER" -> binding.otherText.text = selectedText
-        }
-
-        updateSaveButtonVisibility(preferences) // 저장 버튼 활성화 여부 확인
-    }
-
 
 
 

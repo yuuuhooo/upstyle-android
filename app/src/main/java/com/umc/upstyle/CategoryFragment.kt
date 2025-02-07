@@ -12,6 +12,7 @@ import androidx.core.view.children
 import androidx.navigation.fragment.findNavController
 import com.umc.upstyle.databinding.ActivityCategoryBinding
 import com.google.android.flexbox.FlexboxLayout
+import com.umc.upstyle.utils.CategoryUtil
 
 class CategoryFragment : Fragment(R.layout.activity_category) {
 
@@ -100,25 +101,30 @@ class CategoryFragment : Fragment(R.layout.activity_category) {
     }
 
     private fun navigateToNextStep(selectedCategory: String) {
-        if (selectedSubCategory.isNullOrEmpty()) {
-            Toast.makeText(requireContext(), "서브 카테고리를 선택해주세요.", Toast.LENGTH_SHORT).show()
-            return
-        }
+        selectedSubCategory?.let { subCategory ->
+            val (categoryId, kindId) = CategoryUtil.getCategoryIds(subCategory) ?: Pair(-1, -1)
 
-        val bundle = Bundle().apply {
-            putString("CATEGORY", selectedCategory)
-            putString("SUB_CATEGORY", selectedSubCategory)
-        }
+            val bundle = Bundle().apply {
+                putString("CATEGORY", selectedCategory)
+                putString("SUB_CATEGORY", subCategory)
 
-        Log.d("CategoryFragment", "Navigating with CATEGORY=$selectedCategory, SUB_CATEGORY=$selectedSubCategory")
+                putInt("KIND_ID", kindId)
+                putInt("CATEGORY_ID", categoryId)
+            }
 
-        when (selectedCategory) {
-            "OUTER", "TOP", "BOTTOM" -> findNavController().navigate(R.id.action_categoryFragment_to_fitFragment, bundle)
-            "SHOES", "OTHER" -> findNavController().navigate(R.id.action_categoryFragment_to_colorFragment, bundle)
-            "BAG" -> findNavController().navigate(R.id.action_categoryFragment_to_sizeFragment, bundle)
-            else -> Toast.makeText(requireContext(), "올바른 카테고리를 선택해주세요.", Toast.LENGTH_SHORT).show()
-        }
+            Log.d("CategoryFragment", "Navigating with CATEGORY=$selectedCategory, SUB_CATEGORY=$subCategory, ID=$categoryId, KIND_ID=$kindId")
+
+            when (selectedCategory) {
+                "OUTER", "TOP", "BOTTOM" -> findNavController().navigate(R.id.action_categoryFragment_to_fitFragment, bundle)
+                "SHOES", "OTHER" -> findNavController().navigate(R.id.action_categoryFragment_to_colorFragment, bundle)
+                "BAG" -> findNavController().navigate(R.id.action_categoryFragment_to_sizeFragment, bundle)
+                else -> Toast.makeText(requireContext(), "올바른 카테고리를 선택해주세요.", Toast.LENGTH_SHORT).show()
+            }
+        } ?: Toast.makeText(requireContext(), "서브 카테고리를 선택해주세요.", Toast.LENGTH_SHORT).show()
+
     }
+
+
 
 
 

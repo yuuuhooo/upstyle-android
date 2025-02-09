@@ -16,6 +16,7 @@ class RecyclerAdapter_Bookmark(
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val title: TextView = itemView.findViewById(R.id.item_title) // 제목 TextView
         val image: ImageView = itemView.findViewById(R.id.item_image) // 이미지 ImageView
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

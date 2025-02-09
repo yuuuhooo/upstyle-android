@@ -1,7 +1,9 @@
 package com.umc.upstyle.data.network
 
+import com.umc.upstyle.data.model.BookmarkResponse
 import com.umc.upstyle.data.model.ClosetCategoryResponse
 import com.umc.upstyle.data.model.ClosetResponse
+import com.umc.upstyle.data.model.VotePreviewResponse
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -28,6 +30,16 @@ interface ApiService {
         @Path("userId") userId: Long,
         @Path("categoryId") categoryId: Long
     ): Call<ClosetCategoryResponse>
+
+    @GET("votes/")
+    fun getVotePreviews(): Call<VotePreviewResponse>
+
+
+    @GET("bookmarks/")  // 서버의 API 엔드포인트
+    fun getBookmarks(
+        @Query("userId") userId: Long): Call<BookmarkResponse>
+
+
 
 
 }

@@ -32,7 +32,19 @@ class ClosetItemFragment : Fragment() {
         super.onCreate(savedInstanceState)
         val args = ClosetItemFragmentArgs.fromBundle(requireArguments())
         category = args.category // Safe Args로 전달된 CATEGORY 값
+
+        //category 값을 기반으로 categoryId 매핑
+        categoryId = when (category) {
+            "OUTER" -> 1L
+            "TOP" -> 2L
+            "BOTTOM" -> 3L
+            "SHOES" -> 4L
+            "BAG" -> 5L
+            "OTHER" -> 6L
+            else -> null
+        }
     }
+
 
 
     override fun onCreateView(
@@ -51,19 +63,13 @@ class ClosetItemFragment : Fragment() {
             parentFragmentManager.popBackStack() // 이전 Fragment로 이동
         }
 
+        //category 값을 그대로 사용하여 상단 텍스트 설정
+        binding.titleText.text = category ?: "OTHER"
 
-        // 상단 텍스트 표시
-        binding.titleText.text = when (categoryId) {
-            1L -> "OUTER"
-            2L -> "TOP"
-            3L -> "BOTTOM"
-            4L -> "SHOES"
-            else -> "OTHER"
-        }
-
-        // ✅ API 호출로 데이터 불러오기
+        //API 호출
         fetchClosetItems()
     }
+
 
     private fun fetchClosetItems() {
         val apiService = RetrofitClient.createService(ApiService::class.java)

@@ -14,8 +14,10 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.storage.FirebaseStorage
+import com.umc.upstyle.data.model.ClosetCategoryResponse
 import com.umc.upstyle.data.model.ClothRequestDTO
 import com.umc.upstyle.data.model.OOTDRequest
+import com.umc.upstyle.data.network.ApiService
 import com.umc.upstyle.data.network.OOTDService
 import com.umc.upstyle.data.viewmodel.ClothViewModel
 import com.umc.upstyle.databinding.ActivityTodayOotdBinding
@@ -23,6 +25,9 @@ import kotlinx.coroutines.launch
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
 
@@ -39,6 +44,10 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
 
         // 이전 Fragment나 Activity에서 전달된 데이터 처리
         handleReceivedData()
+
+        // 전달된 데이터 처리
+        observeSelectedItem()
+
 
 //        // 카테고리 UI 업데이트
 //        clothViewModel.categoryData.observe(viewLifecycleOwner) { categoryData ->
@@ -71,11 +80,11 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
             val ootdRequest = OOTDRequest(
                 userId = 1,
                 date = dateServer,
-                ootdImages = "",
+                ootdImages = "",  // 이미지 URL은 아래에서 추가
                 clothViewModel.clothList.value ?: emptyList()
             )
 
-            val imageUri = Uri.parse(clothViewModel.imageUris.toString())
+            val imageUri = clothViewModel.imageUris.value?.lastOrNull()?.let { Uri.parse(it) }
             if (imageUri != null) {
                 uploadOOTD(ootdRequest, imageUri)
             } else {
@@ -92,11 +101,29 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
         }
     }
 
+    private fun observeSelectedItem() {
+        val navBackStackEntry = findNavController().currentBackStackEntry
+        navBackStackEntry?.savedStateHandle?.getLiveData<String>("SELECTED_ITEM")?.observe(
+            viewLifecycleOwner
+        ) { selectedItem ->
+            val category = navBackStackEntry.savedStateHandle.get<String>("CATEGORY")
+            val imageUrl = navBackStackEntry.savedStateHandle.get<String>("SELECTED_ITEM_IMAGE_URL")
+
+            // ViewModel에 데이터 추가
+            clothViewModel.updateCategory(category ?: "OTHER", selectedItem)
+            imageUrl?.let { clothViewModel.addImage(it) }
+
+            // UI 업데이트
+            updateCategoryUI(category, selectedItem, imageUrl)
+        }
+    }
+
+
+
 
     private fun uploadOOTD(request: OOTDRequest, imageUri: Uri?) {
         lifecycleScope.launch {
             try {
-                // Firebase에 이미지를 업로드하고 URL을 받기 위한 비동기 작업
                 val uploadedImageUrls = mutableListOf<String>()
 
                 if (imageUri != null) {
@@ -110,9 +137,8 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
                     }
                 }
 
-                // Firebase 업로드가 성공적으로 완료되면, 업로드된 이미지 URL을 OOTDRequest에 추가하여 서버로 전송
                 if (uploadedImageUrls.isNotEmpty()) {
-                    val updatedRequest = request.copy(ootdImages = uploadedImageUrls.first()) // 첫 번째 이미지만 사용
+                    val updatedRequest = request.copy(ootdImages = uploadedImageUrls.first())
                     sendToServer(updatedRequest)
                 } else {
                     Log.e("Upload", "이미지 업로드에 실패했습니다.")
@@ -123,6 +149,7 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
             }
         }
     }
+
 
     // Firebase에 이미지를 업로드하는 함수
     private fun uploadImageToFirebase(uri: Uri, callback: (String?) -> Unit) {
@@ -269,6 +296,19 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
         findNavController().navigate(action)
     }
 
+    private fun updateCategoryUI(category: String?, itemName: String?, imageUrl: String?) {
+        when (category) {
+            "OUTER" -> binding.outerText.text = itemName
+            "TOP" -> binding.topText.text = itemName
+            "BOTTOM" -> binding.bottomText.text = itemName
+            "SHOES" -> binding.shoesText.text = itemName
+            "BAG" -> binding.bagText.text = itemName
+            "OTHER" -> binding.otherText.text = itemName
+        }
+    }
+
+
+
 
 
     private fun updateUIWithViewModel() {
@@ -286,7 +326,6 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
         clothViewModel.imageUris.observe(viewLifecycleOwner) { images ->
             if (images.isNotEmpty()) {
                 binding.photoImageView.visibility = View.VISIBLE
-                binding.uploadText.visibility = View.GONE
 
                 val lastImagePath = images.last() // 마지막 이미지 경로 가져오기
                 val imageUri = Uri.parse(lastImagePath) // 문자열을 Uri로 변환
@@ -390,7 +429,7 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
             inputStream?.close()
             outputStream.close()
 
-            // ✅ 저장된 파일을 FileProvider를 사용하여 Uri 변환
+            //저장된 파일을 FileProvider를 사용하여 Uri 변환
             val savedUri = FileProvider.getUriForFile(
                 requireContext(),
                 "${requireContext().packageName}.fileprovider",
@@ -410,6 +449,44 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
 
         preferences.edit().putString("SAVED_IMAGE_PATH", path).apply()
     }
+
+    private fun fetchClosetItems(categoryId: Long, category: String) {
+        val apiService = RetrofitClient.createService(ApiService::class.java)
+
+        apiService.getClosetByCategory(userId = 1L, categoryId = categoryId)
+            .enqueue(object : Callback<ClosetCategoryResponse> {
+                override fun onResponse(
+                    call: Call<ClosetCategoryResponse>,
+                    response: Response<ClosetCategoryResponse>
+                ) {
+                    if (response.isSuccessful && response.body()?.isSuccess == true) {
+                        val items = response.body()?.result?.clothPreviewList ?: emptyList()
+
+                        if (items.isNotEmpty()) {
+                            val firstItem = items.first()
+                            updateCategoryUI(
+                                category,
+                                firstItem.kindName,
+                                firstItem.ootd?.imageUrl
+                            )
+
+                            // ViewModel에도 저장
+                            clothViewModel.updateCategory(category, firstItem.kindName)
+                            firstItem.ootd?.imageUrl?.let { clothViewModel.addImage(it) }
+                        }
+                    } else {
+                        Toast.makeText(requireContext(), "데이터 불러오기 실패", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                override fun onFailure(call: Call<ClosetCategoryResponse>, t: Throwable) {
+                    Toast.makeText(requireContext(), "네트워크 오류 발생", Toast.LENGTH_SHORT).show()
+                }
+            })
+    }
+
+
+
 
     override fun onDestroyView() {
         super.onDestroyView()

@@ -4,6 +4,7 @@ import com.umc.upstyle.data.model.ClosetCategoryResponse
 import com.umc.upstyle.data.model.ClosetResponse
 import retrofit2.Call
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ApiService {
@@ -20,4 +21,13 @@ interface ApiService {
         @Query("userId") userId: Long,
         @Query("categoryId") categoryId: Long? = null
     ): Call<ClosetCategoryResponse>
+
+
+    @GET("closet/{userId}/{categoryId}")
+    fun getClosetByCategory(
+        @Path("userId") userId: Long,
+        @Path("categoryId") categoryId: Long
+    ): Call<ClosetCategoryResponse>
+
+
 }

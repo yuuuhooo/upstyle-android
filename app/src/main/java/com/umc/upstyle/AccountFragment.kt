@@ -1,7 +1,10 @@
 package com.umc.upstyle
 
+import android.content.Context
+import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +12,7 @@ import androidx.core.content.ContentProviderCompat
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.kakao.sdk.user.UserApiClient
 import com.umc.upstyle.databinding.FragmentAccountBinding
 import com.umc.upstyle.databinding.FragmentSearchBinding
 
@@ -49,11 +53,33 @@ class AccountFragment : Fragment(R.layout.fragment_account) {
 
             },
             onYesClicked = {
-                val intent = Intent(requireContext(), LoginActivity::class.java) // 이동할 액티비티 지정
-                startActivity(intent) // 액티비티 시작
+                logout()
             }
         )
         dialog.show()
+    }
+
+    private fun logout() {
+        UserApiClient.instance.logout { error ->
+            if (error != null) {
+                Log.e("Logout", "카카오 로그아웃 실패", error)
+            } else {
+                Log.d("Logout", "카카오 로그아웃 성공")
+                clearJwt()
+            }
+        }
+    }
+
+    private fun clearJwt() {
+        val sharedPref = requireContext().getSharedPreferences("Auth", Context.MODE_PRIVATE) // requireContext() 사용
+        val editor = sharedPref.edit()
+        editor.remove("jwt_token") // 저장된 JWT 삭제
+        editor.apply()
+
+        // 로그인 화면으로 이동
+        val intent = Intent(requireContext(), LoginActivity::class.java) // requireContext() 사용
+        startActivity(intent)
+        requireActivity().finish() // Activity 종료
     }
 
     override fun onDestroyView() {

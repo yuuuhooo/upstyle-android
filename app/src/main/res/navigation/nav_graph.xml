@@ -409,7 +409,17 @@
         android:label="VoteFragment" >
         <action
             android:id="@+id/action_voteFragment_to_postDetailFragment"
-            app:destination="@id/postDetailFragment" />
+            app:destination="@id/postDetailFragment">
+            <argument
+                android:name="id"
+                app:argType="integer" />
+            <argument
+                android:name="title"
+                app:argType="string" />
+            <argument
+                android:name="voteCount"
+                app:argType="integer" />
+        </action>
     </fragment>
     <fragment
         android:id="@+id/requestFragment"

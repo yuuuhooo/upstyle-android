@@ -9,6 +9,7 @@ import androidx.navigation.fragment.findNavController
 import com.umc.upstyle.data.network.ApiService
 import com.umc.upstyle.databinding.ActivityClosetBinding
 import com.umc.upstyle.data.model.ClosetResponse
+import com.umc.upstyle.data.network.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

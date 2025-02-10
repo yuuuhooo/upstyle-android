@@ -1,4 +1,4 @@
-package com.umc.upstyle
+package com.umc.upstyle.data.network
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

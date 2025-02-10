@@ -16,6 +16,7 @@ import com.umc.upstyle.data.model.ApiResponse
 import com.umc.upstyle.data.model.OOTDCalendar
 import com.umc.upstyle.data.model.OOTDPreview
 import com.umc.upstyle.data.network.OotdApiService
+import com.umc.upstyle.data.network.RetrofitClient
 import com.umc.upstyle.databinding.ListItemDayBinding
 import java.util.*
 import retrofit2.Call

@@ -5,6 +5,7 @@ data class VoteDetailResponse(
     val user: User,
     val title: String,
     val body: String,
+    val imageUrl: String,
     val optionList: List<VoteOption>
 )
 

@@ -13,6 +13,7 @@ import com.umc.upstyle.databinding.FragmentClosetItemBinding
 import com.umc.upstyle.data.model.ClosetCategoryResponse
 import java.io.File
 import com.umc.upstyle.data.model.ClothPreview
+import com.umc.upstyle.data.network.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

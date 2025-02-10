@@ -17,6 +17,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.umc.upstyle.data.model.ClothRequestDTO
 import com.umc.upstyle.data.model.OOTDRequest
 import com.umc.upstyle.data.network.OOTDService
+import com.umc.upstyle.data.network.RetrofitClient
 import com.umc.upstyle.data.viewmodel.ClothViewModel
 import com.umc.upstyle.databinding.ActivityTodayOotdBinding
 import kotlinx.coroutines.launch

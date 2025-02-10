@@ -17,6 +17,7 @@ import com.umc.upstyle.data.model.ClosetResponse
 import com.umc.upstyle.data.model.OOTDCalendar
 import com.umc.upstyle.data.model.OOTDPreview
 import com.umc.upstyle.data.network.OotdApiService
+import com.umc.upstyle.data.network.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

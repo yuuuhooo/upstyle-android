@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.umc.upstyle.data.model.ApiResponse
 import com.umc.upstyle.data.model.VoteDetailResponse
@@ -35,9 +36,12 @@ class PostDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val voteId = arguments?.getInt("voteId") ?: return
+        val voteId = args.id // 이전 프래그먼트에서 전달된 voteId
 
         fetchVoteDetails(voteId)
+
+        binding.backButton.setOnClickListener { findNavController().navigateUp() }
+
     }
 
     private fun fetchVoteDetails(voteId: Int) {

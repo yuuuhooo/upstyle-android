@@ -2,19 +2,30 @@ package com.umc.upstyle
 
 import PostAdapter
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.umc.upstyle.data.repository.PostRepository
 import com.umc.upstyle.databinding.FragmentVoteBinding
 import com.umc.upstyle.data.model.Post
 
+// 이벤트 전달을 위한 인터페이스
+interface VoteFragmentListener {
+    fun onVoteSelected(postId: Int, postTitle: String, voteCount: Int)
+}
+
 class VoteFragment : Fragment() {
     private var _binding: FragmentVoteBinding? = null
     private val binding get() = _binding!!
+    private var listener: VoteFragmentListener? = null
+
+    // ChatFragment에서 리스너 설정
+    fun setVoteFragmentListener(listener: VoteFragmentListener) {
+        this.listener = listener
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -30,19 +41,15 @@ class VoteFragment : Fragment() {
         // 서버에서 데이터 가져오기
         PostRepository.fetchPosts { postList ->
             val adapter = PostAdapter(postList) { post ->
-                val action = VoteFragmentDirections
-                    .actionVoteFragmentToPostDetailFragment(post.id, post.title, post.totalResponseCount)
-                findNavController().navigate(action)
+                listener?.onVoteSelected(post.id, post.title, post.totalResponseCount)
+                Log.d("Retrofit", "id 전달 성공!")
             }
 
             binding.voteRecyclerView.adapter = adapter
             binding.voteRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         }
-
-
     }
 
-    // ViewPager2 길이 동적으로 변하게 하는 부분
     override fun onResume() {
         super.onResume()
         binding.voteRecyclerView.requestLayout()

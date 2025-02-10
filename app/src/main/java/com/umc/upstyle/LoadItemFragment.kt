@@ -15,6 +15,7 @@ import com.umc.upstyle.data.model.ClosetCategoryResponse
 import com.umc.upstyle.data.model.ClothPreview
 import com.umc.upstyle.data.model.Ootd
 import com.umc.upstyle.data.model.User
+import com.umc.upstyle.data.network.RetrofitClient
 import com.umc.upstyle.databinding.FragmentLoadItemBinding
 import com.umc.upstyle.utils.Item_load
 import retrofit2.Call

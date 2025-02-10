@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.umc.upstyle.data.model.BookmarkItem
 import com.umc.upstyle.data.model.BookmarkResponse
 import com.umc.upstyle.data.network.ApiService
+import com.umc.upstyle.data.network.RetrofitClient
 import com.umc.upstyle.databinding.FragmentBookmarkBinding
 import retrofit2.Call
 import retrofit2.Callback

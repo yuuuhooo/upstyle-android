@@ -2,10 +2,10 @@
 package com.umc.upstyle.data.repository
 
 import android.util.Log  // Log 사용을 위해 추가
-import com.umc.upstyle.RetrofitClient
 import com.umc.upstyle.data.model.Post
 import com.umc.upstyle.data.model.VotePreviewResponse
 import com.umc.upstyle.data.network.ApiService
+import com.umc.upstyle.data.network.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

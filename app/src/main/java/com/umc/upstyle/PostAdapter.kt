@@ -3,8 +3,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.umc.upstyle.Post
 import com.umc.upstyle.R
+import com.umc.upstyle.data.model.Post // 이걸로 수정
+
 
 class PostAdapter(
     private val postList: List<Post>,
@@ -17,7 +18,7 @@ class PostAdapter(
 
         fun bind(post: Post) {
             tvTitle.text = post.title
-            tvVoteCount.text = "${post.voteCount}명 투표"
+            tvVoteCount.text = "${post.totalResponseCount}명 투표"
 
             itemView.setOnClickListener {
                 onPostClick(post) // 클릭 이벤트 실행

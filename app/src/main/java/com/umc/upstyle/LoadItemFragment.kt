@@ -1,6 +1,5 @@
 package com.umc.upstyle
 
-import com.umc.upstyle.utils.Item_load
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
@@ -11,82 +10,155 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import com.umc.upstyle.data.network.ApiService
+import com.umc.upstyle.data.model.ClosetCategoryResponse
+import com.umc.upstyle.data.model.ClothPreview
+import com.umc.upstyle.data.model.Ootd
+import com.umc.upstyle.data.model.User
 import com.umc.upstyle.databinding.FragmentLoadItemBinding
+import com.umc.upstyle.utils.Item_load
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.io.File
 
 class LoadItemFragment : Fragment() {
-
 
     private var _binding: FragmentLoadItemBinding? = null
     private val binding get() = _binding!!
 
     private var category: String? = null
-    private var selectedItem: Item_load? = null // 선택된 아이템 저장
-
-
+    private var categoryId: Long? = null
+    private var selectedItem: Item_load? = null
+    private lateinit var adapter: RecyclerAdapter_Load
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val args = LoadItemFragmentArgs.fromBundle(requireArguments())
-        category = args.category // Safe Args로 전달된 CATEGORY 값
+        category = args.category
+
+        // category 값을 기반으로 categoryId 매핑
+        categoryId = when (category) {
+            "OUTER" -> 1L
+            "TOP" -> 2L
+            "BOTTOM" -> 3L
+            "SHOES" -> 4L
+            "BAG" -> 5L
+            "OTHER" -> 6L
+            else -> null
+        }
     }
-
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // 뷰 바인딩 초기화
+    ): View {
         _binding = FragmentLoadItemBinding.inflate(inflater, container, false)
         return binding.root
     }
-    private lateinit var adapter: RecyclerAdapter_Load
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         binding.backButton.setOnClickListener {
-            parentFragmentManager.popBackStack() // 이전 Fragment로 이동
+            parentFragmentManager.popBackStack()
         }
 
+        // 초기에는 카테고리 이름만 표시
+        binding.itemText.text = category ?: "OTHER"
 
-        // 상단 텍스트 표시
-        binding.itemText.text = when (category) {
-            "OUTER" -> "OUTER"
-            "TOP" -> "TOP"
-            "SHOES" -> "SHOES"
-            "BOTTOM" -> "BOTTOM"
-            "BAG" -> "BAG"
-            else -> "OTHER"
-        }
-
-        // RecyclerView 설정
-        val items = loadItemsFromPreferences()
-        adapter = RecyclerAdapter_Load(items) { item, position ->
+        adapter = RecyclerAdapter_Load(mutableListOf()) { item, position ->
             selectedItem = item
             adapter.setSelectedPosition(position)
+
+            // 선택한 아이템의 설명 표시
+            binding.itemText.text = "${category ?: "OTHER"}: ${item.description}"
         }
+
         binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.recyclerView.adapter = adapter
 
+        fetchClosetItems()
+
         binding.btSelect.setOnClickListener {
             if (selectedItem != null) {
-                sendSelectedItemToPreviousFragment(selectedItem!!)
+                val clothPreviewItem = ClothPreview(
+                    id = 1,
+                    kindId = 0L,
+                    kindName = selectedItem!!.description,
+                    categoryId = categoryId ?: 0L,
+                    categoryName = category ?: "OTHER",
+                    fitId = 0L,
+                    fitName = "Default Fit",
+                    colorId = 0L,
+                    colorName = "Default Color",
+                    additionalInfo = null,
+                    ootd = Ootd(
+                        id = -1L,
+                        user = User(id = 1, nickname = "Default User"),
+                        date = "2024-01-01",
+                        imageUrl = selectedItem!!.imageUrl,
+                        clothList = emptyList()
+                    )
+                )
+                sendSelectedItemToPreviousFragment(clothPreviewItem)
             } else {
                 Toast.makeText(requireContext(), "아이템을 선택해주세요", Toast.LENGTH_SHORT).show()
             }
         }
-
     }
 
-    private fun sendSelectedItemToPreviousFragment(selectedItem: Item_load) {
-        val category = this.category ?: return
-        findNavController().previousBackStackEntry?.savedStateHandle?.set("SELECTED_ITEM", selectedItem.description)
-        findNavController().previousBackStackEntry?.savedStateHandle?.set("SELECTED_ITEM_IMAGE_URL", selectedItem.imageUrl)
-        findNavController().previousBackStackEntry?.savedStateHandle?.set("CATEGORY", category) // ✅ CATEGORY 추가
+
+    private fun fetchClosetItems() {
+        val apiService = RetrofitClient.createService(ApiService::class.java)
+
+        apiService.getClosetByCategory(userId = 1L, categoryId = categoryId)
+            .enqueue(object : Callback<ClosetCategoryResponse> {
+                override fun onResponse(
+                    call: Call<ClosetCategoryResponse>,
+                    response: Response<ClosetCategoryResponse>
+                ) {
+                    if (response.isSuccessful && response.body()?.isSuccess == true) {
+                        val serverItems = response.body()?.result?.clothPreviewList ?: emptyList()
+
+                        // ClothPreview → Item_load로 변환
+                        val serverItemLoads = serverItems.map {
+                            Item_load(
+                                description = it.kindName,
+                                imageUrl = it.ootd?.imageUrl ?: ""
+                            )
+                        }
+
+                        val localItems = loadItemsFromPreferences()
+
+                        // 서버 데이터와 로컬 데이터를 합쳐서 MutableList로 변환
+                        val combinedItems = (serverItemLoads + localItems).toMutableList()
+
+                        //MutableList<Item_load>로 어댑터에 전달
+                        adapter.updateData(combinedItems)
+                    } else {
+                        Toast.makeText(requireContext(), "데이터 불러오기 실패", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                override fun onFailure(call: Call<ClosetCategoryResponse>, t: Throwable) {
+                    Toast.makeText(requireContext(), "네트워크 오류 발생", Toast.LENGTH_SHORT).show()
+                }
+            })
+    }
+
+
+    private fun sendSelectedItemToPreviousFragment(selectedItem: ClothPreview) {
+        findNavController().previousBackStackEntry?.savedStateHandle?.set("SELECTED_ITEM", selectedItem.kindName)
+        findNavController().previousBackStackEntry?.savedStateHandle?.set("SELECTED_ITEM_IMAGE_URL", selectedItem.ootd?.imageUrl)
+        findNavController().previousBackStackEntry?.savedStateHandle?.set("CATEGORY", category)
         findNavController().popBackStack()
     }
+
+
+
+
+
 
 
 

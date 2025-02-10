@@ -75,6 +75,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.firebase.storage.ktx)
 
 
     /*implementation(libs.androidx-navigation-fragment-ktx)

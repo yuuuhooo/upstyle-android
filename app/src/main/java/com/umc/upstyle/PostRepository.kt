@@ -1,14 +1,39 @@
-package com.umc.upstyle
+// PostRepository.kt
+package com.umc.upstyle.data.repository
 
-object PostRepository {  // 'object' 키워드를 사용하여 싱글턴 객체로 만듦
-    fun fetchPosts(): List<Post> {
-        return listOf(
-            Post(1, "이 신발엔 무엇이 더 어울릴까요?", 124),
-            Post(2, "빨간구두 롱 코트 VS 삭스부츠 롱 코트", 12),
-            Post(3, "둘 중에 무슨 옷이 더 실용적일까요?", 84),
-            Post(4, "캐주얼에 흰 시계? 은 시계?", 71),
-            Post(5, "아니 이거 설마 투표 길이 맞춰서 변하나?", 32),
-            Post(6, "오마이갓진짜네", 72),
-        )
+import android.util.Log  // Log 사용을 위해 추가
+import com.umc.upstyle.RetrofitClient
+import com.umc.upstyle.data.model.Post
+import com.umc.upstyle.data.model.VotePreviewResponse
+import com.umc.upstyle.data.network.ApiService
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+
+object PostRepository {
+    private const val TAG = "PostRepository"
+
+    fun fetchPosts(callback: (List<Post>) -> Unit) {
+        val apiService = RetrofitClient.createService(ApiService::class.java)
+        apiService.getVotePreviews().enqueue(object : Callback<VotePreviewResponse> {
+            override fun onResponse(
+                call: Call<VotePreviewResponse>,
+                response: Response<VotePreviewResponse>
+            ) {
+                if (response.isSuccessful && response.body()?.isSuccess == true) {
+                    val postList = response.body()?.result?.votePreviewList ?: emptyList()
+                    Log.d(TAG, "데이터 불러오기 성공: $postList")  // 성공 로그 추가
+                    callback(postList)
+                } else {
+                    Log.e(TAG, "서버 응답 실패: ${response.errorBody()?.string()}")  // 응답 실패 로그
+                    callback(emptyList())
+                }
+            }
+
+            override fun onFailure(call: Call<VotePreviewResponse>, t: Throwable) {
+                Log.e(TAG, "네트워크 오류 발생: ${t.message}")  // 네트워크 오류 로그
+                callback(emptyList())
+            }
+        })
     }
 }

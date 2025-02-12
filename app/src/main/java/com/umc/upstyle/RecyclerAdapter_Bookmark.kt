@@ -28,8 +28,14 @@ class RecyclerAdapter_Bookmark(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = itemBookmarkList[position]
 
-        // 텍스트 설정 (description -> name으로 변경)
-        holder.title.text = item.name
+        // 텍스트 설정: name이 비어있으면 숨기기 (ALL 버튼 클릭 시)
+        if (item.name.isNotEmpty()) {
+            holder.title.visibility = View.VISIBLE
+            holder.title.text = item.name // 카테고리, 핏, 색깔 순서로 표시
+        } else {
+            holder.title.visibility = View.GONE // ALL 버튼 클릭 시 텍스트 숨김
+        }
+
 
         // Glide를 사용해 이미지 로드 (URL 또는 로컬 파일 모두 처리 가능)
         Glide.with(holder.itemView.context)
@@ -39,7 +45,7 @@ class RecyclerAdapter_Bookmark(
 
     override fun getItemCount(): Int = itemBookmarkList.size
 
-    // ✅ 리스트 업데이트를 위한 함수
+    //리스트 업데이트를 위한 함수
     fun updateList(filteredItems: List<Item_bookmark>) {
         itemBookmarkList = filteredItems // 리스트 변경
         notifyDataSetChanged() // RecyclerView 갱신

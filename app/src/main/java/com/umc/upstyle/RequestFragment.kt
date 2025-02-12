@@ -1,16 +1,21 @@
 package com.umc.upstyle
 
-import PostAdapter
 import RequestAdapter
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.umc.upstyle.data.model.RequestResponse
+import com.umc.upstyle.data.network.ApiService
+import com.umc.upstyle.data.network.RetrofitClient
 import com.umc.upstyle.databinding.FragmentRequestBinding
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 
 // 코디요청 목록 보여주는 프래그먼트 !!!!
@@ -30,16 +35,50 @@ class RequestFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val requestList = RequestRepository.fetchPosts()
-        val adapter = RequestAdapter(requestList) { request ->
-            val action = RequestFragmentDirections
-                .actionRequestFragmentToViewRequestFragment(request.id, request.title, request.commentCount)
-            findNavController().navigate(action)
-        }
-
-        binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+
+        // 서버에서 코디 요청 목록 불러오기
+        loadCodiRequestsFromServer()
     }
+
+    private fun loadCodiRequestsFromServer() {
+        val apiService = RetrofitClient.createService(ApiService::class.java)
+
+        apiService.getCodiRequests().enqueue(object : Callback<RequestResponse> {
+            override fun onResponse(call: Call<RequestResponse>, response: Response<RequestResponse>) {
+                if (response.isSuccessful && response.body()?.isSuccess == true) {
+                    val serverResponseList = response.body()?.result?.codiReqPreviewList ?: emptyList()
+
+                    val requestList = serverResponseList.map {
+                        Request(
+                            id = it.id,
+                            title = it.title,
+                            commentCount = it.responseCount
+                        )
+                    }
+
+
+                    val adapter = RequestAdapter(requestList) { request ->
+                        val action = RequestFragmentDirections
+                            .actionRequestFragmentToViewRequestFragment(request.id, request.title, request.commentCount)
+                        findNavController().navigate(action)
+                    }
+
+                    binding.recyclerView.adapter = adapter
+
+
+                    binding.recyclerView.adapter = adapter
+                } else {
+                    Log.e("RequestFragment", "서버 응답 실패: ${response.errorBody()?.string()}")
+                }
+            }
+
+            override fun onFailure(call: Call<RequestResponse>, t: Throwable) {
+                Log.e("RequestFragment", "네트워크 오류 발생: ${t.message}")
+            }
+        })
+    }
+
 
     override fun onResume() {
         super.onResume()

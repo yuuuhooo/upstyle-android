@@ -6,13 +6,10 @@ import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.kakao.sdk.auth.model.OAuthToken
-import com.kakao.sdk.common.model.ClientError
-import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
+import com.kakao.sdk.user.model.User
 import com.umc.upstyle.data.model.AccountInfoDTO
 import com.umc.upstyle.data.model.ApiResponse
-import com.umc.upstyle.data.model.KakaoJwtDTO
-import com.umc.upstyle.data.model.UserInfoDTO
 import com.umc.upstyle.data.network.AuthApiService
 import com.umc.upstyle.data.network.UserApiService
 import com.umc.upstyle.databinding.ActivityLoginBinding
@@ -29,7 +26,6 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        // ViewBinding 초기화
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -38,12 +34,19 @@ class LoginActivity : AppCompatActivity() {
 
         // ✅ 비회원으로 둘러보기
         binding.tvNonMember.setOnClickListener {
-            startActivity(Intent(this, BodyinfoActivity::class.java))
+            startActivity(Intent(this, MainActivity::class.java))
         }
 
-        // ✅ 카카오로그인 버튼 클릭 시 로그인 시작
+        // ✅ 카카오 로그인 버튼 클릭 시 로그인 시작
         binding.btGoogleLogin.setOnClickListener {
-            startKakaoLogin()
+            UserApiClient.instance.logout { error ->
+                if (error != null) {
+                    Log.e("Login", "로그아웃 실패: ${error.message}")
+                } else {
+                    Log.d("Login", "카카오 로그아웃 완료, 새로 로그인 진행")
+                    startKakaoLogin()  // 다시 로그인 요청
+                }
+            }
         }
     }
 
@@ -63,7 +66,45 @@ class LoginActivity : AppCompatActivity() {
             Log.e("Login", "카카오 로그인 실패: $error")
         } else if (token != null) {
             Log.d("Login", "카카오 로그인 성공: ${token.accessToken}")
-            sendTokenToServer(token.accessToken) // ✅ 백엔드에 accessToken 전송
+            requestUserInfo(token.accessToken) // ✅ 사용자 정보 요청 후 accessToken 전송
+        }
+    }
+
+    // ✅ 사용자 정보 요청 (닉네임 & 이메일)
+    private fun requestUserInfo(accessToken: String) {
+        UserApiClient.instance.me { user, error ->
+            if (error != null) {
+                Log.e("Login", "사용자 정보 요청 실패: $error")
+                sendTokenToServer(accessToken) // 오류 시 그냥 access_token 전송
+            } else if (user != null) {
+                val kakaoAccount = user.kakaoAccount
+                val email = kakaoAccount?.email
+                val nickname = kakaoAccount?.profile?.nickname
+
+                Log.d("Login", "카카오 사용자 정보: 닉네임=${nickname ?: "없음"}, 이메일=${email ?: "없음"}")
+
+                // ✅ 이메일이나 닉네임이 없으면 추가 동의 요청
+                val scopes = mutableListOf<String>()
+                if (email == null && kakaoAccount?.emailNeedsAgreement == true) {
+                    scopes.add("account_email") // 이메일 추가 동의 요청
+                }
+                if (nickname == null && kakaoAccount?.profileNeedsAgreement == true) {
+                    scopes.add("profile_nickname") // 닉네임 추가 동의 요청
+                }
+
+                if (scopes.isNotEmpty()) {
+                    UserApiClient.instance.loginWithNewScopes(this, scopes) { newToken, scopeError ->
+                        if (scopeError != null) {
+                            Log.e("Login", "추가 동의 요청 실패: $scopeError")
+                        } else {
+                            Log.d("Login", "추가 동의 요청 완료, 새로운 AccessToken: ${newToken?.accessToken}")
+                            sendTokenToServer(newToken?.accessToken ?: accessToken)
+                        }
+                    }
+                } else {
+                    sendTokenToServer(accessToken) // ✅ access_token 전송
+                }
+            }
         }
     }
 
@@ -71,18 +112,19 @@ class LoginActivity : AppCompatActivity() {
     private fun sendTokenToServer(kakaoAccessToken: String) {
         Log.d("Login", "백엔드로 AccessToken 전송: $kakaoAccessToken")
 
-        authApiService.loginWithKakao("Bearer $kakaoAccessToken").enqueue(object : Callback<ApiResponse<KakaoJwtDTO>> {
-            override fun onResponse(call: Call<ApiResponse<KakaoJwtDTO>>, response: Response<ApiResponse<KakaoJwtDTO>>) {
-                if (response.isSuccessful) {
-                    val jwt = response.body()?.result?.jwt
+        authApiService.loginWithKakao(kakaoAccessToken).enqueue(object : Callback<String> {
+            override fun onResponse(call: Call<String>, response: Response<String>) {
+                if (response.isSuccessful && response.body() != null) {
+                    val jwt = response.body()!!
                     Log.d("Login", "JWT 수신: $jwt")
                     saveJwt(jwt)
                 } else {
-                    Log.e("Login", "JWT 요청 실패: ${response.errorBody()?.string()}")
+                    val errorBody = response.errorBody()?.string()
+                    Log.e("Login", "JWT 요청 실패: $errorBody")
                 }
             }
 
-            override fun onFailure(call: Call<ApiResponse<KakaoJwtDTO>>, t: Throwable) {
+            override fun onFailure(call: Call<String>, t: Throwable) {
                 Log.e("Login", "JWT 요청 에러: ${t.message}")
             }
         })

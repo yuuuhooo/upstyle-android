@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.view.inputmethod.EditorInfo
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.umc.upstyle.databinding.FragmentMyProfileBinding
@@ -19,42 +21,49 @@ class MyProfileFragment : Fragment(R.layout.fragment_my_profile) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        _binding = FragmentMyProfileBinding.bind(view)  // 바인딩 초기화
+        _binding = FragmentMyProfileBinding.bind(view)
 
         // 닉네임 불러오기
         loadNickname()
 
         binding.backButton.setOnClickListener {
-            saveNickname()  // 뒤로 가기 전에 닉네임 저장
+            saveNickname()
             findNavController().navigateUp()
         }
 
-        // EditText에 입력하면 ImageView가 사라지도록 설정
+        // 닉네임 수정 버튼 클릭 시 EditText 활성화
+        binding.editNicknameButton.setOnClickListener {
+            enableEditMode()
+        }
+
+        // 닉네임 입력 시 연필 아이콘 숨기기 및 유효성 검사 실행
         binding.nicknameEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 validateNickname(s.toString())
+                binding.editNicknameButton.visibility = View.GONE
+                binding.namechkimg.visibility = View.VISIBLE
             }
 
             override fun afterTextChanged(s: Editable?) {}
         })
 
-        setupNicknameValidation()
-    }
-
-    private fun setupNicknameValidation() {
-        binding.nicknameEditText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                validateNickname(s.toString())
+// 닉네임 입력 완료 (키보드에서 완료 버튼 누름)
+        binding.nicknameEditText.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                saveNickname()
+                disableEditMode()
+                binding.namechkimg.visibility = View.GONE
+                true
+            } else {
+                false
             }
+        }
 
-            override fun afterTextChanged(s: Editable?) {}
-        })
     }
-// namechkimg
+
+    // 닉네임 유효성 검사 (입력하면 namechkimg를 보여줌)
     private fun validateNickname(nickname: String) {
         val nicknamePattern = "^[가-힣a-zA-Z0-9]+$".toRegex()
 
@@ -62,54 +71,73 @@ class MyProfileFragment : Fragment(R.layout.fragment_my_profile) {
             nickname.isEmpty() -> {
                 binding.errorTextView.text = ""
                 binding.nicknameEditText.setTextColor(Color.WHITE)
-                binding.namechkimg.visibility = View.VISIBLE  // 입력 없으면 다시 보이게
-                binding.namechkimg.setImageResource(R.drawable.ic_namechk_white)
+                binding.namechkimg.visibility = View.GONE  // 빈 칸이면 숨김
             }
             nickname.length > 8 -> {
                 binding.errorTextView.text = "최대 8자까지 입력 가능합니다."
                 binding.errorTextView.setTextColor(Color.RED)
-                binding.nicknameEditText.setTextColor(Color.RED)  // 입력 텍스트 빨간색 변경
+                binding.nicknameEditText.setTextColor(Color.RED)
                 binding.namechkimg.setImageResource(R.drawable.ic_namechk_red)
                 binding.namechkimg.visibility = View.VISIBLE
             }
             !nicknamePattern.matches(nickname) -> {
                 binding.errorTextView.text = "한글, 영문, 숫자만 입력 가능합니다."
                 binding.errorTextView.setTextColor(Color.RED)
-                binding.nicknameEditText.setTextColor(Color.RED)  // 입력 텍스트 빨간색 변경
+                binding.nicknameEditText.setTextColor(Color.RED)
                 binding.namechkimg.setImageResource(R.drawable.ic_namechk_red)
                 binding.namechkimg.visibility = View.VISIBLE
             }
             existingNicknames.contains(nickname) -> {
                 binding.errorTextView.text = "이미 사용 중인 닉네임입니다."
                 binding.errorTextView.setTextColor(Color.RED)
-                binding.nicknameEditText.setTextColor(Color.RED)  // 입력 텍스트 빨간색 변경
+                binding.nicknameEditText.setTextColor(Color.RED)
                 binding.namechkimg.setImageResource(R.drawable.ic_namechk_red)
                 binding.namechkimg.visibility = View.VISIBLE
             }
             else -> {
                 binding.errorTextView.text = ""
-                binding.nicknameEditText.setTextColor(Color.WHITE)  // 입력 텍스트 흰색 유지
+                binding.nicknameEditText.setTextColor(Color.WHITE)
                 binding.namechkimg.setImageResource(R.drawable.ic_namechk_white)
                 binding.namechkimg.visibility = View.VISIBLE
             }
         }
+        if (nickname.isNotEmpty() && nickname.length <= 8 && nicknamePattern.matches(nickname) && !existingNicknames.contains(nickname)) {
+            binding.namechkimg.visibility = View.GONE
+        }
     }
 
-    // 닉네임 저장 함수
+    // 닉네임 수정 모드 활성화
+    private fun enableEditMode() {
+        binding.nicknameTextView.visibility = View.GONE  // 기존 닉네임 숨김
+        binding.nicknameEditText.visibility = View.VISIBLE  // 입력창 표시
+        binding.nicknameEditText.setText(binding.nicknameTextView.text) // 기존 닉네임 설정
+        binding.nicknameEditText.requestFocus() // 포커스 줌
+        binding.editNicknameButton.visibility = View.GONE // 닉네임 수정 중에는 연필 버튼 숨김
+    }
+
+    // 닉네임 수정 모드 비활성화
+    private fun disableEditMode() {
+        binding.nicknameTextView.visibility = View.VISIBLE  // 기존 닉네임 표시
+        binding.nicknameEditText.visibility = View.GONE  // 입력창 숨김
+        binding.nicknameTextView.text = binding.nicknameEditText.text.toString() // 수정된 닉네임 반영
+        binding.editNicknameButton.visibility = View.VISIBLE // 수정이 끝나면 연필 버튼 다시 표시
+    }
+
+    // 닉네임 저장
     private fun saveNickname() {
         val nickname = binding.nicknameEditText.text.toString()
         val sharedPref = requireActivity().getSharedPreferences("UserProfile", Context.MODE_PRIVATE)
         with(sharedPref.edit()) {
-            putString("nickname", nickname) // 닉네임 저장
+            putString("nickname", nickname)
             apply()
         }
     }
 
-    // 닉네임 불러오기 함수
+    // 닉네임 불러오기
     private fun loadNickname() {
         val sharedPref = requireActivity().getSharedPreferences("UserProfile", Context.MODE_PRIVATE)
-        val savedNickname = sharedPref.getString("nickname", "") // 저장된 값 불러오기
-        binding.nicknameEditText.setText(savedNickname) // EditText에 설정
+        val savedNickname = sharedPref.getString("nickname", "")
+        binding.nicknameTextView.text = savedNickname
     }
 
     override fun onDestroyView() {

@@ -219,8 +219,8 @@ class CreateRequestFragment : Fragment() {
         val requestService = RetrofitClient.createService(RequestService::class.java)
         val request = AddCodiReqDTO(
             userId = 1,
-            title = binding.etTitle.toString(),
-            body = binding.etContent.toString(),
+            title = viewModel.requestTitle,
+            body = viewModel.requestContent,
             imageUrl = photoUri.toString()
         )
 
@@ -232,7 +232,7 @@ class CreateRequestFragment : Fragment() {
             if (response.isSuccessful) {
                 // 성공적인 응답 처리
                 val responseData = response.body()
-                findNavController().navigateUp()
+//                findNavController().navigateUp()
                 Log.d("CodiRequest", "업로드 성공")
                 // 응답이 null이 아닐 경우 처리
                 if (responseData != null) {

@@ -15,3 +15,11 @@ data class CodiReqResult(
     val isFirst: Boolean,
     val isLast: Boolean
 )
+
+// 앱에서 사용할 데이터 모델
+data class Request(
+    val id: Int,
+    val title: String,
+    val commentCount: Int  // 서버 responseCount를 commentCount로 변환
+)
+

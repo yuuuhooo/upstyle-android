@@ -12,6 +12,8 @@ import com.umc.upstyle.data.repository.PostRepository
 import com.umc.upstyle.databinding.FragmentVoteBinding
 import com.umc.upstyle.data.model.Post
 
+
+
 // 이벤트 전달을 위한 인터페이스
 interface VoteFragmentListener {
     fun onVoteSelected(postId: Int, postTitle: String, voteCount: Int)

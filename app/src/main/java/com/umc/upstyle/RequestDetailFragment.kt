@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -40,6 +41,11 @@ class RequestDetailFragment : Fragment() {
 
         fetchRequestDetails(requestId)
 
+
+        binding.testButton.setOnClickListener {
+            modalBottomSheet()
+        }
+
         binding.backButton.setOnClickListener { findNavController().navigateUp() }
     }
 
@@ -69,6 +75,12 @@ class RequestDetailFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun modalBottomSheet() {
+        val modal = CodiBottomSheetFragment()
+        modal.setStyle(DialogFragment.STYLE_NORMAL, R.style.RoundCornerBottomSheetDialogTheme)
+        modal.show(parentFragmentManager, CodiBottomSheetFragment.TAG)
     }
 }
 

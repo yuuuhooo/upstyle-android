@@ -10,6 +10,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.bumptech.glide.Glide
 import com.umc.upstyle.data.model.RequestDetailResponse
 import com.umc.upstyle.data.network.RequestService
 import com.umc.upstyle.data.network.RetrofitClient
@@ -70,6 +71,10 @@ class RequestDetailFragment : Fragment() {
         binding.tvUsername.text = requestDetail.user.nickname
         binding.tvTitle.text = requestDetail.title
         binding.tvText.text = requestDetail.body
+        Glide.with(this)
+            .load(requestDetail.imageUrl)
+            .into(binding.ivImage)
+
     }
 
     override fun onDestroyView() {

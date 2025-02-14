@@ -10,7 +10,7 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.umc.upstyle.databinding.FragmentChatBinding
 
-class ChatFragment : Fragment(R.layout.fragment_chat), VoteFragmentListener {
+class ChatFragment : Fragment(R.layout.fragment_chat), VoteFragmentListener, RequestFragmentListener {
 
     private var _binding: FragmentChatBinding? = null
     private val binding get() = _binding!!
@@ -27,12 +27,15 @@ class ChatFragment : Fragment(R.layout.fragment_chat), VoteFragmentListener {
 
         val adapter = TabPagerAdapter(this)
         val voteFragment = VoteFragment()
+        val requestFragment = RequestFragment()
 
         // VoteFragment에 리스너 설정
         voteFragment.setVoteFragmentListener(this)
+        requestFragment.setRequestFragmentListener(this)
 
         adapter.addFragment(voteFragment)   // 첫 번째 탭: 투표
         adapter.addFragment(RequestFragment()) // 두 번째 탭: 코디 요청
+
         binding.viewPager.adapter = adapter
 
         // TabLayout과 ViewPager2를 연결
@@ -73,6 +76,13 @@ class ChatFragment : Fragment(R.layout.fragment_chat), VoteFragmentListener {
     override fun onVoteSelected(postId: Int, postTitle: String, voteCount: Int) {
         val action = ChatFragmentDirections
             .actionChatFragmentToPostDetailFragment(postId, postTitle, voteCount)
+        findNavController().navigate(action)
+    }
+
+    // RequestFragment에서 클릭된 데이터 받아서 RequestDetailFragment로 이동
+    override fun onRequestSelected(reqId: Int, reqTitle: String, commentCount: Int) {
+        val action = ChatFragmentDirections
+            .actionChatFragmentToRequestDetailFragment(reqId, reqTitle, commentCount)
         findNavController().navigate(action)
     }
 

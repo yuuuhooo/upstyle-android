@@ -23,6 +23,12 @@ import retrofit2.Response
 class RequestFragment : Fragment() {
     private var _binding: FragmentRequestBinding? = null
     private val binding get() = _binding!!
+    private var listener: RequestFragmentListener? = null
+
+    // ChatFragment에서 리스너 설정
+    fun setRequestFragmentListener(listener: RequestFragmentListener) {
+        this.listener = listener
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -60,7 +66,7 @@ class RequestFragment : Fragment() {
 
                     val adapter = RequestAdapter(requestList) { request ->
                         val action = RequestFragmentDirections
-                            .actionRequestFragmentToViewRequestFragment(request.id, request.title, request.commentCount)
+                            .actionRequestFragmentToRequestDetailFragment(request.id, request.title, request.commentCount)
                         findNavController().navigate(action)
                     }
 
@@ -89,4 +95,9 @@ class RequestFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+}
+
+// 이벤트 전달을 위한 인터페이스
+interface RequestFragmentListener {
+    fun onRequestSelected(reqId: Int, reqTitle: String, commentCount: Int)
 }

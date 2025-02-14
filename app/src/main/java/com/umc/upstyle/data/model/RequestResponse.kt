@@ -15,3 +15,17 @@ data class CodiReqResult(
     val isFirst: Boolean,
     val isLast: Boolean
 )
+
+data class RequestDetailResponse(
+    val id: Int,
+    val user: User,
+    val title: String,
+    val body: String,
+    val imageUrl: String,
+    val codiResPreviewList: List<CodiResPreview>
+)
+
+data class CodiResPreview (
+    val id: Int,
+    val user: User
+)

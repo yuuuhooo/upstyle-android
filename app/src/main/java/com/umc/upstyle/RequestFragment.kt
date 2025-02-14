@@ -22,6 +22,7 @@ class RequestFragment : Fragment() {
     private val binding get() = _binding!!
     private var listener: RequestFragmentListener? = null
 
+
     // 리스너 설정 함수
     fun setRequestFragmentListener(listener: RequestFragmentListener) {
         this.listener = listener
@@ -49,6 +50,7 @@ class RequestFragment : Fragment() {
 
                 if (listener == null) {
                     Log.e("RequestFragment", "listener가 null 상태입니다!")
+
                 } else {
                     listener?.onRequestSelected(request.id, request.title, request.commentCount)
                     Log.d("RequestFragment", "onRequestSelected 호출됨")
@@ -69,4 +71,9 @@ class RequestFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+}
+
+// 이벤트 전달을 위한 인터페이스
+interface RequestFragmentListener {
+    fun onRequestSelected(reqId: Int, reqTitle: String, commentCount: Int)
 }

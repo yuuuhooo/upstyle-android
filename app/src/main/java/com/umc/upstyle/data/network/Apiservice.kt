@@ -38,7 +38,8 @@ interface ApiService {
 
     @GET("bookmarks/")  // 서버의 API 엔드포인트
     fun getBookmarks(
-        @Query("userId") userId: Long): Call<BookmarkResponse>
+        @Query("userId") userId: Long
+    ): Call<BookmarkResponse>
 
     @GET("codi-requests/")  // 실제 서버의 API 엔드포인트로 교체
     fun getCodiRequests(): Call<RequestResponse>

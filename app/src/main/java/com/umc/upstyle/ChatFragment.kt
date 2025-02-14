@@ -30,7 +30,6 @@ class ChatFragment : Fragment(R.layout.fragment_chat), VoteFragmentListener, Req
         val adapter = TabPagerAdapter(this)
         val voteFragment = VoteFragment()
         val requestFragment = RequestFragment()
-        requestFragment.setRequestFragmentListener(this)  // 반드시 호출해야 함
 
 
         // 리스너 설정
@@ -39,6 +38,7 @@ class ChatFragment : Fragment(R.layout.fragment_chat), VoteFragmentListener, Req
 
         adapter.addFragment(voteFragment)   // 첫 번째 탭: 투표
         adapter.addFragment(requestFragment) // 두 번째 탭: 코디 요청
+
         binding.viewPager.adapter = adapter
 
         // TabLayout과 ViewPager2를 연결
@@ -83,12 +83,10 @@ class ChatFragment : Fragment(R.layout.fragment_chat), VoteFragmentListener, Req
 
     // RequestFragment에서 클릭된 데이터 받아서 RequestDetailFragment로 이동
     override fun onRequestSelected(requestId: Int, requestTitle: String, commentCount: Int) {
-
         val action = ChatFragmentDirections
             .actionChatFragmentToRequestDetailFragment(requestId, requestTitle, commentCount)
         findNavController().navigate(action)
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()

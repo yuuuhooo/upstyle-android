@@ -46,7 +46,6 @@ class CreateVoteFragment : Fragment() {
         editTextTitle = binding.etTitle
         editTextContent = binding.etContent
 
-
         // ViewModel 가져오기
         viewModel = ViewModelProvider(requireActivity()).get(PostViewModel::class.java)
 
@@ -60,8 +59,6 @@ class CreateVoteFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        val preferences = requireActivity().getSharedPreferences("AppData", Context.MODE_PRIVATE)
 
         binding.backButton.setOnClickListener {
             findNavController().navigateUp() // 이전 Fragment로 이동
@@ -85,7 +82,6 @@ class CreateVoteFragment : Fragment() {
                             Glide.with(requireContext())
                                 .load(item.imageUrl)
                                 .into(binding.imgSelected)
-
 
                         }
                 }
@@ -191,6 +187,42 @@ class CreateVoteFragment : Fragment() {
         )
         votePopup.show(parentFragmentManager, "VotePopupDialog")
     }
+
+//    private fun showPhotoOptionsItem(position: Int) {
+//        val votePopup = VotePopupDialog(
+//            onTakePhoto = { takePhotoForItem(position) },
+//            onChoosePhoto = { selectImageForItem(position) },
+//            onLoadItem = { findNavController().navigate(R.id.loadCategoryFragment) },
+//            onCancel = { /* 취소 버튼 동작 */ }
+//        )
+//        votePopup.show(parentFragmentManager, "VotePopupDialog")
+//    }
+//
+//    private fun takePhotoForItem(position: Int) {
+//        try {
+//            val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+//            val storageDir = requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+//            val photoFile = File.createTempFile("JPEG_${timestamp}_", ".jpg", storageDir)
+//
+//            val uri = FileProvider.getUriForFile(
+//                requireContext(),
+//                "${requireContext().packageName}.fileprovider",
+//                photoFile
+//            )
+//
+//            photoUri = uri
+//            takePictureForItemLauncher.launch(uri to position)
+//        } catch (e: Exception) {
+//            e.printStackTrace()
+//            Toast.makeText(requireContext(), "사진 촬영 준비 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+//        }
+//    }
+//
+//    private fun selectImageForItem(position: Int) {
+//        pickImageForItemLauncher.launch(position)
+//    }
+
+
 
 
 

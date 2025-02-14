@@ -99,9 +99,6 @@ class BookmarkFragment : Fragment() {
     }
 
 
-
-
-
     private fun selectButton(button: ConstraintLayout) {
         // 모든 버튼을 기본 색으로 변경
         val buttonIds = listOf(
@@ -130,16 +127,22 @@ class BookmarkFragment : Fragment() {
             R.id.btn_other -> bookmarkList.filter { it.kind == "기타" }
             else -> bookmarkList
         }
-
-        // RecyclerView 어댑터 업데이트 (서버 데이터 기반)
+        // RecyclerView 어댑터 업데이트
         adapter.updateList(filteredItems.map {
+            val displayText = if (selectedCategoryId == R.id.btn_all) {
+                ""  // ALL 버튼 클릭 시 텍스트 없음
+            } else {
+                "${it.category} ${it.fit} ${it.color}"  // 카테고리 핏 색깔 순서로 표시
+            }
+
             Item_bookmark(
-                name = it.category,
-                image = it.ootd?.imageUrl ?: "",  // ootd가 null일 경우 빈 문자열로 처리
+                name = displayText,
+                image = it.ootd?.imageUrl ?: "",
                 category = it.kind
             )
         })
     }
+
 
 
     private fun loadBookmarkState(key: String): Boolean {

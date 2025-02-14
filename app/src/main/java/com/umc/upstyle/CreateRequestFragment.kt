@@ -5,6 +5,7 @@ import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -16,8 +17,15 @@ import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
+import com.umc.upstyle.data.model.AddCodiReqDTO
+import com.umc.upstyle.data.model.AddCodiRes
+import com.umc.upstyle.data.network.RequestService
+import com.umc.upstyle.data.network.RetrofitClient
 import com.umc.upstyle.data.viewmodel.RequestViewModel
 import com.umc.upstyle.databinding.FragmentCreateRequestBinding
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -52,6 +60,7 @@ class CreateRequestFragment : Fragment() {
         return binding.root
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -76,6 +85,7 @@ class CreateRequestFragment : Fragment() {
                             binding.btnImageUpload.visibility = View.INVISIBLE
                             saveImageUri(Uri.parse(item.imageUrl)) // ✅ photoUri가 null이 아닐 때 저장
 
+                            photoUri = Uri.parse(item.imageUrl)
                             Glide.with(requireContext())
                                 .load(item.imageUrl)
                                 .into(binding.imgSelected)
@@ -98,6 +108,13 @@ class CreateRequestFragment : Fragment() {
             // 사진 URI도 초기화
             photoUri = null
             Toast.makeText(requireContext(), "사진이 삭제되었습니다.", Toast.LENGTH_SHORT).show()
+        }
+
+        binding.btnUpload.setOnClickListener{
+            Toast.makeText(requireContext(), "${photoUri.toString()}", Toast.LENGTH_LONG).show()
+            GlobalScope.launch {
+                sendToServer()
+            }
         }
     }
 
@@ -196,6 +213,48 @@ class CreateRequestFragment : Fragment() {
         val preferences = requireActivity().getSharedPreferences("AppData", Context.MODE_PRIVATE)
         preferences.edit().putString("SAVED_IMAGE_PATH", path).apply()
     }
+
+    // AddCodiReqDTO 객체와 API 응답을 처리하는 함수
+    private suspend fun sendToServer() {
+        val requestService = RetrofitClient.createService(RequestService::class.java)
+        val request = AddCodiReqDTO(
+            userId = 1,
+            title = binding.etTitle.toString(),
+            body = binding.etContent.toString(),
+            imageUrl = photoUri.toString()
+        )
+
+        try {
+            // API 요청을 보냄
+            val response = requestService.createCodiReq(request)
+
+            // 응답이 성공적인지 확인
+            if (response.isSuccessful) {
+                // 성공적인 응답 처리
+                val responseData = response.body()
+                findNavController().navigateUp()
+                Log.d("CodiRequest", "업로드 성공")
+                // 응답이 null이 아닐 경우 처리
+                if (responseData != null) {
+                    Log.d("CodiRequest", "Codi created: ")
+                } else {
+                    // 응답 본문이 null일 경우 처리
+                    Log.e("CodiRequest", "Empty response body")
+                }
+            } else {
+                // 요청 실패 시 상태 코드 확인
+                Log.e("CodiRequest", "Failed with code: ${response.code()}")
+                val errorBody = response.errorBody()?.string()
+                Log.e("CodiRequest", "Error body: $errorBody")
+            }
+        } catch (e: Exception) {
+            // 예외 처리
+            e.printStackTrace()
+            Log.e("CodiRequest", "Error: ${e.message}")
+        }
+    }
+
+
 
     override fun onDestroyView() {
         super.onDestroyView()

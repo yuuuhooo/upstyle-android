@@ -72,8 +72,3 @@ class RequestFragment : Fragment() {
         _binding = null
     }
 }
-
-// 이벤트 전달을 위한 인터페이스
-interface RequestFragmentListener {
-    fun onRequestSelected(reqId: Int, reqTitle: String, commentCount: Int)
-}

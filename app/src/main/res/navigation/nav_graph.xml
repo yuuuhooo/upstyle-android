@@ -391,15 +391,7 @@
         <action
             android:id="@+id/action_chatFragment_to_requestDetailFragment"
             app:destination="@id/requestDetailFragment">
-        <argument
-            android:name="requestId"
-            app:argType="integer" />
-        <argument
-            android:name="requestTitle"
-            app:argType="string" />
-        <argument
-            android:name="commentCount"
-            app:argType="integer" />
+
         </action>
 
     </fragment>
@@ -409,7 +401,17 @@
         android:id="@+id/requestDetailFragment"
         android:name="com.umc.upstyle.RequestDetailFragment"
         android:label="Request Detail"
-        tools:layout="@layout/fragment_request_detail" />
+        tools:layout="@layout/fragment_request_detail">
+        <argument
+            android:name="id"
+            app:argType="integer" />
+        <argument
+            android:name="title"
+            app:argType="string" />
+        <argument
+            android:name="commentCount"
+            app:argType="integer" />
+    </fragment>
 
     <fragment
         android:id="@+id/postDetailFragment"
@@ -426,6 +428,7 @@
             android:name="voteCount"
             app:argType="integer" />
     </fragment>
+
     <fragment
         android:id="@+id/voteFragment"
         android:name="com.umc.upstyle.VoteFragment"
@@ -501,21 +504,6 @@
         android:name="com.umc.upstyle.OotdDetailFragment"
         tools:layout="@layout/fragment_ootd_detail" />
 
-    <fragment
-        android:id="@+id/requestDetailFragment"
-        android:name="com.umc.upstyle.RequestDetailFragment"
-        android:label="fragment_request_detail"
-        tools:layout="@layout/fragment_request_detail">
-        <argument
-            android:name="id"
-            app:argType="integer" />
-        <argument
-            android:name="title"
-            app:argType="string" />
-        <argument
-            android:name="commentCount"
-            app:argType="integer" />
-    </fragment>
 
 
 </navigation>

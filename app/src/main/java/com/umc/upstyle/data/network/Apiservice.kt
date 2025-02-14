@@ -37,7 +37,8 @@ interface ApiService {
 
     @GET("bookmarks/")  // 서버의 API 엔드포인트
     fun getBookmarks(
-        @Query("userId") userId: Long): Call<BookmarkResponse>
+        @Query("userId") userId: Long
+    ): Call<BookmarkResponse>
 
 
 

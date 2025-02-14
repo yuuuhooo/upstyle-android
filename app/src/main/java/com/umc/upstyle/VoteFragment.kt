@@ -12,6 +12,7 @@ import com.umc.upstyle.data.repository.PostRepository
 import com.umc.upstyle.databinding.FragmentVoteBinding
 import com.umc.upstyle.data.model.Post
 
+
 class VoteFragment : Fragment() {
     private var _binding: FragmentVoteBinding? = null
     private val binding get() = _binding!!

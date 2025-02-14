@@ -387,10 +387,30 @@
         <action
             android:id="@+id/action_chatFragment_to_createRequestFragment"
             app:destination="@id/createRequestFragment" />
+
         <action
             android:id="@+id/action_chatFragment_to_requestDetailFragment"
-            app:destination="@id/requestDetailFragment" />
+            app:destination="@id/requestDetailFragment">
+        <argument
+            android:name="requestId"
+            app:argType="integer" />
+        <argument
+            android:name="requestTitle"
+            app:argType="string" />
+        <argument
+            android:name="commentCount"
+            app:argType="integer" />
+        </action>
+
     </fragment>
+
+
+    <fragment
+        android:id="@+id/requestDetailFragment"
+        android:name="com.umc.upstyle.RequestDetailFragment"
+        android:label="Request Detail"
+        tools:layout="@layout/fragment_request_detail" />
+
     <fragment
         android:id="@+id/postDetailFragment"
         android:name="com.umc.upstyle.PostDetailFragment"

@@ -16,6 +16,15 @@ data class CodiReqResult(
     val isLast: Boolean
 )
 
+
+// 앱에서 사용할 데이터 모델
+data class Request(
+    val id: Int,
+    val title: String,
+    val commentCount: Int  // 서버 responseCount를 commentCount로 변환
+)
+
+
 data class RequestDetailResponse(
     val id: Int,
     val user: User,
@@ -29,3 +38,4 @@ data class CodiResPreview (
     val id: Int,
     val user: User
 )
+

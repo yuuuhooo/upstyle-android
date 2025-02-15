@@ -36,7 +36,6 @@ class BodyinfoActivity : AppCompatActivity() {
         binding.etBodyinfoHeight.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 isHeightEntered = !s.isNullOrEmpty()
-                Log.d("UserInfo", "📝 키 입력 감지 -> 입력 상태: $isHeightEntered | 입력 값: ${s.toString().trim()}")
                 updateStartButtonState()
             }
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -46,50 +45,29 @@ class BodyinfoActivity : AppCompatActivity() {
         binding.etBodyinfoWeight.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 isWeightEntered = !s.isNullOrEmpty()
-                Log.d("UserInfo", "키 입력 감지 -> 입력 상태: $isWeightEntered | 입력 값: ${s.toString().trim()}")
                 updateStartButtonState()
             }
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
 
-        // 성별 버튼 클릭 이벤트 추가
         binding.btnBodyinfoMale.setOnClickListener {
             isGenderSelected = true
             selectedGender = "MALE"
-            Log.d("UserInfo", "성별 선택됨: 남성")
             updateGenderUI(true)
         }
 
         binding.btnBodyinfoFemale.setOnClickListener {
             isGenderSelected = true
             selectedGender = "FEMALE"
-            Log.d("UserInfo", "성별 선택됨: 여성")
             updateGenderUI(false)
         }
 
-        // 시작하기 버튼 이벤트 추가
         binding.btBodyinfoStart.setOnClickListener {
-            val heightText = binding.etBodyinfoHeight.text?.toString()?.trim()
-            val weightText = binding.etBodyinfoWeight.text?.toString()?.trim()
-
-            val height = heightText?.toDoubleOrNull() ?: -1.0
-            val weight = weightText?.toDoubleOrNull() ?: -1.0
-            val gender = selectedGender ?: "NONE"
-
-            Log.d("UserInfo", "버튼 클릭됨 - 키: $height cm, 몸무게: $weight kg, 성별: $gender")
-
-            // 입력값이 -1.0이면 디버깅 로그 추가
-            if (height == -1.0 || weight == -1.0) {
-                Log.e("UserInfo", "입력된 키 또는 몸무게가 올바르지 않습니다!")
-            }
-
             sendUserInfoToServer()
         }
-
     }
 
-    // 성별 UI 업데이트
     private fun updateGenderUI(isMale: Boolean) {
         binding.btnBodyinfoMale.isSelected = isMale
         binding.btnBodyinfoFemale.isSelected = !isMale
@@ -102,23 +80,20 @@ class BodyinfoActivity : AppCompatActivity() {
         updateStartButtonState()
     }
 
-    // 버튼 활성화 상태 업데이트
     private fun updateStartButtonState() {
-        Log.d("UserInfo", "현재 입력 상태 -> 키: $isHeightEntered, 몸무게: $isWeightEntered, 성별: $isGenderSelected")
-
         val isButtonEnabled = isHeightEntered && isWeightEntered && isGenderSelected
         binding.btBodyinfoStart.isEnabled = isButtonEnabled
         binding.btBodyinfoStart.isClickable = isButtonEnabled
     }
 
-    // 사용자 추가 정보 서버로 전송 (JWT 포함)
     private fun sendUserInfoToServer() {
         val sharedPref = getSharedPreferences("Auth", MODE_PRIVATE)
         val jwtToken = sharedPref.getString("jwt_token", null)
 
         if (jwtToken.isNullOrEmpty()) {
-            Log.e("UserInfo", "JWT 없음: 로그인이 필요합니다.")
+            Log.e("UserInfo", "❌ JWT 없음: 로그인이 필요합니다.")
             Toast.makeText(this, "로그인이 필요합니다.", Toast.LENGTH_SHORT).show()
+            logoutAndRedirectToLogin()
             return
         }
 
@@ -135,22 +110,39 @@ class BodyinfoActivity : AppCompatActivity() {
         val request = AdditionalInfoRequestDTO(nickname, gender, height, weight)
         val userApiService = RetrofitClient.createService(UserApiService::class.java)
 
-        Log.d("UserInfo", "추가 정보 요청: JWT=$jwtToken, Request=$request")
+        Log.d("UserInfo", "🚀 추가 정보 요청: JWT=$jwtToken, Request=$request")
 
         userApiService.addAdditionalInfo("Bearer $jwtToken", request)
             .enqueue(object : Callback<ApiResponse<UserInfoDTO>> {
                 override fun onResponse(call: Call<ApiResponse<UserInfoDTO>>, response: Response<ApiResponse<UserInfoDTO>>) {
                     if (response.isSuccessful) {
-                        Log.d("UserInfo", "추가 정보 저장 성공: ${response.body()}")
+                        Log.d("UserInfo", "✅ 추가 정보 저장 성공: ${response.body()}")
                         navigateToMainActivity()
                     } else {
-                        Log.e("UserInfo", "추가 정보 저장 실패: ${response.errorBody()?.string()}")
+                        val errorBody = response.errorBody()?.string()
+                        Log.e("UserInfo", "❌ 추가 정보 저장 실패: $errorBody")
+                        if (response.code() == 400) {
+                            Toast.makeText(this@BodyinfoActivity, "잘못된 요청입니다.", Toast.LENGTH_SHORT).show()
+                        } else if (response.code() == 401) {
+                            Log.e("UserInfo", "❌ JWT 만료: 다시 로그인 필요")
+                            logoutAndRedirectToLogin()
+                        }
                     }
                 }
                 override fun onFailure(call: Call<ApiResponse<UserInfoDTO>>, t: Throwable) {
-                    Log.e("UserInfo", "API 요청 실패: ${t.message}")
+                    Log.e("UserInfo", "❌ API 요청 실패: ${t.message}")
                 }
             })
+    }
+
+    private fun logoutAndRedirectToLogin() {
+        val sharedPref = getSharedPreferences("Auth", MODE_PRIVATE)
+        sharedPref.edit().remove("jwt_token").apply()
+
+        Log.d("UserInfo", "🚨 JWT 삭제 및 로그인 화면 이동")
+        val intent = Intent(this, LoginActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 
     private fun navigateToMainActivity() {

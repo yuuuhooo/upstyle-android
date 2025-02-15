@@ -85,9 +85,10 @@
             tools:ignore="MissingConstraints" />
 
         <TextView
+            android:id="@+id/userEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="kcb8167@gmail.com"
+            android:text=""
             android:textSize="15sp"
             android:layout_marginStart="24dp"
             android:layout_marginTop="10dp"
@@ -129,7 +130,7 @@
                 android:id="@+id/nicknameTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="사용자1"
+                android:text=""
                 android:textSize="15sp"
                 android:textColor="@color/white"
                 android:fontFamily="@font/pretendard_medium"
@@ -201,9 +202,10 @@
             tools:ignore="MissingConstraints" />
 
         <TextView
+            android:id="@+id/userBodyinfo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="160cm, 50kg"
+            android:text=""
             android:textSize="15sp"
             android:layout_marginStart="24dp"
             android:layout_marginTop="10dp"
@@ -232,9 +234,10 @@
             tools:ignore="MissingConstraints" />
 
         <TextView
+            android:id="@+id/userGender"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="여자"
+            android:text=""
             android:textSize="15sp"
             android:layout_marginStart="24dp"
             android:layout_marginTop="10dp"

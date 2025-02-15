@@ -22,5 +22,15 @@ class BottomSheetViewFragment : BottomSheetDialogFragment() {
 
     companion object {
         const val TAG = "CodiBottomModalSheet"
+
+        // newInstance 메서드로 commentId를 넘겨받을 수 있도록 수정
+        fun newInstance(commentId: Int): BottomSheetViewFragment {
+            val fragment = BottomSheetViewFragment()
+            val args = Bundle().apply {
+                putInt("commentId", commentId) // commentId를 Bundle에 저장
+            }
+            fragment.arguments = args
+            return fragment
+        }
     }
 }

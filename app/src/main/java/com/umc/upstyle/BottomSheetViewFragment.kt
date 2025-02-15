@@ -4,33 +4,79 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.umc.upstyle.data.model.ResponseDetailResponse
+import com.umc.upstyle.data.network.RequestService
+import com.umc.upstyle.data.network.RetrofitClient
 import com.umc.upstyle.databinding.FragmentBottomSheetViewBinding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class BottomSheetViewFragment : BottomSheetDialogFragment() {
 
     private var _binding: FragmentBottomSheetViewBinding? = null
     private val binding get() = _binding!!
 
+    private val responseService: RequestService by lazy {
+        RetrofitClient.createService(RequestService::class.java)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentBottomSheetViewBinding.inflate(inflater, container, false)
+
+        val commentId = arguments?.getInt("commentId") ?: -1
+        if (commentId != -1) {
+            fetchResponseDetail(commentId)
+        }
+
         return binding.root
+    }
+
+    private fun fetchResponseDetail(responseId: Int) {
+        lifecycleScope.launch {
+            try {
+                val response = withContext(Dispatchers.IO) {
+                    responseService.getResponseDetail(responseId)
+                }
+                if (response.isSuccessful) {
+                    response.body()?.let { apiResponse ->
+                        if (apiResponse.isSuccess) {
+                            apiResponse.result?.let {
+                                updateUI(it)
+                            }
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    private fun updateUI(response: ResponseDetailResponse) {
+        binding.tvUsername.text = response.user.nickname
+        binding.addInfo.text = response.body
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     companion object {
         const val TAG = "CodiBottomModalSheet"
 
-        // newInstance 메서드로 commentId를 넘겨받을 수 있도록 수정
         fun newInstance(commentId: Int): BottomSheetViewFragment {
-            val fragment = BottomSheetViewFragment()
-            val args = Bundle().apply {
-                putInt("commentId", commentId) // commentId를 Bundle에 저장
+            return BottomSheetViewFragment().apply {
+                arguments = Bundle().apply {
+                    putInt("commentId", commentId)
+                }
             }
-            fragment.arguments = args
-            return fragment
         }
     }
 }

@@ -120,18 +120,14 @@ class RequestDetailFragment : Fragment() {
     private fun showBottomSheet(commentId: Int) {
         // 클릭된 댓글 id를 Bottom Sheet에 넘겨서 API 호출
         val bottomSheetViewFragment = BottomSheetViewFragment.newInstance(commentId)
+        // 모서리 둥글게 해서 Bottom Sheet 불러오는 코드
+        bottomSheetViewFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.RoundCornerBottomSheetDialogTheme)
         bottomSheetViewFragment.show(parentFragmentManager, bottomSheetViewFragment.tag)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    private fun modalBottomSheet() {
-        val modal = CodiBottomSheetFragment()
-        modal.setStyle(DialogFragment.STYLE_NORMAL, R.style.RoundCornerBottomSheetDialogTheme)
-        modal.show(parentFragmentManager, CodiBottomSheetFragment.TAG)
     }
 }
 

@@ -4,6 +4,7 @@ import com.umc.upstyle.data.model.AddCodiReqDTO
 import com.umc.upstyle.data.model.AddCodiRes
 import com.umc.upstyle.data.model.ApiResponse
 import com.umc.upstyle.data.model.RequestDetailResponse
+import com.umc.upstyle.data.model.ResponseDetailResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -16,4 +17,10 @@ interface RequestService {
 
     @GET("codi-requests/{requestId}")
     suspend fun getRequestDetail(@Path("requestId") requestId: Int): Response<ApiResponse<RequestDetailResponse>>
+
+    @GET("codi-requests/response/{responseId}")
+    suspend fun getResponseDetail(
+        @Path("responseId") responseId: Int
+    ): Response<ApiResponse<ResponseDetailResponse>>
+
 }

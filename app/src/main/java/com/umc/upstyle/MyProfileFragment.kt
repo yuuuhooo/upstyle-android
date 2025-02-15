@@ -9,12 +9,14 @@ import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.kakao.sdk.user.Constants.GENDER
 import com.umc.upstyle.data.model.AccountInfoDTO
 import com.umc.upstyle.data.model.ApiResponse
 import com.umc.upstyle.data.model.Gender
+import com.umc.upstyle.data.model.NicknameDTO
 import com.umc.upstyle.data.network.UserApiService
 import com.umc.upstyle.databinding.FragmentMyProfileBinding
 import retrofit2.Call
@@ -39,37 +41,29 @@ class MyProfileFragment : Fragment(R.layout.fragment_my_profile) {
         userApiService.getUserInfo("Bearer $jwtToken").enqueue(object :
             Callback<ApiResponse<AccountInfoDTO>> {
             override fun onResponse(call: Call<ApiResponse<AccountInfoDTO>>, response: Response<ApiResponse<AccountInfoDTO>>) {
-                Log.d("Account", "서버 응답 코드: ${response.code()}")
-
-                binding.userEmail.text = response.body()?.result?.email ?: "이메일을 불러올 수 없음"
-                binding.nicknameTextView.text = response.body()?.result?.nickname ?: "닉네임을 불러올 수 없음"
-                binding.userBodyinfo.text = response.body()?.result?.let { "${it.height}cm, ${it.weight}kg" } ?: "체형정보를 불러올 수 없음"
-                binding.userGender.text = when (response.body()?.result?.gender) {
-                    Gender.MALE -> "남성"
-                    Gender.FEMALE -> "여성"
-                    else -> "성별을 불러올 수 없음"
+                if (response.isSuccessful) {
+                    val userInfo = response.body()?.result
+                    binding.userEmail.text = userInfo?.email ?: "이메일을 불러올 수 없음"
+                    binding.nicknameTextView.text = userInfo?.nickname ?: "닉네임을 불러올 수 없음"
+                    binding.userBodyinfo.text = userInfo?.let { "${it.height}cm, ${it.weight}kg" } ?: "체형정보를 불러올 수 없음"
+                    binding.userGender.text = when (userInfo?.gender) {
+                        Gender.MALE -> "남성"
+                        Gender.FEMALE -> "여성"
+                        else -> "성별을 불러올 수 없음"
+                    }
                 }
             }
 
             override fun onFailure(call: Call<ApiResponse<AccountInfoDTO>>, t: Throwable) {
                 Log.e("Account", "사용자 정보 요청 실패: ${t.message}")
-                //navigateToLogin()
             }
         })
 
 
-        // 닉네임 불러오기
-        loadNickname()
-
-        binding.backButton.setOnClickListener {
-            saveNickname()
-            findNavController().navigateUp()
-        }
+        binding.backButton.setOnClickListener { findNavController().navigateUp() }
 
         // 닉네임 수정 버튼 클릭 시 EditText 활성화
-        binding.editNicknameButton.setOnClickListener {
-            enableEditMode()
-        }
+        binding.editNicknameButton.setOnClickListener { enableEditMode() }
 
         // 닉네임 입력 시 연필 아이콘 숨기기 및 유효성 검사 실행
         binding.nicknameEditText.addTextChangedListener(object : TextWatcher {
@@ -84,10 +78,11 @@ class MyProfileFragment : Fragment(R.layout.fragment_my_profile) {
             override fun afterTextChanged(s: Editable?) {}
         })
 
-        // 닉네임 입력 완료 (키보드에서 완료 버튼 누름)
+        // 닉네임 입력 완료
         binding.nicknameEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                saveNickname()
+                //saveNickname()
+                updateNickname(jwtToken)
                 disableEditMode()
                 binding.namechkimg.visibility = View.GONE
                 true
@@ -141,6 +136,40 @@ class MyProfileFragment : Fragment(R.layout.fragment_my_profile) {
         }
     }
 
+    // 닉네임 API 요청
+    private fun updateNickname(jwtToken: String?) {
+        val newNickname = binding.nicknameEditText.text.toString().trim()
+
+        if (newNickname.isEmpty()) {
+            Toast.makeText(requireContext(), "닉네임을 입력해주세요.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val requestBody = NicknameDTO(newNickname)
+
+        jwtToken?.let {
+            userApiService.updateNickname("Bearer $jwtToken", requestBody)
+                .enqueue(object : Callback<ApiResponse<NicknameDTO>> {
+                    override fun onResponse(
+                        call: Call<ApiResponse<NicknameDTO>>,
+                        response: Response<ApiResponse<NicknameDTO>>
+                    ) {
+                        if (response.isSuccessful) {
+                            binding.nicknameTextView.text = newNickname
+                            disableEditMode()
+                            Toast.makeText(requireContext(), "닉네임이 변경되었습니다.", Toast.LENGTH_SHORT).show()
+                        } else {
+                            Toast.makeText(requireContext(), "닉네임 변경 실패", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+
+                    override fun onFailure(call: Call<ApiResponse<NicknameDTO>>, t: Throwable) {
+                        Toast.makeText(requireContext(), "서버 오류 발생: ${t.message}", Toast.LENGTH_SHORT).show()
+                    }
+                })
+        }
+    }
+
     // 닉네임 수정 모드 활성화
     private fun enableEditMode() {
         binding.nicknameTextView.visibility = View.GONE  // 기존 닉네임 숨김
@@ -158,22 +187,6 @@ class MyProfileFragment : Fragment(R.layout.fragment_my_profile) {
         binding.editNicknameButton.visibility = View.VISIBLE // 수정이 끝나면 연필 버튼 다시 표시
     }
 
-    // 닉네임 저장
-    private fun saveNickname() {
-        val nickname = binding.nicknameEditText.text.toString()
-        val sharedPref = requireActivity().getSharedPreferences("UserProfile", Context.MODE_PRIVATE)
-        with(sharedPref.edit()) {
-            putString("nickname", nickname)
-            apply()
-        }
-    }
-
-    // 닉네임 불러오기
-    private fun loadNickname() {
-        val sharedPref = requireActivity().getSharedPreferences("UserProfile", Context.MODE_PRIVATE)
-        val savedNickname = sharedPref.getString("nickname", "")
-        binding.nicknameTextView.text = savedNickname
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()

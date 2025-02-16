@@ -23,7 +23,6 @@ import com.umc.upstyle.data.network.RetrofitClient
 import com.umc.upstyle.data.viewmodel.ClothViewModel
 import com.umc.upstyle.databinding.ActivityTodayOotdBinding
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -59,21 +58,9 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
         // 전달된 데이터 처리
         observeSelectedItem()
 
-
-//        // 카테고리 UI 업데이트
-//        clothViewModel.categoryData.observe(viewLifecycleOwner) { categoryData ->
-//            binding.outerText.text = categoryData["OUTER"]
-//            binding.topText.text = categoryData["TOP"]
-//            binding.bottomText.text = categoryData["BOTTOM"]
-//            binding.shoesText.text = categoryData["SHOES"]
-//            binding.bagText.text = categoryData["BAG"]
-//            binding.otherText.text = categoryData["OTHER"]
-//        }
-
-        // 날짜
+        // 상단에 띄우는 날짜
         val dateFormat = SimpleDateFormat("MMdd", Locale.getDefault())
         val todayDate = dateFormat.format(Date())
-
         binding.date.text = todayDate
 
         // 저장된 데이터 복원
@@ -118,14 +105,14 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
             viewLifecycleOwner
         ) { selectedItem ->
             val category = navBackStackEntry.savedStateHandle.get<String>("CATEGORY")
-            val imageUrl = navBackStackEntry.savedStateHandle.get<String>("SELECTED_ITEM_IMAGE_URL")
+//            val imageUrl = navBackStackEntry.savedStateHandle.get<String>("SELECTED_ITEM_IMAGE_URL")
 
             // ViewModel에 데이터 추가
             clothViewModel.updateCategory(category ?: "OTHER", selectedItem)
-            imageUrl?.let { clothViewModel.addImage(it) }
+//            imageUrl?.let { clothViewModel.addImage(it) }
 
             // UI 업데이트
-            updateCategoryUI(category, selectedItem, imageUrl)
+            updateCategoryUI(category, selectedItem)
         }
     }
 
@@ -163,6 +150,7 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
                 Log.d("Retrofit", "Retrofit 서버 전달 시도")
                 Log.d("Retrofit", "$updatedRequest")
                 sendToServer(updatedRequest)
+                Toast.makeText(requireContext(), "OOTD 업로드 성공", Toast.LENGTH_SHORT).show()
                 findNavController().navigate(R.id.action_todayOotdFragment_to_mainActivity)
 
             } catch (e: Exception) {
@@ -208,28 +196,6 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
             null
         }
     }
-
-
-
-//    // Firebase에 이미지를 업로드하는 함수, 콜백을 사용하지 않고 반환값으로 처리
-//    private suspend fun uploadImageToFirebase(uri: Uri): String? {
-//        return try {
-//            val storageRef = FirebaseStorage.getInstance().reference
-//            val fileName = "images/${UUID.randomUUID()}.jpg"
-//            val imageRef = storageRef.child(fileName)
-//
-//            // Upload the file and await the result
-//            val uploadTask = imageRef.putFile(uri).await()
-//
-//            // Once uploaded, get the download URL
-//            val downloadUri = imageRef.downloadUrl.await()
-//            downloadUri.toString()
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//            null
-//        }
-//    }
-
 
 
     // 서버로 OOTDRequest를 전송하는 함수
@@ -282,12 +248,8 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
                 colorCategoryId = colorId,
                 additionalInfo = addInfo
             )
-            Toast.makeText(requireContext(), "DTO 생성", Toast.LENGTH_SHORT).show()
 
             clothViewModel.addClothRequest(clothRequestDTO)
-            Log.d("TodayOotdFragment", "addClothRequest: $clothRequestDTO")
-
-            Toast.makeText(requireContext(), "${clothViewModel.clothList}", Toast.LENGTH_SHORT).show()
 
         }
 
@@ -356,7 +318,7 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
         findNavController().navigate(action)
     }
 
-    private fun updateCategoryUI(category: String?, itemName: String?, imageUrl: String?) {
+    private fun updateCategoryUI(category: String?, itemName: String?) {
         when (category) {
             "OUTER" -> binding.outerText.text = itemName
             "TOP" -> binding.topText.text = itemName
@@ -526,8 +488,7 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
                             val firstItem = items.first()
                             updateCategoryUI(
                                 category,
-                                firstItem.kindName,
-                                firstItem.ootd?.imageUrl
+                                firstItem.kindName
                             )
 
                             // ViewModel에도 저장

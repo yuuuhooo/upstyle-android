@@ -118,7 +118,7 @@ class AccountFragment : Fragment(R.layout.fragment_account) {
         // 로그인 화면으로 이동
         val intent = Intent(requireContext(), LoginActivity::class.java)
         startActivity(intent)
-        requireActivity().finish() // 현재 액티비티 종료
+//        requireActivity().finish() // 현재 액티비티 종료
     }
 
 

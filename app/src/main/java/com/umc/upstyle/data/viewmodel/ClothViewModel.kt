@@ -17,6 +17,10 @@ class ClothViewModel : ViewModel() {
     private val _categoryData = MutableLiveData<Map<String, String>>()
     val categoryData: LiveData<Map<String, String>> = _categoryData
 
+    // ✅ Toast 메시지를 위한 LiveData 추가
+    private val _toastMessage = MutableLiveData<String>()
+    val toastMessage: LiveData<String> = _toastMessage
+
     init {
         resetData()
     }
@@ -29,6 +33,9 @@ class ClothViewModel : ViewModel() {
         val currentList = _clothList.value ?: mutableListOf()
         currentList.add(cloth)
         _clothList.value = currentList
+
+        // ✅ 추가된 DTO 정보를 Toast 메시지로 설정
+        _toastMessage.value = "새로운 아이템 추가됨: ${cloth.clothKindId} - ${cloth.additionalInfo}"
     }
 
     fun updateCategory(category: String, data: String) {

@@ -39,3 +39,18 @@ data class CodiResPreview (
     val user: User
 )
 
+data class ResponseDetailResponse(
+    val id: Int,
+    val user: User,
+    val body: String,
+    val clothResponseList: List<ClothResponse>,
+    val imageUrl: String
+)
+
+data class ClothResponse(
+    val id: Int,
+    val kindName: String,
+    val categoryName: String,
+    val fitName: String,
+    val colorName: String
+)

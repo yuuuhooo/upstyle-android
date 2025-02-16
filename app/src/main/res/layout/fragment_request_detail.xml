@@ -88,6 +88,7 @@
                 app:layout_constraintDimensionRatio="1:1"
                 android:layout_marginStart="13dp"
                 android:layout_marginEnd="13dp"
+                android:scaleType="centerCrop"
                 app:layout_constraintTop_toBottomOf="@id/tv_text"
                 android:layout_marginTop="15dp"/>
 
@@ -98,6 +99,7 @@
                 app:layout_constraintTop_toBottomOf="@id/iv_image"
                 app:layout_constraintEnd_toStartOf="@id/tv_comment_count"
                 android:src="@drawable/ic_chat"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="5dp"
                 />
 
@@ -105,13 +107,23 @@
                 android:id="@+id/tv_comment_count"
                 android:text="4"
                 android:textColor="@color/main_color_1"
-                app:layout_constraintTop_toBottomOf="@id/iv_image"
+                app:layout_constraintTop_toTopOf="@id/ic_chat"
+                app:layout_constraintBottom_toBottomOf="@id/ic_chat"
                 app:layout_constraintEnd_toEndOf="@id/iv_image"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
 
-            <!-- 여기에는 후보군... -->
+            <!-- 여기에는 댓글... -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                app:layout_constraintTop_toBottomOf="@id/iv_image"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:layout_marginStart="13dp"
+                android:layout_marginEnd="13dp"
+                android:paddingBottom="100dp"/>
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

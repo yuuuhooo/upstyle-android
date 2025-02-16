@@ -103,6 +103,12 @@
                 android:defaultValue="DEFAULT" />
 
         </action>
+        <action
+            android:id="@+id/action_todayOotdFragment_self"
+            app:destination="@id/todayOotdFragment" />
+        <action
+            android:id="@+id/action_todayOotdFragment_to_mainActivity"
+            app:destination="@id/mainActivity" />
     </fragment>
 
     <fragment
@@ -503,7 +509,11 @@
         android:id="@+id/ootdDetailFragment"
         android:name="com.umc.upstyle.OotdDetailFragment"
         tools:layout="@layout/fragment_ootd_detail" />
-
+    <activity
+        android:id="@+id/mainActivity"
+        android:name="com.umc.upstyle.MainActivity"
+        android:label="activity_myhome"
+        tools:layout="@layout/activity_myhome" />
 
 
 </navigation>

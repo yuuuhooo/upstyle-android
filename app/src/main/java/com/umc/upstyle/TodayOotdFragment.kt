@@ -29,6 +29,8 @@ import java.util.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
 
@@ -46,24 +48,19 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
         // 이전 Fragment나 Activity에서 전달된 데이터 처리
         handleReceivedData()
 
+        clothViewModel.toastMessage.observe(viewLifecycleOwner) { message ->
+            message?.let {
+                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+            }
+        }
+
+
         // 전달된 데이터 처리
         observeSelectedItem()
 
-
-//        // 카테고리 UI 업데이트
-//        clothViewModel.categoryData.observe(viewLifecycleOwner) { categoryData ->
-//            binding.outerText.text = categoryData["OUTER"]
-//            binding.topText.text = categoryData["TOP"]
-//            binding.bottomText.text = categoryData["BOTTOM"]
-//            binding.shoesText.text = categoryData["SHOES"]
-//            binding.bagText.text = categoryData["BAG"]
-//            binding.otherText.text = categoryData["OTHER"]
-//        }
-
-        // 날짜
+        // 상단에 띄우는 날짜
         val dateFormat = SimpleDateFormat("MMdd", Locale.getDefault())
         val todayDate = dateFormat.format(Date())
-
         binding.date.text = todayDate
 
         // 저장된 데이터 복원
@@ -81,8 +78,8 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
             val ootdRequest = OOTDRequest(
                 userId = 1,
                 date = dateServer,
-                ootdImages = "",  // 이미지 URL은 아래에서 추가
-                clothViewModel.clothList.value ?: emptyList()
+                imageUrls = mutableListOf(),  // 이미지 URL은 아래에서 추가
+                clothRequestDTOList = clothViewModel.clothList.value ?: emptyList()
             )
 
             val imageUri = clothViewModel.imageUris.value?.lastOrNull()?.let { Uri.parse(it) }
@@ -108,14 +105,14 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
             viewLifecycleOwner
         ) { selectedItem ->
             val category = navBackStackEntry.savedStateHandle.get<String>("CATEGORY")
-            val imageUrl = navBackStackEntry.savedStateHandle.get<String>("SELECTED_ITEM_IMAGE_URL")
+//            val imageUrl = navBackStackEntry.savedStateHandle.get<String>("SELECTED_ITEM_IMAGE_URL")
 
             // ViewModel에 데이터 추가
             clothViewModel.updateCategory(category ?: "OTHER", selectedItem)
-            imageUrl?.let { clothViewModel.addImage(it) }
+//            imageUrl?.let { clothViewModel.addImage(it) }
 
             // UI 업데이트
-            updateCategoryUI(category, selectedItem, imageUrl)
+            updateCategoryUI(category, selectedItem)
         }
     }
 
@@ -127,23 +124,34 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
             try {
                 val uploadedImageUrls = mutableListOf<String>()
 
+                // 이미지 URI가 있으면 Firebase에 업로드
                 if (imageUri != null) {
-                    uploadImageToFirebase(imageUri) { imageUrl ->
-                        if (imageUrl != null) {
-                            uploadedImageUrls.add(imageUrl)
-                            Log.d("Firebase", "이미지 업로드 성공: $imageUrl")
-                        } else {
-                            Log.e("Firebase", "이미지 업로드 실패")
-                        }
+                    // 이미지 업로드가 완료되면 uploadedImageUrls를 업데이트
+                    val imageUrl = uploadImageToFirebase(imageUri)
+                    if (imageUrl != null) {
+                        uploadedImageUrls.add(imageUrl)
+                        Log.d("Firebase", "이미지 업로드 성공: $imageUrl")
+                    } else {
+                        Log.e("Firebase", "이미지 업로드 실패")
                     }
                 }
 
-                if (uploadedImageUrls.isNotEmpty()) {
-                    val updatedRequest = request.copy(ootdImages = uploadedImageUrls.first())
-                    sendToServer(updatedRequest)
-                } else {
+                // 만약 이미지 업로드에 실패했다면 바로 종료
+                if (uploadedImageUrls.isEmpty()) {
                     Log.e("Upload", "이미지 업로드에 실패했습니다.")
+                    return@launch
                 }
+
+                // 업로드한 이미지 URL로 request 객체 업데이트
+                val updatedRequest = request.copy(imageUrls = uploadedImageUrls)
+
+                Log.d("Request Update", "Request Update 반영 성공")
+                // 서버로 요청 전송
+                Log.d("Retrofit", "Retrofit 서버 전달 시도")
+                Log.d("Retrofit", "$updatedRequest")
+                sendToServer(updatedRequest)
+                Toast.makeText(requireContext(), "OOTD 업로드 성공", Toast.LENGTH_SHORT).show()
+                findNavController().navigate(R.id.action_todayOotdFragment_to_mainActivity)
 
             } catch (e: Exception) {
                 Log.e("Retrofit", "에러 발생: ${e.message}")
@@ -151,29 +159,41 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
         }
     }
 
-
-    // Firebase에 이미지를 업로드하는 함수
-    private fun uploadImageToFirebase(uri: Uri, callback: (String?) -> Unit) {
-        try {
+    // Firebase에 이미지를 업로드하는 함수 (output으로 반환)
+    private suspend fun uploadImageToFirebase(uri: Uri): String? {
+        return try {
             val storageRef = FirebaseStorage.getInstance().reference
-            val fileName = "images/${UUID.randomUUID()}.jpg" // 랜덤 파일명 생성
+            val fileName = "images/${UUID.randomUUID()}.jpg"
             val imageRef = storageRef.child(fileName)
 
             val uploadTask = imageRef.putFile(uri)
 
-            uploadTask.addOnSuccessListener {
-                // 업로드 성공 후 이미지 URL 가져오기
-                imageRef.downloadUrl.addOnSuccessListener { downloadUri ->
-                    callback(downloadUri.toString()) // URL 반환
-                }.addOnFailureListener {
-                    callback(null)
-                }
-            }.addOnFailureListener {
-                callback(null)
+            // 업로드 진행 상황을 처리하려면, suspendCoroutine을 사용하여 비동기 작업을 처리할 수 있습니다.
+            uploadTask.addOnProgressListener { taskSnapshot ->
+                val progress = (100.0 * taskSnapshot.bytesTransferred / taskSnapshot.totalByteCount).toInt()
+                // 진행률 표시 (예: ProgressBar)
+                Log.d("FirebaseStorage", "Upload progress: $progress%")
             }
+
+            // 업로드 성공 후 downloadUrl을 가져오기
+            val downloadUri = suspendCoroutine<String?> { cont ->
+                uploadTask.addOnSuccessListener {
+                    imageRef.downloadUrl.addOnSuccessListener { uri ->
+                        cont.resume(uri.toString())
+                    }.addOnFailureListener { exception ->
+                        Log.e("FirebaseStorage", "Download URL Error", exception)
+                        cont.resume(null)
+                    }
+                }.addOnFailureListener { exception ->
+                    Log.e("FirebaseStorage", "Upload Error", exception)
+                    cont.resume(null)
+                }
+            }
+
+            downloadUri
         } catch (e: Exception) {
             e.printStackTrace()
-            callback(null)
+            null
         }
     }
 
@@ -183,17 +203,20 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
         val ootdService = RetrofitClient.createService(OOTDService::class.java)
         lifecycleScope.launch {
             try {
+                Log.d("Retrofit", "서버 전송 시도")
                 val response = ootdService.uploadOOTD(updatedRequest)
-                if (response.isSuccessful) {
+
+                if (response.isSuccess) {
                     Log.d("Retrofit", "업로드 성공!")
                 } else {
-                    Log.e("Retrofit", "업로드 실패: ${response.errorBody()?.string()}")
+                    Log.e("Retrofit", "업로드 실패: ${response.code}")
                 }
             } catch (e: Exception) {
                 Log.e("Retrofit", "서버 요청 에러: ${e.message}")
             }
         }
     }
+
 
 
 
@@ -214,7 +237,6 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
         val colorId = arguments?.getInt("COLOR_ID") ?:0
         val addInfo = arguments?.getString("ADD_INFO") ?:""
 
-
         // 새로 받아온 아이템 정보가 있다면
         if(kindId != 0) {
             // DTO 생성
@@ -228,7 +250,6 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
             )
 
             clothViewModel.addClothRequest(clothRequestDTO)
-            Log.d("TodayOotdFragment", "addClothRequest: $clothRequestDTO")
 
         }
 
@@ -297,7 +318,7 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
         findNavController().navigate(action)
     }
 
-    private fun updateCategoryUI(category: String?, itemName: String?, imageUrl: String?) {
+    private fun updateCategoryUI(category: String?, itemName: String?) {
         when (category) {
             "OUTER" -> binding.outerText.text = itemName
             "TOP" -> binding.topText.text = itemName
@@ -467,8 +488,7 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
                             val firstItem = items.first()
                             updateCategoryUI(
                                 category,
-                                firstItem.kindName,
-                                firstItem.ootd?.imageUrl
+                                firstItem.kindName
                             )
 
                             // ViewModel에도 저장

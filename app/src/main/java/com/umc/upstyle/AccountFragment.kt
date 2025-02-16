@@ -62,6 +62,7 @@ class AccountFragment : Fragment(R.layout.fragment_account) {
 
         if (jwtToken.isNullOrEmpty()) {
             Log.e("Account", "JWT 없음 → 로그인 화면 이동")
+            Log.e("Account", "$jwtToken")
             //navigateToLogin()
             return
         }

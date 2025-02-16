@@ -27,11 +27,18 @@ class LoginActivity : AppCompatActivity() {
 
         // ✅ 비회원으로 둘러보기
         binding.tvNonMember.setOnClickListener {
+            val sharedPref = getSharedPreferences("Auth", MODE_PRIVATE)
+            sharedPref.edit().remove("jwt_token").apply()
+            sharedPref.edit().putBoolean("is_guest", true).apply()
+            Log.d("JWT", "✅ 기존 JWT 삭제 완료")
+
             startActivity(Intent(this, MainActivity::class.java))
         }
 
         // ✅ 카카오 로그인 버튼 클릭 시 로그인 시작
         binding.btKakaoLogin.setOnClickListener {
+            val sharedPref = getSharedPreferences("Auth", MODE_PRIVATE)
+            sharedPref.edit().remove("is_guest").apply()
             logoutAndStartKakaoLogin() // ✅ 기존 JWT 삭제 후 로그인 시작
         }
     }
@@ -68,7 +75,7 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    // ✅ Access Token 저장
+    // Access Token 저장
     private fun saveAccessToken(accessToken: String) {
         val sharedPref = getSharedPreferences("Auth", MODE_PRIVATE)
         val editor = sharedPref.edit()

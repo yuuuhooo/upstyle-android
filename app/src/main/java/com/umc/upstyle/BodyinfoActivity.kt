@@ -8,6 +8,7 @@ import android.text.TextWatcher
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.kakao.sdk.user.UserApiClient
 import com.umc.upstyle.data.model.AdditionalInfoRequestDTO
 import com.umc.upstyle.data.model.ApiResponse
 import com.umc.upstyle.data.model.Gender
@@ -97,16 +98,33 @@ class BodyinfoActivity : AppCompatActivity() {
             return
         }
 
+        // 키, 몸무게, 성별 기입
         val height = binding.etBodyinfoHeight.text.toString().toDoubleOrNull() ?: 0.0
         val weight = binding.etBodyinfoWeight.text.toString().toDoubleOrNull() ?: 0.0
-        val nickname = "user_${(1000..9999).random()}"
-
         val gender = try {
             Gender.valueOf(selectedGender ?: "NONE")
         } catch (e: IllegalArgumentException) {
             Gender.NONE
         }
 
+        // ✅ 카카오 사용자 정보 요청 (비동기)
+        UserApiClient.instance.me { user, error ->
+            if (error != null) {
+                Log.e("UserInfo", "❌ 사용자 정보 요청 실패: $error")
+                sendAdditionalInfoToServer(jwtToken, "사용자", gender, height, weight) // 기본 닉네임 사용
+            } else if (user != null) {
+                val kakaoAccount = user.kakaoAccount
+                val nickname = kakaoAccount?.profile?.nickname ?: "사용자"
+
+                Log.d("UserInfo", "✅ 카카오 사용자 정보: 닉네임=$nickname")
+
+                // ✅ 사용자 정보를 백엔드로 전송
+                sendAdditionalInfoToServer(jwtToken, nickname, gender, height, weight)
+            }
+        }
+    }
+
+    private fun sendAdditionalInfoToServer(jwtToken: String, nickname: String, gender: Gender, height: Double, weight: Double) {
         val request = AdditionalInfoRequestDTO(nickname, gender, height, weight)
         val userApiService = RetrofitClient.createService(UserApiService::class.java)
 
@@ -129,11 +147,13 @@ class BodyinfoActivity : AppCompatActivity() {
                         }
                     }
                 }
+
                 override fun onFailure(call: Call<ApiResponse<UserInfoDTO>>, t: Throwable) {
                     Log.e("UserInfo", "❌ API 요청 실패: ${t.message}")
                 }
             })
     }
+
 
     private fun logoutAndRedirectToLogin() {
         val sharedPref = getSharedPreferences("Auth", MODE_PRIVATE)

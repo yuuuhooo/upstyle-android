@@ -55,33 +55,42 @@ class AccountFragment : Fragment(R.layout.fragment_account) {
         fetchUserNickname()
     }
 
-    // ✅ JWT로 닉네임 가져오기
+    // ✅ JWT로 닉네임, 이메일 가져오기
     private fun fetchUserNickname() {
         val sharedPref = requireContext().getSharedPreferences("Auth", Context.MODE_PRIVATE)
         val jwtToken = sharedPref.getString("jwt_token", null)
+        val isGuest = sharedPref.getBoolean("is_guest", false)  // 비회원 여부 확인
 
-        if (jwtToken.isNullOrEmpty()) {
-            Log.e("Account", "JWT 없음 → 로그인 화면 이동")
-            Log.e("Account", "$jwtToken")
-            //navigateToLogin()
-            return
-        }
+//        if (jwtToken.isNullOrEmpty()) {
+//            Log.e("Account", "JWT 없음 → 로그인 화면 이동")
+//            Log.e("Account", "$jwtToken")
+//            Log.d("Account", "현재 is_guest 값: $isGuest")
+//            return
+//        }
 
         Log.d("Account", "JWT 있음 → 사용자 정보 요청 시작, JWT: $jwtToken")
 
+        if (isGuest) { // 비회원 모드
+            Log.d("Account", "비회원 모드 활성화됨")
+            binding.userNickname.text = "비회원"
+            binding.userEmail.text = "이메일을 불러올 수 없음"
+        } else { // 회원 모드
+            userApiService.getUserInfo("Bearer $jwtToken")
+                .enqueue(object : Callback<ApiResponse<AccountInfoDTO>> {
+                    override fun onResponse(
+                        call: Call<ApiResponse<AccountInfoDTO>>,
+                        response: Response<ApiResponse<AccountInfoDTO>>
+                    ) {
+                        Log.d("Account", "서버 응답 코드: ${response.code()}")
+                        binding.userNickname.text = response.body()?.result?.nickname ?: "닉네임을 불러올 수 없음"
+                        binding.userEmail.text = response.body()?.result?.email ?: "이메일을 불러올 수 없음"
+                    }
 
-        userApiService.getUserInfo("Bearer $jwtToken").enqueue(object : Callback<ApiResponse<AccountInfoDTO>> {
-            override fun onResponse(call: Call<ApiResponse<AccountInfoDTO>>, response: Response<ApiResponse<AccountInfoDTO>>) {
-                Log.d("Account", "서버 응답 코드: ${response.code()}")
-                binding.userNickname.text = response.body()?.result?.nickname ?: "닉네임을 불러올 수 없음"
-                binding.userEmail.text = response.body()?.result?.email ?: "이메일을 불러올 수 없음"
-            }
-
-            override fun onFailure(call: Call<ApiResponse<AccountInfoDTO>>, t: Throwable) {
-                Log.e("Account", "사용자 정보 요청 실패: ${t.message}")
-                //navigateToLogin()
-            }
-        })
+                    override fun onFailure(call: Call<ApiResponse<AccountInfoDTO>>, t: Throwable) {
+                        Log.e("Account", "사용자 정보 요청 실패: ${t.message}")
+                    }
+                })
+        }
     }
 
 

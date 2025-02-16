@@ -33,6 +33,7 @@ class LoginActivity : AppCompatActivity() {
             Log.d("JWT", "✅ 기존 JWT 삭제 완료")
 
             startActivity(Intent(this, MainActivity::class.java))
+            // Bodyinfo로 이동 + 로직 구현하기
         }
 
         // ✅ 카카오 로그인 버튼 클릭 시 로그인 시작

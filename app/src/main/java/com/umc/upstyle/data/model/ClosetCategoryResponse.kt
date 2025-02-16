@@ -10,7 +10,7 @@ data class ClosetCategoryResponse(
 )
 
 data class ClosetItem(
-    val id: Long,
+    val id: Int,
     @SerializedName("image_url") val imageUrl: String,
     val description: String
 )

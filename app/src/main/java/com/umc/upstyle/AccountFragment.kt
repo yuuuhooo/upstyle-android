@@ -15,6 +15,7 @@ import androidx.navigation.fragment.findNavController
 import com.kakao.sdk.user.UserApiClient
 import com.umc.upstyle.data.model.AccountInfoDTO
 import com.umc.upstyle.data.model.ApiResponse
+import com.umc.upstyle.data.network.RetrofitClient
 import com.umc.upstyle.data.network.UserApiService
 import com.umc.upstyle.databinding.FragmentAccountBinding
 import com.umc.upstyle.databinding.FragmentSearchBinding

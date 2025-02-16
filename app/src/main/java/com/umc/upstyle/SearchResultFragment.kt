@@ -56,7 +56,7 @@ class SearchResultFragment : Fragment() {
         }
 
         // ✅ categoryId 가져오기 (필요 시 사용)
-        val categoryId = arguments?.getLong("categoryId")
+        val categoryId = arguments?.getInt("categoryId")
 
 
         // ✅ 선택한 description과 같은 아이템만 필터링
@@ -133,7 +133,7 @@ class SearchResultFragment : Fragment() {
         return itemResults
     }
 
-    private fun fetchClothesByCategory(categoryId: Long?, selectedDescription: String?) {
+    private fun fetchClothesByCategory(categoryId: Int?, selectedDescription: String?) {
         val apiService = RetrofitClient.createService(ApiService::class.java)
 
         apiService.getClothesByCategory(kindId = null, categoryId = categoryId, colorIds = null, fitId = null)

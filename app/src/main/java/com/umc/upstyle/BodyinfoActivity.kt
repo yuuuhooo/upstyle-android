@@ -13,6 +13,7 @@ import com.umc.upstyle.data.model.AdditionalInfoRequestDTO
 import com.umc.upstyle.data.model.ApiResponse
 import com.umc.upstyle.data.model.Gender
 import com.umc.upstyle.data.model.UserInfoDTO
+import com.umc.upstyle.data.network.RetrofitClient
 import com.umc.upstyle.data.network.UserApiService
 import com.umc.upstyle.databinding.ActivityBodyinfoBinding
 import retrofit2.Call

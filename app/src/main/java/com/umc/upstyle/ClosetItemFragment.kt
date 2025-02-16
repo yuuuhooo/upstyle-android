@@ -24,9 +24,9 @@ class ClosetItemFragment : Fragment() {
     private var _binding: FragmentClosetItemBinding? = null
     private val binding get() = _binding!!
 
-    private var categoryId: Long? = null  // API에서 사용할 categoryId
+    private var categoryId: Int? = null  // API에서 사용할 categoryId
     private var category: String? = null
-    private var userId: Long = 1L // 기본 userId 값 (필요 시 수정)
+    private var userId: Int = 1 // 기본 userId 값 (필요 시 수정)
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,12 +36,12 @@ class ClosetItemFragment : Fragment() {
 
         //category 값을 기반으로 categoryId 매핑
         categoryId = when (category) {
-            "OUTER" -> 1L
-            "TOP" -> 2L
-            "BOTTOM" -> 3L
-            "SHOES" -> 4L
-            "BAG" -> 5L
-            "OTHER" -> 6L
+            "OUTER" -> 1
+            "TOP" -> 2
+            "BOTTOM" -> 3
+            "SHOES" -> 4
+            "BAG" -> 5
+            "OTHER" -> 6
             else -> null
         }
     }
@@ -75,7 +75,7 @@ class ClosetItemFragment : Fragment() {
     private fun fetchClosetItems() {
         val apiService = RetrofitClient.createService(ApiService::class.java)
 
-        apiService.getClosetByCategory(userId = 1L, categoryId = categoryId)
+        apiService.getClosetByCategory(userId = 1, categoryId = categoryId)
             .enqueue(object : Callback<ClosetCategoryResponse> {
                 override fun onResponse(
                     call: Call<ClosetCategoryResponse>,

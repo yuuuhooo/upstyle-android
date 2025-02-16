@@ -496,10 +496,10 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
         preferences.edit().putString("SAVED_IMAGE_PATH", path).apply()
     }
 
-    private fun fetchClosetItems(categoryId: Long, category: String) {
+    private fun fetchClosetItems(categoryId: Int, category: String) {
         val apiService = RetrofitClient.createService(ApiService::class.java)
 
-        apiService.getClosetByCategory(userId = 1L, categoryId = categoryId)
+        apiService.getClosetByCategory(userId = 1, categoryId = categoryId)
             .enqueue(object : Callback<ClosetCategoryResponse> {
                 override fun onResponse(
                     call: Call<ClosetCategoryResponse>,

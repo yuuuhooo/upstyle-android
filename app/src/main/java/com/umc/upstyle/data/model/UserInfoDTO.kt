@@ -1,7 +1,7 @@
 package com.umc.upstyle.data.model
 
 data class UserInfoDTO(
-    val id: Long,
+    val id: Int,
     val nickname: String,
     val email: String,
     val gender: Gender,

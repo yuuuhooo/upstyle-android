@@ -25,15 +25,15 @@ interface ApiService {
     // 옷장 카테고리별 조회 API
     @GET("closets/categories")
     fun getClosetByCategory(
-        @Query("userId") userId: Long,
-        @Query("kindId") categoryId: Long? = null
+        @Query("userId") userId: Int,
+        @Query("kindId") categoryId: Int? = null
     ): Call<ClosetCategoryResponse>
 
 
     @GET("closet/{userId}/{categoryId}")
     fun getClosetByCategory(
-        @Path("userId") userId: Long,
-        @Path("categoryId") categoryId: Long
+        @Path("userId") userId: Int,
+        @Path("categoryId") categoryId: Int
     ): Call<ClosetCategoryResponse>
 
     @GET("votes/")
@@ -42,7 +42,7 @@ interface ApiService {
 
     @GET("bookmarks/")  // 서버의 API 엔드포인트
     fun getBookmarks(
-        @Query("userId") userId: Long
+        @Query("userId") userId: Int
     ): Call<BookmarkResponse>
 
     @GET("codi-requests/")  // 실제 서버의 API 엔드포인트로 교체
@@ -55,10 +55,10 @@ interface ApiService {
 
     @GET("/clothes/categories")
     fun getClothesByCategory(
-        @Query("kindId") kindId: Long?,
-        @Query("categoryId") categoryId: Long?,
-        @Query("colorIds") colorIds: List<Long>?,
-        @Query("fitId") fitId: Long?,
+        @Query("kindId") kindId: Int?,
+        @Query("categoryId") categoryId: Int?,
+        @Query("colorIds") colorIds: List<Int>?,
+        @Query("fitId") fitId: Int?,
         @Query("page") page: Int = 0,
         @Query("size") size: Int = 10
     ): Call<ClothesCategoryResponse>

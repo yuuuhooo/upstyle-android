@@ -1,7 +1,7 @@
 package com.umc.upstyle.data.model
 
 data class Ootd(
-    val id: Long,
+    val id: Int,
     val user: User,
     val date: String,
     val imageUrl: String,

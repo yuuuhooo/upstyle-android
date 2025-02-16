@@ -76,7 +76,7 @@ class SearchItemFragment : Fragment() {
         val items = loadItemsFromPreferences()
         setupRecyclerView(items)
 
-        val userId = 1L
+        val userId = 1
         val kindId = getkindId(category)
 
         // ✅ 서버에서 아이템 불러오기
@@ -84,14 +84,14 @@ class SearchItemFragment : Fragment() {
 
     }
 
-    private fun getkindId(category: String?): Long? {
+    private fun getkindId(category: String?): Int? {
         return when (category) {
-            "아우터" -> 1L
-            "상의" -> 2L
-            "하의" -> 3L
-            "신발" -> 4L
-            "가방" -> 5L
-            "아더" -> 6L
+            "아우터" -> 1
+            "상의" -> 2
+            "하의" -> 3
+            "신발" -> 4
+            "가방" -> 5
+            "아더" -> 6
             else -> null // 기본값 설정 (null이면 전체 조회 가능하도록)
         }
     }
@@ -132,7 +132,7 @@ class SearchItemFragment : Fragment() {
     }
 
 
-    private fun fetchItemsFromCloset(userId: Long, kindId: Long?) {
+    private fun fetchItemsFromCloset(userId: Int, kindId: Int?) {
         val apiService = RetrofitClient.createService(ApiService::class.java)
 
         Log.d("CATEGORY_ID", "API 요청 - kindId: $kindId") // ✅ kindId 값 확인

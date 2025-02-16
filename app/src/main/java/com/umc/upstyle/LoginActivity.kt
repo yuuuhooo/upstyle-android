@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.user.UserApiClient
 import com.umc.upstyle.data.network.AuthApiService
+import com.umc.upstyle.data.network.RetrofitClient
 import com.umc.upstyle.databinding.ActivityLoginBinding
 import retrofit2.Call
 import retrofit2.Callback

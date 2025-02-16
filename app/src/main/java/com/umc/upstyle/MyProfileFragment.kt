@@ -17,6 +17,7 @@ import com.umc.upstyle.data.model.AccountInfoDTO
 import com.umc.upstyle.data.model.ApiResponse
 import com.umc.upstyle.data.model.Gender
 import com.umc.upstyle.data.model.NicknameDTO
+import com.umc.upstyle.data.network.RetrofitClient
 import com.umc.upstyle.data.network.UserApiService
 import com.umc.upstyle.databinding.FragmentMyProfileBinding
 import retrofit2.Call

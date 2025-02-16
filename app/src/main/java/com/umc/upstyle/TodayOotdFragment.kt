@@ -40,16 +40,6 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
         // 이전 Fragment나 Activity에서 전달된 데이터 처리
         handleReceivedData()
 
-//        // 카테고리 UI 업데이트
-//        clothViewModel.categoryData.observe(viewLifecycleOwner) { categoryData ->
-//            binding.outerText.text = categoryData["OUTER"]
-//            binding.topText.text = categoryData["TOP"]
-//            binding.bottomText.text = categoryData["BOTTOM"]
-//            binding.shoesText.text = categoryData["SHOES"]
-//            binding.bagText.text = categoryData["BAG"]
-//            binding.otherText.text = categoryData["OTHER"]
-//        }
-
         // 날짜
         val dateFormat = SimpleDateFormat("MMdd", Locale.getDefault())
         val todayDate = dateFormat.format(Date())

@@ -21,7 +21,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 tools:ignore="MissingConstraints"
-                app:layout_constraintBottom_toTopOf="@id/bt_google_login"
+                app:layout_constraintBottom_toTopOf="@id/bt_kakao_login"
                 android:layout_marginBottom="17dp">
 
                 <TextView
@@ -42,45 +42,28 @@
                     android:id="@+id/line_non_member"
                     android:layout_width="130sp"
                     android:layout_height="1dp"
-
                     android:background="@drawable/line_shape_login"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_non_member"
-                    android:layout_marginTop="5dp"
-                    />
+                    android:layout_marginTop="5dp" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <LinearLayout
-                android:id="@+id/bt_google_login"
-                style="@style/GoogleLoginButton"
-                android:layout_width="match_parent"
+            <ImageButton
+                android:id="@+id/bt_kakao_login"
+                android:src="@drawable/kakao_login_medium_wide"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:clickable="true"
                 android:focusable="true"
-                android:padding="16dp"
+                android:padding="0dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 android:layout_marginBottom="62dp"
-                tools:ignore="MissingConstraints">
-
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_google"
-                    android:contentDescription="Icon" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:text="카카오로 로그인"
-                    android:textSize="12sp" />
-
-            </LinearLayout>
+                tools:ignore="MissingConstraints"/>
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

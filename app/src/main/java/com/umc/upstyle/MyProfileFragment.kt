@@ -59,7 +59,7 @@ class MyProfileFragment : Fragment(R.layout.fragment_my_profile) {
             }
         })
 
-
+        // 뒤로 가기
         binding.backButton.setOnClickListener { findNavController().navigateUp() }
 
         // 닉네임 수정 버튼 클릭 시 EditText 활성화

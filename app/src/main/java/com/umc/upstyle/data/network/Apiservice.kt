@@ -4,6 +4,7 @@ import com.umc.upstyle.data.model.BookmarkRequest
 import com.umc.upstyle.data.model.BookmarkResponse
 import com.umc.upstyle.data.model.ClosetCategoryResponse
 import com.umc.upstyle.data.model.ClosetResponse
+import com.umc.upstyle.data.model.ClothesCategoryResponse
 import com.umc.upstyle.data.model.RequestResponse
 import com.umc.upstyle.data.model.VotePreviewResponse
 import retrofit2.Call
@@ -51,6 +52,17 @@ interface ApiService {
     fun toggleBookmark(
         @Body request: BookmarkRequest
     ): Call<BookmarkResponse>
+
+    @GET("/clothes/categories")
+    fun getClothesByCategory(
+        @Query("kindId") kindId: Long?,
+        @Query("categoryId") categoryId: Long?,
+        @Query("colorIds") colorIds: List<Long>?,
+        @Query("fitId") fitId: Long?,
+        @Query("page") page: Int = 0,
+        @Query("size") size: Int = 10
+    ): Call<ClothesCategoryResponse>
+
 
 
 }

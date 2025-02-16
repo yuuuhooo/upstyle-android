@@ -305,7 +305,7 @@
             android:defaultValue="DEFAULT"/>
 
         <action
-            android:id="@+id/actionSearchItemFragmentToSearchResultFragment"
+            android:id="@+id/action_searchItemFragment_to_searchResultFragment"
             app:destination="@id/searchResultFragment" />
         <action
             android:id="@+id/action_searchItemFragment_to_closetItemFilterFragment"

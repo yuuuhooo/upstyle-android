@@ -3,10 +3,12 @@ package com.umc.upstyle
 import Item_result
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.recyclerview.widget.RecyclerView
@@ -15,13 +17,26 @@ import com.umc.upstyle.R
 import com.umc.upstyle.SearchResultFragment
 
 class RecyclerAdapter_Result(
-    private val itemList: List<Item_result>,
-    private val itemClickListener: (Item_result) -> Unit
+    private val items: List<Item_result>,
+    private val onItemClick: (Item_result) -> Unit
 ) : RecyclerView.Adapter<RecyclerAdapter_Result.ViewHolder>() {
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val itemButton: AppCompatImageButton = itemView.findViewById(R.id.item_image) // 아이템 버튼
-        val itemTitle: TextView = itemView.findViewById(R.id.item_title) // 아이템 제목
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val imageView: ImageView = itemView.findViewById(R.id.item_image)
+        val titleView: TextView = itemView.findViewById(R.id.item_title)
+
+        fun bind(item: Item_result) {
+            Log.d("ADAPTER_BIND", "아이템 바인딩: ${item.description} (${item.imageUrl})") // ✅ 로그 추가
+            titleView.text = item.description
+
+            Glide.with(itemView.context)
+                .load(item.imageUrl)
+                .into(imageView)
+
+            itemView.setOnClickListener {
+                onItemClick(item)
+            }
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -31,34 +46,13 @@ class RecyclerAdapter_Result(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = itemList[position]
-        val context = holder.itemButton.context
-
-        // 제목 설정
-        holder.itemTitle.text = item.description
-
-        // Glide를 사용해 이미지를 비동기로 로드하고 버튼 배경 설정
-        Glide.with(context)
-            .load(item.imageUrl)
-            .into(object : com.bumptech.glide.request.target.CustomTarget<android.graphics.drawable.Drawable>() {
-                override fun onResourceReady(
-                    resource: android.graphics.drawable.Drawable,
-                    transition: com.bumptech.glide.request.transition.Transition<in android.graphics.drawable.Drawable>?
-                ) {
-                    holder.itemButton.background = resource
-                }
-
-                override fun onLoadCleared(placeholder: android.graphics.drawable.Drawable?) {
-                    holder.itemButton.background = placeholder
-                }
-            })
-
-        // 클릭 이벤트 설정: itemClickListener 호출
-        holder.itemButton.setOnClickListener {
-            itemClickListener(item) // 아이템 클릭 리스너 호출
-        }
+        holder.bind(items[position])
     }
-    override fun getItemCount(): Int = itemList.size
+
+    override fun getItemCount(): Int {
+        Log.d("ADAPTER_ITEM_COUNT", "아이템 개수: ${items.size}") // ✅ 로그 추가
+        return items.size
+    }
 
 
 }

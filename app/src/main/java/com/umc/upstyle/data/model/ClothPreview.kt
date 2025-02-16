@@ -11,7 +11,7 @@ data class ClothPreview(
     val colorId: Long,
     val colorName: String,
     val additionalInfo: String?,
-    val ootd: Ootd? = null  // ✅ Ootd를 nullable로 변경
+    val ootd: Ootd? = null
 ) {
     data class Ootd(
         val imageUrl: String

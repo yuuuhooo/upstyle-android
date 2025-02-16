@@ -85,12 +85,13 @@
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/et_title"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@null"
                         android:textColorHint="#66FFFFFF"
                         android:hint="제목을 입력해주세요.(20자 이하)"
                         android:maxLength="20"
+                        android:textColor="@color/white"
                         android:paddingStart="16dp"
                         android:paddingEnd="16dp"
                         android:paddingTop="10dp"
@@ -120,6 +121,7 @@
                     android:background="@android:color/transparent"
                     android:hint="내용을 입력해주세요.(10자 이상)"
                     android:padding="10dp"
+                    android:textColor="@color/white"
                     android:textColorHint="#66FFFFFF"
                     android:textSize="12sp"
                     android:gravity="top|start"

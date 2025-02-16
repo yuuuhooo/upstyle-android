@@ -53,7 +53,7 @@ data class ResponseDetailResponse(
 
 data class ClothResponse(
     val id: Int,
-    val kindName: String,
+    val kindId: Int,
     val categoryName: String,
     val fitName: String,
     val colorName: String

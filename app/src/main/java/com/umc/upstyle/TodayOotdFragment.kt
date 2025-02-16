@@ -105,12 +105,32 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
             viewLifecycleOwner
         ) { selectedItem ->
             val category = navBackStackEntry.savedStateHandle.get<String>("CATEGORY")
-//            val imageUrl = navBackStackEntry.savedStateHandle.get<String>("SELECTED_ITEM_IMAGE_URL")
-
+//
             // ViewModel에 데이터 추가
             clothViewModel.updateCategory(category ?: "OTHER", selectedItem)
 //            imageUrl?.let { clothViewModel.addImage(it) }
+            val clothId = navBackStackEntry.savedStateHandle.get<Int>("CLOTH_ID") ?: 0
+            val kindId = navBackStackEntry.savedStateHandle.get<Int>("KIND_ID") ?: 0
+            val categoryId = navBackStackEntry.savedStateHandle.get<Int>("CATEGORY_ID") ?: 0
+            val fitId = navBackStackEntry.savedStateHandle.get<Int>("FIT_ID") ?: 0
+            val colorId = navBackStackEntry.savedStateHandle.get<Int>("COLOR_ID") ?: 0
+            val addInfo = navBackStackEntry.savedStateHandle.get<String>("ADD_INFO") ?: ""
 
+
+            if(clothId != 0) {
+                // DTO 생성
+                val clothRequestDTO = ClothRequestDTO(
+                    clothId = clothId,
+                    clothKindId = kindId,
+                    clothCategoryId = categoryId,
+                    fitCategoryId = fitId,
+                    colorCategoryId = colorId,
+                    additionalInfo = addInfo
+                )
+
+                clothViewModel.addClothRequest(clothRequestDTO)
+
+            }
             // UI 업데이트
             updateCategoryUI(category, selectedItem)
         }
@@ -236,6 +256,9 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
         val fitId = arguments?.getInt("FIT_ID") ?:0
         val colorId = arguments?.getInt("COLOR_ID") ?:0
         val addInfo = arguments?.getString("ADD_INFO") ?:""
+
+        Toast.makeText(requireContext(), "clothId: $clothId", Toast.LENGTH_SHORT).show()
+
 
         // 새로 받아온 아이템 정보가 있다면
         if(kindId != 0) {

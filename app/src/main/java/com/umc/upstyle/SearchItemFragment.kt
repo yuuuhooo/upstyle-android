@@ -142,7 +142,7 @@ class SearchItemFragment : Fragment() {
                         Log.d("API_RESPONSE", "서버 응답: ${closetResponse.result.clothPreviewList}") // ✅ 응답 데이터 확인
 
                         val filteredItems = closetResponse.result.clothPreviewList
-                            .filter { kindId == null || it.kindId == kindId } // ✅ 선택한 카테고리만 필터링
+                            .filter { kindId == null || it.kindId.toLong() == kindId } // ✅ 선택한 카테고리만 필터링
                             .map { clothPreview ->
                                 val imageUrl = clothPreview.ootd?.imageUrl ?: "https://example.com/default_image.jpg"
 

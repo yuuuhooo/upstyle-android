@@ -30,9 +30,17 @@ class LoadCategoryFragment : Fragment() {
         findNavController().currentBackStackEntry?.savedStateHandle?.get<String>("SELECTED_ITEM")?.let { description ->
             findNavController().currentBackStackEntry?.savedStateHandle?.get<String>("SELECTED_ITEM_IMAGE_URL")?.let { imageUrl ->
                 findNavController().currentBackStackEntry?.savedStateHandle?.get<String>("CATEGORY")?.let { category ->
-                // 이제 description과 imageUrl을 사용해서 필요한 작업을 처리
-                val item = Item_load(description, imageUrl) // 아이템 객체 생성
-                // 이미지 로드 처리
+                    val clothId = arguments?.getInt("CLOTH_ID") ?:0
+                    val kindId = arguments?.getInt("KIND_ID") ?:0
+                    val categoryId = arguments?.getInt("CATEGORY_ID") ?:0
+                    val fitId = arguments?.getInt("FIT_ID") ?:0
+                    val colorId = arguments?.getInt("COLOR_ID") ?:0
+                    val addInfo = arguments?.getString("ADD_INFO") ?:""
+
+                    // 이제 description과 imageUrl을 사용해서 필요한 작업을 처리
+                    val item = Item_load(description, imageUrl,false, clothId, kindId, categoryId, fitId, colorId, addInfo) // 아이템 객체 생성
+
+                    // 이미지 로드 처리
                 Glide.with(requireContext())
                     .load(item.imageUrl)
                     .into(binding.ivTest)

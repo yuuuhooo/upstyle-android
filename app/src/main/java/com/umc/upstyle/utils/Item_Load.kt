@@ -7,5 +7,13 @@ import kotlinx.parcelize.Parcelize
 data class Item_load(
     val description: String,
     val imageUrl: String,
-    var isSelected: Boolean = false
-) : Parcelable
+    var isSelected: Boolean = false,
+
+    val id: Int,
+    val kindId: Int,
+    val categoryId: Int,
+    val fitId: Int,
+    val colorId: Int,
+    val addInfo: String
+) : Parcelable {
+}

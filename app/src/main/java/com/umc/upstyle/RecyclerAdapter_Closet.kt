@@ -13,7 +13,8 @@ class RecyclerAdapter_Closet(private val itemClosetList: List<ClothPreview>) :
     RecyclerView.Adapter<RecyclerAdapter_Closet.ViewHolder>() {
 
     // ViewHolder 클래스
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
         val title: TextView = itemView.findViewById(R.id.item_title) // 제목 TextView
         val image: ImageView = itemView.findViewById(R.id.item_image) // 이미지 ImageView
     }
@@ -28,7 +29,9 @@ class RecyclerAdapter_Closet(private val itemClosetList: List<ClothPreview>) :
         val item = itemClosetList[position]
 
         // ✅ 텍스트 설정 (kindName이나 categoryName으로 설정)
-        holder.title.text = item.kindName ?: "이름 없음"
+        val titleText = listOfNotNull(item.categoryName, item.fitName, item.colorName).joinToString(" ")
+
+        holder.title.text = titleText.ifEmpty { "정보 없음" } // 데이터가 없으면 "정보 없음" 표시
 
         // ✅ 이미지 설정 (ootd.imageUrl이 있으면 표시, 없으면 기본 이미지)
         val imageUrl = item.ootd?.imageUrl

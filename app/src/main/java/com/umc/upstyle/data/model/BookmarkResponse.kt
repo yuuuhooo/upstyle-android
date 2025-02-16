@@ -13,7 +13,12 @@ data class BookmarkResult(
     val totalPage: Int,
     val totalElements: Int,
     val isFirst: Boolean,
-    val isLast: Boolean
+    val isLast: Boolean,
+    val id: Int,
+    val userId: Int,
+    val clothId: Int,
+    val isBookmarked: Boolean
+
 )
 
 data class BookmarkItem(

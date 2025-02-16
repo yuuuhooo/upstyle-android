@@ -14,7 +14,6 @@ import com.umc.upstyle.data.network.ApiService
 import com.umc.upstyle.data.model.ClosetCategoryResponse
 import com.umc.upstyle.data.model.ClothPreview
 import com.umc.upstyle.data.model.Ootd
-import com.umc.upstyle.data.model.User
 import com.umc.upstyle.data.network.RetrofitClient
 import com.umc.upstyle.databinding.FragmentLoadItemBinding
 import com.umc.upstyle.utils.Item_load
@@ -94,13 +93,7 @@ class LoadItemFragment : Fragment() {
                     colorId = 0L,
                     colorName = "Default Color",
                     additionalInfo = null,
-                    ootd = Ootd(
-                        id = -1L,
-                        user = User(id = 1, nickname = "Default User"),
-                        date = "2024-01-01",
-                        imageUrl = selectedItem!!.imageUrl,
-                        clothList = emptyList()
-                    )
+                    ootd = if (selectedItem!!.imageUrl.isNotEmpty()) ClothPreview.Ootd(selectedItem!!.imageUrl) else null
                 )
                 sendSelectedItemToPreviousFragment(clothPreviewItem)
             } else {
@@ -110,7 +103,7 @@ class LoadItemFragment : Fragment() {
     }
 
 
-    private fun fetchClosetItems() {
+        private fun fetchClosetItems() {
         val apiService = RetrofitClient.createService(ApiService::class.java)
 
         apiService.getClosetByCategory(userId = 1L, categoryId = categoryId)
@@ -125,10 +118,11 @@ class LoadItemFragment : Fragment() {
                         // ClothPreview → Item_load로 변환
                         val serverItemLoads = serverItems.map {
                             Item_load(
-                                description = it.kindName,
+                                description = listOfNotNull(it.categoryName, it.fitName, it.colorName).joinToString(" "),
                                 imageUrl = it.ootd?.imageUrl ?: ""
                             )
                         }
+
 
                         val localItems = loadItemsFromPreferences()
 

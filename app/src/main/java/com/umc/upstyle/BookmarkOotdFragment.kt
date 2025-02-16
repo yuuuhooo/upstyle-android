@@ -1,6 +1,7 @@
 package com.umc.upstyle
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +12,12 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.umc.upstyle.data.Item
+import com.umc.upstyle.data.model.BookmarkRequest
+import com.umc.upstyle.data.model.BookmarkResponse
+import com.umc.upstyle.data.network.ApiService
+import com.umc.upstyle.data.network.RetrofitClient
 import com.umc.upstyle.databinding.FragmentBookmarkOotdBinding
+import retrofit2.Call
 
 // 이미지, 옷 정보, 사용자 이름 받아서
 // 1. 이미지 추가
@@ -58,6 +64,7 @@ class BookmarkOotdFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
         // 이전 Fragment로 이동
         binding.backButton.setOnClickListener {
             findNavController().navigateUp()
@@ -67,8 +74,12 @@ class BookmarkOotdFragment : Fragment() {
         val ootdImageView: ImageView = view.findViewById(R.id.ootdImage)
 
         // 데이터 수신
+        val userId = 1  //현재 로그인한 사용자 ID (임시 값)
+
         val itemName = arguments?.getString("item_name") ?: "아이템 이름 없음"
         val ootdImage = arguments?.getString("item_image") ?: ""
+        val clothId = arguments?.getInt("cloth_id") ?: 0 // 받아온 clothId
+
         //아이템 구분 위해 username을 넣긴 했지만 나중에는 번호 부여 해야할듯..
         val userName = arguments?.getString("user_name") ?: "사용자"
 
@@ -88,17 +99,17 @@ class BookmarkOotdFragment : Fragment() {
         binding.outerText.text = itemName
 
 
-
         // 북마크
         var isBookmarked = false
 
         val bookmarkButtons = listOf(
-            binding.bookmarkOuter to "bookmark_outer_$itemName",
-            binding.bookmarkTop to "bookmark_top_$itemName",
-            binding.bookmarkBottom to "bookmark_bottom_$itemName",
-            binding.bookmarkBag to "bookmark_bag_$itemName",
-            binding.bookmarkShoes to "bookmark_shoes_$itemName",
-            binding.bookmarkOther to "bookmark_other_$itemName"
+            binding.bookmarkOuter to "bookmark_outer_$clothId",
+            binding.bookmarkTop to "bookmark_top_$clothId",
+            binding.bookmarkBottom to "bookmark_bottom_$clothId",
+            binding.bookmarkBag to "bookmark_bag_$clothId",
+            binding.bookmarkShoes to "bookmark_shoes_$clothId",
+            binding.bookmarkOther to "bookmark_other_$clothId"
+
         )
 
 
@@ -114,60 +125,13 @@ class BookmarkOotdFragment : Fragment() {
                 bookmarkStates[key] = newState
                 button.setImageResource(if (newState) R.drawable.bookmark_on else R.drawable.bookmark_off)
 
-                //saveBookmarkState를 호출할 때 itemName과 ootdImage를 전달
-                saveBookmarkState(key, newState, itemName, ootdImage)
+                // API 호출 추가 (Retrofit 사용)
+                //toggleBookmark(userId, clothId, newState)
+
+
             }
-
-
-
-            // 데이터 리스트
-            val items = listOf(
-                Item(
-                    R.drawable.text_outer,
-                    selectedSubCategory ?: "무스탕",
-                    selectedFit ?: "오버핏",
-                    null,
-                    selectedColor ?: "블랙"
-                ),
-                Item(
-                    R.drawable.text_top,
-                    selectedSubCategory ?: "니트",
-                    selectedFit ?: "레귤러",
-                    null,
-                    selectedColor ?: "그레이"
-                ),
-                Item(
-                    R.drawable.text_bottom,
-                    selectedSubCategory ?: "숏팬츠",
-                    selectedFit ?: "슬림",
-                    null,
-                    selectedColor ?: "블랙"
-                ),
-                Item(
-                    R.drawable.text_bag,
-                    selectedSubCategory ?: "숄더백",
-                    selectedSize ?: "미디엄",
-                    null,
-                    selectedColor ?: "블랙"
-                ),
-                Item(
-                    R.drawable.text_shoes,
-                    selectedSubCategory ?: "부츠/워커",
-                    null,
-                    null,
-                    selectedColor ?: "블랙"
-                ),
-                Item(
-                    R.drawable.text_other,
-                    selectedSubCategory ?: "",
-                    null,
-                    null,
-                    selectedColor ?: ""
-                )
-            )
-
             // 데이터 리스트를 기반으로 동적으로 뷰 생성
-            for (item in items) {
+            /*for (item in items) {
                 val rowLayout = LinearLayout(requireContext()).apply {
                     orientation = LinearLayout.HORIZONTAL
                     layoutParams = LinearLayout.LayoutParams(
@@ -214,29 +178,59 @@ class BookmarkOotdFragment : Fragment() {
         }
     }
 
-    private fun saveBookmarkState(key: String, isBookmarked: Boolean, itemName: String, ootdImage: String) {
+    // 북마크 저장/취소 API 호출
+    private fun toggleBookmark(userId: Int, clothId: Int, button: ImageView) {
+        val request = BookmarkRequest(userId, clothId)
+
+        val bookmarkApi = RetrofitClient.createService(ApiService::class.java)
+
+        bookmarkApi.toggleBookmark(request).enqueue(object : retrofit2.Callback<BookmarkResponse> {
+            override fun onResponse(call: Call<BookmarkResponse>, response: retrofit2.Response<BookmarkResponse>) {
+                if (response.isSuccessful) {
+                    val result = response.body()?.result
+                    result?.let {
+                        updateBookmarkUI(button, it.isBookmarked) // ✅ 버튼 이미지 변경
+                    }
+                } else {
+                    Log.e("Bookmark", "Error: ${response.errorBody()?.string()}")
+                }
+            }
+
+            override fun onFailure(call: Call<BookmarkResponse>, t: Throwable) {
+                Log.e("Bookmark", "Failure: ${t.message}")
+            }
+        })
+    }
+
+    private fun updateBookmarkUI(button: ImageView, isBookmarked: Boolean) {
+        button.setImageResource(if (isBookmarked) R.drawable.bookmark_on else R.drawable.bookmark_off)
+    }*/
+        }
+    }
+
+
+
+    private fun saveBookmarkState(key: String, isBookmarked: Boolean, userId: String, clothId: String) {
         val preferences = requireActivity().getSharedPreferences("BookmarkPrefs", android.content.Context.MODE_PRIVATE)
         val editor = preferences.edit()
 
-        // 북마크 ON이면 아이템 정보 저장, OFF이면 삭제
         if (isBookmarked) {
             editor.putBoolean(key, true)
-            editor.putString("${key}_name", itemName) // 아이템 이름 저장
-            editor.putString("${key}_image", ootdImage) // 이미지 URL 저장
+            editor.putString("${key}_user", userId)
+            editor.putString("${key}_cloth", clothId)
         } else {
             editor.remove(key)
-            editor.remove("${key}_name")
-            editor.remove("${key}_image")
+            editor.remove("${key}_user")
+            editor.remove("${key}_cloth")
         }
         editor.apply()
     }
 
-
-
     private fun loadBookmarkState(key: String): Boolean {
         val preferences = requireActivity().getSharedPreferences("BookmarkPrefs", android.content.Context.MODE_PRIVATE)
-        return preferences.getBoolean(key, false) // 기본값: false (북마크 해제 상태)
+        return preferences.getBoolean(key, false)
     }
+
 
 
     // dp 값을 px로 변환하는 함수

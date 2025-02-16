@@ -4,5 +4,6 @@ package com.umc.upstyle.data.model
 data class OOTDPreview(
     val id: Int,
     val date: String,
-    val imageUrl: String
+    val imageUrl: String,
+    val kindId : Int
 )

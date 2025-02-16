@@ -9,6 +9,7 @@ import androidx.navigation.fragment.findNavController
 import com.umc.upstyle.data.network.ApiService
 import com.umc.upstyle.databinding.ActivityClosetBinding
 import com.umc.upstyle.data.model.ClosetResponse
+import com.umc.upstyle.data.network.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -30,7 +31,7 @@ class ClosetFragment : Fragment() {
 
         val apiService = RetrofitClient.createService(ApiService::class.java)
 
-        apiService.getUserCloset(userId = 1L).enqueue(object : Callback<ClosetResponse> {
+        apiService.getUserCloset(userId = 1).enqueue(object : Callback<ClosetResponse> {
             override fun onResponse(call: Call<ClosetResponse>, response: Response<ClosetResponse>) {
                 if (response.isSuccessful) {
                     val userName = response.body()?.result?.userName

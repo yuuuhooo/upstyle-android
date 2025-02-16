@@ -21,7 +21,8 @@
         android:paddingBottom="16dp"
         android:background="@drawable/bg_post_gray"
         android:clickable="true"
-        android:focusable="true">
+        android:focusable="true"
+        android:focusableInTouchMode="false">>
 
         <TextView
             android:id="@+id/tvTitle"

@@ -1,17 +1,22 @@
 package com.umc.upstyle
 
 import android.os.Bundle
-import android.provider.MediaStore.Video.VideoColumns.CATEGORY
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.umc.upstyle.data.model.BookmarkItem
+import com.umc.upstyle.data.model.BookmarkResponse
+import com.umc.upstyle.data.network.ApiService
+import com.umc.upstyle.data.network.RetrofitClient
 import com.umc.upstyle.databinding.FragmentBookmarkBinding
-import java.util.Locale.Category
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+
 
 class BookmarkFragment : Fragment() {
 
@@ -19,6 +24,8 @@ class BookmarkFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var adapter: RecyclerAdapter_Bookmark
+    private var bookmarkList: List<BookmarkItem> = emptyList()
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -56,7 +63,12 @@ class BookmarkFragment : Fragment() {
         binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.recyclerView.adapter = adapter
 
-        //아이템 간격 추가 (아이템끼리 5dp, 화면 양끝 12.5dp)
+        // 서버에서 북마크 리스트 불러오기
+        loadBookmarksFromServer()
+
+
+
+    //아이템 간격 추가 (아이템끼리 5dp, 화면 양끝 12.5dp)
         val spacingInPixels = (5 * resources.displayMetrics.density).toInt() // 5dp → px 변환
         val edgeSpacingInPixels = (12.5 * resources.displayMetrics.density).toInt() // 12.5dp → px 변환
         binding.recyclerView.addItemDecoration(LayoutSpace(2, spacingInPixels, edgeSpacingInPixels))
@@ -64,6 +76,28 @@ class BookmarkFragment : Fragment() {
         // 초기 상태 불러오기
         filterBookmarks(R.id.btn_all)
     }
+    private fun loadBookmarksFromServer() {
+        val apiService = RetrofitClient.createService(ApiService::class.java)
+        apiService.getBookmarks(1).enqueue(object : Callback<BookmarkResponse> {
+            override fun onResponse(
+                call: Call<BookmarkResponse>,
+                response: Response<BookmarkResponse>
+            ) {
+                if (response.isSuccessful && response.body()?.isSuccess == true) {
+                    bookmarkList = response.body()?.result?.bookmarkList ?: emptyList()
+                    Log.d("BookmarkFragment", "서버 데이터 불러오기 성공: $bookmarkList")  // 디버깅 로그 추가
+                    filterBookmarks(R.id.btn_all)
+                } else {
+                    Log.e("BookmarkFragment", "서버 응답 실패: ${response.errorBody()?.string()}")
+                }
+            }
+
+            override fun onFailure(call: Call<BookmarkResponse>, t: Throwable) {
+                Log.e("BookmarkFragment", "네트워크 오류 발생: ${t.message}")
+            }
+        })
+    }
+
 
     private fun selectButton(button: ConstraintLayout) {
         // 모든 버튼을 기본 색으로 변경
@@ -82,44 +116,33 @@ class BookmarkFragment : Fragment() {
     }
 
     private fun filterBookmarks(selectedCategoryId: Int) {
-        val preferences = requireActivity().getSharedPreferences("BookmarkPrefs", android.content.Context.MODE_PRIVATE)
-
-        val bookmarkedItems = mutableListOf<Item_bookmark>()
-
-        val uniqueItems = mutableSetOf<String>() // 중복 제거를 위해
-        val allKeys = preferences.all.keys.filter { it.endsWith("_name") }
-
-        for (key in allKeys) {
-            val itemKey = key.removeSuffix("_name") // _name 제거하여 실제 북마크 키 획득
-            if (preferences.getBoolean(itemKey, false)) {
-                val name = preferences.getString("${itemKey}_name", null)
-                val image = preferences.getString("${itemKey}_image", null)
-                if (!name.isNullOrEmpty() && !image.isNullOrEmpty()) {
-                    val category = itemKey.split("_")[1] // 예: "bookmark_outer_아이템이름" → "outer"
-                    bookmarkedItems.add(Item_bookmark(name, image, category))
-                }
-            }
+        // 서버에서 가져온 bookmarkList를 기반으로 필터링
+        val filteredItems: List<BookmarkItem> = when (selectedCategoryId) {
+            R.id.btn_all -> bookmarkList
+            R.id.btn_outer -> bookmarkList.filter { it.kind == "아우터" }
+            R.id.btn_top -> bookmarkList.filter { it.kind == "상의" }
+            R.id.btn_bottom -> bookmarkList.filter { it.kind == "하의" }
+            R.id.btn_shoes -> bookmarkList.filter { it.kind == "신발" }
+            R.id.btn_bag -> bookmarkList.filter { it.kind == "가방" }
+            R.id.btn_other -> bookmarkList.filter { it.kind == "기타" }
+            else -> bookmarkList
         }
-
-        // 선택된 카테고리에 따라 필터링
-        val filteredItems = when (selectedCategoryId) {
-            R.id.btn_all -> {
-                // 중복 제거하여 리스트 생성 (이미지만 표시, name을 null로 설정)
-                bookmarkedItems.filter { uniqueItems.add(it.image) }
-                    .map { Item_bookmark("", it.image, it.category) }
+        // RecyclerView 어댑터 업데이트
+        adapter.updateList(filteredItems.map {
+            val displayText = if (selectedCategoryId == R.id.btn_all) {
+                ""  // ALL 버튼 클릭 시 텍스트 없음
+            } else {
+                "${it.category} ${it.fit} ${it.color}"  // 카테고리 핏 색깔 순서로 표시
             }
-            R.id.btn_outer -> bookmarkedItems.filter { it.category == "outer" }
-            R.id.btn_top -> bookmarkedItems.filter { it.category == "top" }
-            R.id.btn_bottom -> bookmarkedItems.filter { it.category == "bottom" }
-            R.id.btn_bag -> bookmarkedItems.filter { it.category == "bag" }
-            R.id.btn_shoes -> bookmarkedItems.filter { it.category == "shoes" }
-            R.id.btn_other -> bookmarkedItems.filter { it.category == "other" }
-            else -> bookmarkedItems
-        }
 
-        // RecyclerView 업데이트
-        adapter.updateList(filteredItems)
+            Item_bookmark(
+                name = displayText,
+                image = it.ootd?.imageUrl ?: "",
+                category = it.kind
+            )
+        })
     }
+
 
 
     private fun loadBookmarkState(key: String): Boolean {

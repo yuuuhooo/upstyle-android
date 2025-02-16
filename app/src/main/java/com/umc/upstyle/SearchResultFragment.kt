@@ -4,13 +4,18 @@ import Item_result
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import com.umc.upstyle.data.model.ClothesCategoryResponse
+import com.umc.upstyle.data.network.ApiService
+import com.umc.upstyle.data.network.RetrofitClient
 import com.umc.upstyle.databinding.FragmentSearchResultBinding
+import retrofit2.Call
 import java.io.File
 
 class SearchResultFragment : Fragment() {
@@ -38,27 +43,53 @@ class SearchResultFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
-        val category = arguments?.getString("category") // 전달된 데이터 수신
+        val selectedDescription = arguments?.getString("description") // ✅ 전달된 description 받기
+        val category = arguments?.getString("category") // ✅ category 가져오기
+
+
+        // RecyclerView 설정
+        val allItems = loadItemsFromPreferences()
 
 
         val bundle = Bundle().apply {
             putString("category", category)
         }
 
+        // ✅ categoryId 가져오기 (필요 시 사용)
+        val categoryId = arguments?.getLong("categoryId")
 
 
+        // ✅ 선택한 description과 같은 아이템만 필터링
+        val filteredItems = if (!selectedDescription.isNullOrEmpty()) {
+            allItems.filter { it.description == selectedDescription }
+        } else {
+            allItems
+        }
 
-        // RecyclerView 설정
-        val items = loadItemsFromPreferences()
-        setupRecyclerView(items)
-    }
+        setupRecyclerView(filteredItems) // ✅ 필터링된 아이템만 RecyclerView에 적용
 
-    private fun setupRecyclerView(items: List<Item_result>) {
-        binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
-        binding.recyclerView.adapter = RecyclerAdapter_Result(items) { selectedItem ->
-            navigateToBookmarkOotdFragment(selectedItem)
+        // ✅ API 데이터 가져오기 (categoryId가 있을 경우)
+        if (categoryId != null) {
+            fetchClothesByCategory(categoryId, selectedDescription)
         }
     }
+
+
+
+    private fun setupRecyclerView(items: List<Item_result>) {
+
+        // 검색 결과 개수를 UI에 반영
+        binding.tvResultCount.text = items.size.toString()
+
+        binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
+        val adapter = RecyclerAdapter_Result(items) { selectedItem ->
+            navigateToBookmarkOotdFragment(selectedItem)
+        }
+        binding.recyclerView.adapter = adapter
+        adapter.notifyDataSetChanged()
+    }
+
+
 
     // 선택한 아이템을 전달하는 함수 추가
     private fun navigateToBookmarkOotdFragment(selectedItem: Item_result) {
@@ -80,29 +111,66 @@ class SearchResultFragment : Fragment() {
     private fun loadItemsFromPreferences(): List<Item_result> {
         val preferences = requireActivity().getSharedPreferences("AppData", Context.MODE_PRIVATE)
 
-        // 해당 카테고리에 맞는 텍스트와 이미지 경로 가져오기
         val description = preferences.getString(category, "$category 정보 없음")
         val savedImagePath = preferences.getString("SAVED_IMAGE_PATH", null)
 
+
         // 기본 샘플 데이터 -> ui확인용
         val itemResults = mutableListOf(
-            Item_result("루스한 오버핏 블랙", "https://www.ocokorea.com//upload/images/product/148/148607/Product_1693647123947.jpg"),
-            Item_result("오버핏 레귤러 블랙", "https://sitem.ssgcdn.com/70/26/15/item/1000363152670_i1_750.jpg"),
-            Item_result("일단 아무 텍스트", "https://m.likeygirl.kr/web/product/big/20231204_000027_LK.jpg")
+            Item_result("셔츠 슬림 블랙", "https://www.ocokorea.com//upload/images/product/148/148607/Product_1693647123947.jpg"),
+            Item_result("코튼팬츠 오버핏 그레이", "https://sitem.ssgcdn.com/70/26/15/item/1000363152670_i1_750.jpg"),
+            Item_result("무스탕 레귤러 오렌지", "https://m.likeygirl.kr/web/product/big/20231204_000027_LK.jpg")
 
         )
 
+
+
         // 저장된 데이터 추가
-        /*if (!savedImagePath.isNullOrEmpty() && !description.isNullOrEmpty() && description != "없음") {
-            val file = File(savedImagePath)
-            if (file.exists()) {
-                val fileUri = Uri.fromFile(file)
-                itemResults.add(0, Item_result(description, fileUri.toString()))
-            }
-        }*/
+        if (!savedImagePath.isNullOrEmpty() && !description.isNullOrEmpty() && description != "없음") {
+            itemResults.add(Item_result(description, savedImagePath))
+        }
 
         return itemResults
     }
+
+    private fun fetchClothesByCategory(categoryId: Long?, selectedDescription: String?) {
+        val apiService = RetrofitClient.createService(ApiService::class.java)
+
+        apiService.getClothesByCategory(kindId = null, categoryId = categoryId, colorIds = null, fitId = null)
+            .enqueue(object : retrofit2.Callback<ClothesCategoryResponse> {
+                override fun onResponse(call: Call<ClothesCategoryResponse>, response: retrofit2.Response<ClothesCategoryResponse>) {
+                    if (response.isSuccessful) {
+                        response.body()?.let { clothesResponse ->
+                            Log.d("API_RESPONSE", "Received ${clothesResponse.result.clothPreviewList.size} items") // ✅ 응답 로그 확인
+
+                            val allItems = clothesResponse.result.clothPreviewList.map { clothPreview ->
+                                val imageUrl = clothPreview.ootd?.imageUrls?.firstOrNull() ?: "https://example.com/default_image.jpg"
+                                val description = "${clothPreview.categoryName} ${clothPreview.fitName} ${clothPreview.colorName}"
+                                Item_result(description, imageUrl)
+                            }
+
+                            // ✅ 선택한 description과 같은 아이템만 필터링
+                            val filteredItems = if (!selectedDescription.isNullOrEmpty()) {
+                                allItems.filter { it.description == selectedDescription }
+                            } else {
+                                allItems
+                            }
+
+                            activity?.runOnUiThread {
+                                setupRecyclerView(filteredItems) // ✅ 필터링된 데이터만 RecyclerView에 적용
+                            }
+                        }
+                    }
+                }
+
+                override fun onFailure(call: Call<ClothesCategoryResponse>, t: Throwable) {
+                    t.printStackTrace()
+                }
+            })
+    }
+
+
+
 
 
     override fun onDestroyView() {

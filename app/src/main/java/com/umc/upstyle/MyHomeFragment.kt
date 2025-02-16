@@ -21,6 +21,7 @@ import com.umc.upstyle.data.model.OOTDCalendar
 import com.umc.upstyle.data.model.OOTDPreview
 import com.umc.upstyle.data.network.OotdApiService
 import com.umc.upstyle.data.network.UserApiService
+import com.umc.upstyle.data.network.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -71,6 +72,7 @@ class MyHomeFragment : Fragment() {
                         binding.wardrobeText.text = "닉네임을 불러올 수 없음"
                         binding.topUserName.text = "닉네임을 불러올 수 없음"
                     }
+
                 }
 
                 override fun onFailure(call: Call<ApiResponse<AccountInfoDTO>>, t: Throwable) {

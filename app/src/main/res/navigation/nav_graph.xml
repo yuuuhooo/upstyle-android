@@ -103,6 +103,12 @@
                 android:defaultValue="DEFAULT" />
 
         </action>
+        <action
+            android:id="@+id/action_todayOotdFragment_self"
+            app:destination="@id/todayOotdFragment" />
+        <action
+            android:id="@+id/action_todayOotdFragment_to_mainActivity"
+            app:destination="@id/mainActivity" />
     </fragment>
 
     <fragment
@@ -305,7 +311,7 @@
             android:defaultValue="DEFAULT"/>
 
         <action
-            android:id="@+id/actionSearchItemFragmentToSearchResultFragment"
+            android:id="@+id/action_searchItemFragment_to_searchResultFragment"
             app:destination="@id/searchResultFragment" />
         <action
             android:id="@+id/action_searchItemFragment_to_closetItemFilterFragment"
@@ -387,7 +393,35 @@
         <action
             android:id="@+id/action_chatFragment_to_createRequestFragment"
             app:destination="@id/createRequestFragment" />
+
+        <action
+            android:id="@+id/action_chatFragment_to_requestDetailFragment"
+            app:destination="@id/requestDetailFragment">
+
+        </action>
+
     </fragment>
+
+
+    <fragment
+        android:id="@+id/requestDetailFragment"
+        android:name="com.umc.upstyle.RequestDetailFragment"
+        android:label="Request Detail"
+        tools:layout="@layout/fragment_request_detail">
+        <argument
+            android:name="id"
+            app:argType="integer" />
+        <argument
+            android:name="title"
+            app:argType="string" />
+        <argument
+            android:name="commentCount"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_requestDetailFragment_to_responseFragment"
+            app:destination="@id/responseFragment"/>
+    </fragment>
+
     <fragment
         android:id="@+id/postDetailFragment"
         android:name="com.umc.upstyle.PostDetailFragment"
@@ -403,38 +437,32 @@
             android:name="voteCount"
             app:argType="integer" />
     </fragment>
+
     <fragment
         android:id="@+id/voteFragment"
         android:name="com.umc.upstyle.VoteFragment"
         android:label="VoteFragment" >
         <action
             android:id="@+id/action_voteFragment_to_postDetailFragment"
-            app:destination="@id/postDetailFragment" />
+            app:destination="@id/postDetailFragment">
+            <argument
+                android:name="id"
+                app:argType="integer" />
+            <argument
+                android:name="title"
+                app:argType="string" />
+            <argument
+                android:name="voteCount"
+                app:argType="integer" />
+        </action>
     </fragment>
     <fragment
         android:id="@+id/requestFragment"
         android:name="com.umc.upstyle.RequestFragment"
         android:label="RequestFragment" >
         <action
-            android:id="@+id/action_requestFragment_to_viewRequestFragment"
-            app:destination="@id/viewRequestFragment" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/viewRequestFragment"
-        android:name="com.umc.upstyle.ViewRequestFragment"
-        android:label="fragment_view_request"
-        tools:layout="@layout/fragment_view_request">
-        <argument
-            android:name="id"
-            app:argType="integer" />
-        <argument
-            android:name="title"
-            app:argType="string" />
-        <argument
-            android:name="commentCount"
-            app:argType="integer" />
-
+            android:id="@+id/action_requestFragment_to_requestDetailFragment"
+            app:destination="@id/requestDetailFragment" />
     </fragment>
 
     <fragment
@@ -484,6 +512,27 @@
         android:id="@+id/ootdDetailFragment"
         android:name="com.umc.upstyle.OotdDetailFragment"
         tools:layout="@layout/fragment_ootd_detail" />
+    <activity
+        android:id="@+id/mainActivity"
+        android:name="com.umc.upstyle.MainActivity"
+        android:label="activity_myhome"
+        tools:layout="@layout/activity_myhome" />
+    <fragment
+        android:id="@+id/responseFragment"
+        android:name="com.umc.upstyle.ResponseFragment"
+        android:label="ResponseFragment" >
+        <argument
+            android:name="userId"
+            app:argType="integer"/>
+        <action
+            android:id="@+id/action_responseFragment_to_loadItemFragment"
+            app:destination="@id/loadItemFragment">
+            <argument
+                android:name="category"
+                app:argType="string"
+                android:defaultValue="DEFAULT" />
+        </action>
+    </fragment>
 
 
 </navigation>

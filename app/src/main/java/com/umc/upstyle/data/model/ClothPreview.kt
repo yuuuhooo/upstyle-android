@@ -1,15 +1,19 @@
 package com.umc.upstyle.data.model
 
 data class ClothPreview(
-    val id: Long,
-    val kindId: Long,
+    val id: Int,
+    val kindId: Int,
     val kindName: String,
-    val categoryId: Long,
+    val categoryId: Int,
     val categoryName: String,
-    val fitId: Long,
+    val fitId: Int,
     val fitName: String,
-    val colorId: Long,
+    val colorId: Int,
     val colorName: String,
     val additionalInfo: String?,
-    val ootd: Ootd?
-)
+    val ootd: Ootd? = null
+) {
+    data class Ootd(
+        val imageUrl: String
+    )
+}

@@ -1,4 +1,4 @@
-package com.umc.upstyle
+package com.umc.upstyle.data.network
 
 import com.google.gson.GsonBuilder
 import retrofit2.Retrofit

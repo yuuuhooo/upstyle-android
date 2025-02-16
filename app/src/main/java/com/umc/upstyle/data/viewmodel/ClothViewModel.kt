@@ -17,6 +17,10 @@ class ClothViewModel : ViewModel() {
     private val _categoryData = MutableLiveData<Map<String, String>>()
     val categoryData: LiveData<Map<String, String>> = _categoryData
 
+    // ✅ Toast 메시지를 위한 LiveData 추가
+    private val _toastMessage = MutableLiveData<String>()
+    val toastMessage: LiveData<String> = _toastMessage
+
     init {
         resetData()
     }
@@ -26,10 +30,25 @@ class ClothViewModel : ViewModel() {
     }
 
     fun addClothRequest(cloth: ClothRequestDTO) {
+        // 현재 리스트를 가져옴
         val currentList = _clothList.value ?: mutableListOf()
+
+        // 이미 존재하는 아이템을 찾고 삭제
+        val existingIndex = currentList.indexOfFirst { it.clothKindId == cloth.clothKindId }
+        if (existingIndex != -1) {
+            currentList.removeAt(existingIndex)
+        }
+
+        // 새로운 아이템을 리스트에 추가
         currentList.add(cloth)
+
+        // 리스트 업데이트
         _clothList.value = currentList
+
+        // ✅ 추가된 DTO 정보를 Toast 메시지로 설정
+        _toastMessage.value = "새로운 아이템 추가됨: ${cloth.clothKindId} - ${cloth.additionalInfo}"
     }
+
 
     fun updateCategory(category: String, data: String) {
         val currentData = _categoryData.value?.toMutableMap() ?: mutableMapOf()

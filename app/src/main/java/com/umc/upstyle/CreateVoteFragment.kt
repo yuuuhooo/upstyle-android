@@ -69,8 +69,16 @@ class CreateVoteFragment : Fragment() {
                 ?.let { imageUrl ->
                     findNavController().currentBackStackEntry?.savedStateHandle?.get<String>("CATEGORY")
                         ?.let { category ->
+                            val clothId = arguments?.getInt("CLOTH_ID") ?:0
+                            val kindId = arguments?.getInt("KIND_ID") ?:0
+                            val categoryId = arguments?.getInt("CATEGORY_ID") ?:0
+                            val fitId = arguments?.getInt("FIT_ID") ?:0
+                            val colorId = arguments?.getInt("COLOR_ID") ?:0
+                            val addInfo = arguments?.getString("ADD_INFO") ?:""
+
                             // 이제 description과 imageUrl을 사용해서 필요한 작업을 처리
-                            val item = Item_load(description, imageUrl) // 아이템 객체 생성
+                            val item = Item_load(description, imageUrl,false, clothId, kindId, categoryId, fitId, colorId, addInfo) // 아이템 객체 생성
+
                             // 이미지 로드 처리
 
                             binding.imageContainer.visibility = View.VISIBLE
@@ -128,6 +136,7 @@ class CreateVoteFragment : Fragment() {
         binding.voteItemRecyclerView.apply {
             layoutManager = GridLayoutManager(requireContext(), 2)
             adapter = voteItemAdapter
+            isNestedScrollingEnabled = false // 리사이클러뷰의 스크롤을 비활성화
         }
     }
 
@@ -289,6 +298,7 @@ class CreateVoteFragment : Fragment() {
                 val viewHolder = adapter.createViewHolder(recyclerView, adapter.getItemViewType(i))
                 adapter.onBindViewHolder(viewHolder, i)
 
+                // View의 측정을 완료한 후 높이를 얻기
                 viewHolder.itemView.measure(
                     View.MeasureSpec.makeMeasureSpec(recyclerView.width, View.MeasureSpec.EXACTLY),
                     View.MeasureSpec.UNSPECIFIED
@@ -297,11 +307,18 @@ class CreateVoteFragment : Fragment() {
                 totalHeight += viewHolder.itemView.measuredHeight
             }
 
+            // 최대 높이를 설정하여 리사이클러뷰가 무한히 늘어나는 것을 방지
+            val MAX_HEIGHT = 1300 // 예시로 최대 높이 설정
             val layoutParams = recyclerView.layoutParams
-            layoutParams.height = totalHeight
+            layoutParams.height = Math.min(totalHeight, MAX_HEIGHT)
             recyclerView.layoutParams = layoutParams
+
+//            val layoutParams = recyclerView.layoutParams
+//            layoutParams.height = totalHeight
+//            recyclerView.layoutParams = layoutParams
         }
     }
+
 
 
     override fun onDestroyView() {

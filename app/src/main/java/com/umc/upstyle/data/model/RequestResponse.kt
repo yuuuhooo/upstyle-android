@@ -1,5 +1,8 @@
 package com.umc.upstyle.data.model
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
 data class RequestResponse(
     val isSuccess: Boolean,
     val code: String,
@@ -39,3 +42,23 @@ data class CodiResPreview (
     val user: User
 )
 
+data class ResponseDetailResponse(
+    val id: Int,
+    val user: User,
+    val body: String,
+    val clothResponseList: List<ClothResponse>,
+    val imageUrl: String
+)
+
+data class ClothResponse(
+    val id: Int,
+    val kindName: String,
+    val categoryName: String,
+    val fitName: String,
+    val colorName: String
+)
+
+@Parcelize
+data class ClothIdResponse(
+    val clothId: Int
+): Parcelable

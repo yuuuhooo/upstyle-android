@@ -195,8 +195,8 @@
                 app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                 app:layout_constraintTop_toBottomOf="@id/imageContainer"
                 app:spanCount="2"
-                tools:ignore="MissingConstraints"
-                tools:layout_editor_absoluteX="0dp" />
+                android:nestedScrollingEnabled="false"
+                tools:ignore="MissingConstraints" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

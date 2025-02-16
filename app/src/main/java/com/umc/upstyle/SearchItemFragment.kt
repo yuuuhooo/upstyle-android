@@ -148,6 +148,7 @@ class SearchItemFragment : Fragment() {
                             .filter { item ->
                                 kindId == null || item.kindId == kindId // 정확하게 kindId 일치 여부 체크
                             }
+
                             .map { clothPreview ->
                                 val imageUrl = clothPreview.ootd?.imageUrl ?: "https://example.com/default_image.jpg"
                                 val description = "${clothPreview.categoryName} ${clothPreview.fitName} ${clothPreview.colorName}"

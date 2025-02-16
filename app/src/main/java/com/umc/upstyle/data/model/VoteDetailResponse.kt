@@ -16,3 +16,12 @@ data class VoteOption(
     val name: String,
     val responseCount: Int
 )
+
+data class VoteResponseRequest(
+    val userId: Int,
+    val optionId: Int
+)
+
+data class VoteResult(
+    val voteResultList: List<VoteOption>
+)

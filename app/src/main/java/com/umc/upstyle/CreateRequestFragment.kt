@@ -11,13 +11,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.umc.upstyle.data.model.AddCodiReqDTO
+import com.google.firebase.storage.FirebaseStorage
 import com.umc.upstyle.data.model.AddCodiRes
 import com.umc.upstyle.data.network.RequestService
 import com.umc.upstyle.data.network.RetrofitClient
@@ -25,11 +28,14 @@ import com.umc.upstyle.data.viewmodel.RequestViewModel
 import com.umc.upstyle.databinding.FragmentCreateRequestBinding
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
+import java.util.UUID
 import kotlinx.coroutines.launch
+import kotlin.coroutines.suspendCoroutine
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import kotlin.coroutines.resume
 
 class CreateRequestFragment : Fragment() {
     private var _binding: FragmentCreateRequestBinding? = null
@@ -64,8 +70,6 @@ class CreateRequestFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val preferences = requireActivity().getSharedPreferences("AppData", Context.MODE_PRIVATE)
-
         binding.backButton.setOnClickListener {
             findNavController().navigateUp() // 이전 Fragment로 이동
         }
@@ -75,8 +79,15 @@ class CreateRequestFragment : Fragment() {
                 ?.let { imageUrl ->
                     findNavController().currentBackStackEntry?.savedStateHandle?.get<String>("CATEGORY")
                         ?.let { category ->
+                            val clothId = arguments?.getInt("CLOTH_ID") ?:0
+                            val kindId = arguments?.getInt("KIND_ID") ?:0
+                            val categoryId = arguments?.getInt("CATEGORY_ID") ?:0
+                            val fitId = arguments?.getInt("FIT_ID") ?:0
+                            val colorId = arguments?.getInt("COLOR_ID") ?:0
+                            val addInfo = arguments?.getString("ADD_INFO") ?:""
+
                             // 이제 description과 imageUrl을 사용해서 필요한 작업을 처리
-                            val item = Item_load(description, imageUrl) // 아이템 객체 생성
+                            val item = Item_load(description, imageUrl,false, clothId, kindId, categoryId, fitId, colorId, addInfo) // 아이템 객체 생성
                             // 이미지 로드 처리
 
                             binding.imageContainer.visibility = View.VISIBLE
@@ -110,13 +121,87 @@ class CreateRequestFragment : Fragment() {
             Toast.makeText(requireContext(), "사진이 삭제되었습니다.", Toast.LENGTH_SHORT).show()
         }
 
-        binding.btnUpload.setOnClickListener{
-            Toast.makeText(requireContext(), "${photoUri.toString()}", Toast.LENGTH_LONG).show()
-            GlobalScope.launch {
-                sendToServer()
+//        binding.btnUpload.setOnClickListener{
+//            Toast.makeText(requireContext(), "${photoUri.toString()}", Toast.LENGTH_LONG).show()
+//            GlobalScope.launch {
+//                sendToServer()
+//            }
+//        }
+
+
+        binding.btnUpload.setOnClickListener {
+            lifecycleScope.launch { sendToServerWithFirebaseUpload() }
+        }
+    }
+
+
+    private suspend fun uploadImageWithOverlay(uri: Uri): String? {
+        val storageRef = FirebaseStorage.getInstance().reference
+        val fileName = "images/${System.currentTimeMillis()}.jpg"
+        val imageRef = storageRef.child(fileName)
+
+        binding.overlayProgress.visibility = View.VISIBLE
+
+        return suspendCoroutine { continuation ->
+            val uploadTask = imageRef.putFile(uri)
+
+            uploadTask.addOnProgressListener { taskSnapshot ->
+                if (isAdded && view != null) {
+                    val progress = (100 * taskSnapshot.bytesTransferred / taskSnapshot.totalByteCount).toInt()
+                    val progressBar = binding.overlayProgress.findViewById<ProgressBar>(R.id.overlayProgressBar)
+                    progressBar?.progress = progress
+                    binding.tvOverlayProgress.text = "${progress}%"
+                }
+            }
+
+            uploadTask.addOnSuccessListener {
+                imageRef.downloadUrl.addOnSuccessListener { downloadUri ->
+                    binding.overlayProgress.visibility = View.GONE
+                    continuation.resume(downloadUri.toString())
+                }.addOnFailureListener { continuation.resume(null) }
+            }.addOnFailureListener {
+                binding.overlayProgress.visibility = View.GONE
+                continuation.resume(null)
             }
         }
     }
+
+
+    private suspend fun sendToServerWithFirebaseUpload() {
+        val imageUrl = if (photoUri != null && !photoUri.toString().startsWith("http")) {
+            uploadImageWithOverlay(photoUri!!)
+        } else {
+            photoUri?.toString()
+        }
+        Log.d("check", "photoUri는 $photoUri")
+
+        if (imageUrl == null) {
+            Log.e("CodiRequest", "Firebase image upload failed. Image URL is null.")
+        } else {
+            Log.d("CodiRequest", "Firebase image uploaded successfully. URL: $imageUrl")
+        }
+
+        val request = AddCodiReqDTO(
+            userId = 1,
+            title = binding.etTitle.text.toString(),
+            body = binding.etContent.text.toString(),
+            imageUrl = imageUrl ?: ""
+        )
+
+        val requestService = RetrofitClient.createService(RequestService::class.java)
+        try {
+            val response = requestService.createCodiReq(request)
+            if (response.isSuccessful) {
+                findNavController().navigate(R.id.chatFragment)
+                Log.d("CodiRequest", "업로드 성공")
+            } else {
+                Log.e("CodiRequest", "업로드 실패: ${response.code()} - ${response.errorBody()?.string()}")
+            }
+        } catch (e: Exception) {
+            Log.e("CodiRequest", "서버 요청 중 예외 발생: ${e.message}", e)
+        }
+    }
+
 
     // ✅ TakePictureLauncher - photoUri가 null이 아니면만 처리
     private val takePictureLauncher = registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
@@ -144,6 +229,7 @@ class CreateRequestFragment : Fragment() {
                 binding.btnRemoveImage.visibility = View.VISIBLE // x 버튼 표시
                 binding.btnImageUpload.visibility = View.INVISIBLE
                 saveImagePath(savedPath)
+                photoUri = it
                 Toast.makeText(requireContext(), "사진 선택 완료!", Toast.LENGTH_SHORT).show()
             } else {
                 Toast.makeText(requireContext(), "이미지 저장 실패", Toast.LENGTH_SHORT).show()
@@ -219,8 +305,8 @@ class CreateRequestFragment : Fragment() {
         val requestService = RetrofitClient.createService(RequestService::class.java)
         val request = AddCodiReqDTO(
             userId = 1,
-            title = viewModel.requestTitle,
-            body = viewModel.requestContent,
+            title = binding.etTitle.text.toString(),
+            body = binding.etContent.text.toString(),
             imageUrl = photoUri.toString()
         )
 
@@ -232,7 +318,7 @@ class CreateRequestFragment : Fragment() {
             if (response.isSuccessful) {
                 // 성공적인 응답 처리
                 val responseData = response.body()
-//                findNavController().navigateUp()
+                findNavController().navigate(R.id.chatFragment)
                 Log.d("CodiRequest", "업로드 성공")
                 // 응답이 null이 아닐 경우 처리
                 if (responseData != null) {

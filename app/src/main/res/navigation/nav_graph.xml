@@ -103,6 +103,12 @@
                 android:defaultValue="DEFAULT" />
 
         </action>
+        <action
+            android:id="@+id/action_todayOotdFragment_self"
+            app:destination="@id/todayOotdFragment" />
+        <action
+            android:id="@+id/action_todayOotdFragment_to_mainActivity"
+            app:destination="@id/mainActivity" />
     </fragment>
 
     <fragment
@@ -411,6 +417,9 @@
         <argument
             android:name="commentCount"
             app:argType="integer" />
+        <action
+            android:id="@+id/action_requestDetailFragment_to_responseFragment"
+            app:destination="@id/responseFragment"/>
     </fragment>
 
     <fragment
@@ -503,7 +512,27 @@
         android:id="@+id/ootdDetailFragment"
         android:name="com.umc.upstyle.OotdDetailFragment"
         tools:layout="@layout/fragment_ootd_detail" />
-
+    <activity
+        android:id="@+id/mainActivity"
+        android:name="com.umc.upstyle.MainActivity"
+        android:label="activity_myhome"
+        tools:layout="@layout/activity_myhome" />
+    <fragment
+        android:id="@+id/responseFragment"
+        android:name="com.umc.upstyle.ResponseFragment"
+        android:label="ResponseFragment" >
+        <argument
+            android:name="userId"
+            app:argType="integer"/>
+        <action
+            android:id="@+id/action_responseFragment_to_loadItemFragment"
+            app:destination="@id/loadItemFragment">
+            <argument
+                android:name="category"
+                app:argType="string"
+                android:defaultValue="DEFAULT" />
+        </action>
+    </fragment>
 
 
 </navigation>

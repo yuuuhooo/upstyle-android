@@ -95,11 +95,11 @@ class ClosetItemFragment : Fragment() {
                 }
             })
     }
-        // RecyclerView 설정
-        private fun setupRecyclerView(items: List<ClothPreview>) {
-            binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
-            binding.recyclerView.adapter = RecyclerAdapter_Closet(items)
-        }
+    // RecyclerView 설정
+    private fun setupRecyclerView(items: List<ClothPreview>) {
+        binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
+        binding.recyclerView.adapter = RecyclerAdapter_Closet(items)
+    }
 
 
 

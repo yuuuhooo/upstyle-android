@@ -9,7 +9,6 @@ import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.umc.upstyle.data.model.ClothPreview
 
 class RecyclerAdapter_Load(
     private var itemList: MutableList<Item_load>,

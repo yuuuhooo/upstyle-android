@@ -5,13 +5,18 @@ import RecyclerAdapter_Search
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import com.umc.upstyle.data.model.ClosetCategoryResponse
+import com.umc.upstyle.data.network.ApiService
+import com.umc.upstyle.data.network.RetrofitClient
 import com.umc.upstyle.databinding.FragmentSearchItemBinding
+import retrofit2.Call
 import java.io.File
 
 class SearchItemFragment : Fragment() {
@@ -58,6 +63,9 @@ class SearchItemFragment : Fragment() {
             findNavController().navigate(action)
         }
 
+        val args = SearchItemFragmentArgs.fromBundle(requireArguments())
+
+
 
 
         // 상단 제목 설정
@@ -67,14 +75,32 @@ class SearchItemFragment : Fragment() {
         // RecyclerView 설정
         val items = loadItemsFromPreferences()
         setupRecyclerView(items)
+
+        val userId = 1L
+        val kindId = getkindId(category)
+
+        // ✅ 서버에서 아이템 불러오기
+        fetchItemsFromCloset(userId, kindId)
+
     }
+
+    private fun getkindId(category: String?): Long? {
+        return when (category) {
+            "상의" -> 1L
+            "하의" -> 2L
+            "아우터" -> 3L
+            "신발" -> 4L
+            "가방" -> 5L
+            else -> null // 기본값 설정 (null이면 전체 조회 가능하도록)
+        }
+    }
+
 
     private fun setupRecyclerView(items: List<Item_search>) {
         binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.recyclerView.adapter = RecyclerAdapter_Search(items) { selectedItem ->
             navigateToClosetResultFragment(selectedItem)
         }
-
     }
 
 
@@ -102,6 +128,45 @@ class SearchItemFragment : Fragment() {
 
         return itemSearchs
     }
+
+
+    private fun fetchItemsFromCloset(userId: Long, kindId: Long?) {
+        val apiService = RetrofitClient.createService(ApiService::class.java)
+
+        Log.d("CATEGORY_ID", "API 요청 - categoryId: $kindId") // ✅ categoryId 값 확인
+
+        apiService.getClosetByCategory(userId, kindId).enqueue(object : retrofit2.Callback<ClosetCategoryResponse> {
+            override fun onResponse(call: Call<ClosetCategoryResponse>, response: retrofit2.Response<ClosetCategoryResponse>) {
+                if (response.isSuccessful) {
+                    response.body()?.let { closetResponse ->
+                        Log.d("API_RESPONSE", "서버 응답: ${closetResponse.result.clothPreviewList}") // ✅ 응답 데이터 확인
+
+                        val filteredItems = closetResponse.result.clothPreviewList
+                            .filter { kindId == null || it.kindId == kindId } // ✅ 선택한 카테고리만 필터링
+                            .map { clothPreview ->
+                                val imageUrl = clothPreview.ootd?.imageUrl ?: "https://example.com/default_image.jpg"
+
+                                // ✅ description 순서 변경: "categoryName fitName colorName"
+                                val description = "${clothPreview.categoryName} ${clothPreview.fitName} ${clothPreview.colorName}"
+
+                                Item_search(description, imageUrl)
+                            }
+                        setupRecyclerView(filteredItems) // ✅ 필터링된 데이터 적용
+                    }
+                } else {
+                    Log.e("API_ERROR", "Error: ${response.errorBody()?.string()}")
+                }
+            }
+
+            override fun onFailure(call: Call<ClosetCategoryResponse>, t: Throwable) {
+                Log.e("API_ERROR", "Failure: ${t.message}")
+            }
+        })
+    }
+
+
+
+
 
     private fun navigateToClosetResultFragment(item: Item_search) {
         val action = SearchItemFragmentDirections

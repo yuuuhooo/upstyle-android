@@ -14,6 +14,9 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.umc.upstyle.data.model.ClothIdResponse
+import com.umc.upstyle.data.model.ClothRequestDTO
+import com.umc.upstyle.data.model.ClothRequestDesDTO
 import com.umc.upstyle.data.model.CodiResPreview
 import com.umc.upstyle.data.model.RequestDetailResponse
 import com.umc.upstyle.data.network.RequestService
@@ -31,6 +34,7 @@ class RequestDetailFragment : Fragment() {
     private var codiResPreviewList = mutableListOf<CodiResPreview>()
 
 
+    private var userId: Int = 0
     private var commentCount: Int = 0
     private lateinit var requestService: RequestService
     private val args: RequestDetailFragmentArgs by navArgs()
@@ -66,7 +70,27 @@ class RequestDetailFragment : Fragment() {
 //        }
 
         binding.backButton.setOnClickListener { findNavController().navigateUp() }
+
+        binding.btnPlus.setOnClickListener {
+            val bundle = Bundle().apply {
+                putInt("USER_ID", userId)
+            }
+            val action = RequestDetailFragmentDirections.actionRequestDetailFragmentToResponseFragment(userId)
+            findNavController().navigate(action)
+
+        }
     }
+
+    override fun onResume() {
+        super.onResume()
+        val clothList = findNavController().currentBackStackEntry?.savedStateHandle?.get<MutableList<ClothRequestDesDTO>>("SELECTED_ITEM")?: null
+        val clothIDList = findNavController().currentBackStackEntry?.savedStateHandle?.get<MutableList<ClothIdResponse>>("SELECTED_ITEM_ID")?: null
+
+        if((clothIDList != null) && (clothList != null)) {
+            createBottomSheet(clothList, clothIDList)
+        }
+    }
+
 
     private fun fetchRequestDetails(requestId: Int) {
         lifecycleScope.launch {
@@ -82,6 +106,7 @@ class RequestDetailFragment : Fragment() {
                         if (apiResponse.isSuccess) {
                             updateUI(apiResponse.result)
 
+                            userId = apiResponse.result.user.id
                             // 🚨 Null 체크 추가
                             val responseList = apiResponse.result.codiResPreviewList ?: emptyList()
 
@@ -123,6 +148,14 @@ class RequestDetailFragment : Fragment() {
         // 모서리 둥글게 해서 Bottom Sheet 불러오는 코드
         bottomSheetViewFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.RoundCornerBottomSheetDialogTheme)
         bottomSheetViewFragment.show(parentFragmentManager, bottomSheetViewFragment.tag)
+    }
+
+    private fun createBottomSheet(clothList: MutableList<ClothRequestDesDTO>, clothIDList: MutableList<ClothIdResponse>) {
+        // 클릭된 댓글 id를 Bottom Sheet에 넘겨서 API 호출
+        val codiBottomSheetDialogFragment = CodiBottomSheetFragment.newInstance(clothList, clothIDList)
+        // 모서리 둥글게 해서 Bottom Sheet 불러오는 코드
+        codiBottomSheetDialogFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.RoundCornerBottomSheetDialogTheme)
+        codiBottomSheetDialogFragment.show(parentFragmentManager, codiBottomSheetDialogFragment.tag)
     }
 
     override fun onDestroyView() {

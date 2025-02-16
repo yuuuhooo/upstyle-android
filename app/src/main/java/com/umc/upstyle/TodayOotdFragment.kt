@@ -117,6 +117,7 @@ class TodayOotdFragment : Fragment(R.layout.activity_today_ootd) {
             val addInfo = navBackStackEntry.savedStateHandle.get<String>("ADD_INFO") ?: ""
 
 
+
             if(clothId != 0) {
                 // DTO 생성
                 val clothRequestDTO = ClothRequestDTO(

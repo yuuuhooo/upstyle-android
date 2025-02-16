@@ -18,7 +18,7 @@ interface ApiService {
     // 특정 사용자 옷장 조회 API
     @GET("closets/")
     fun getUserCloset(
-        @Query("userId") userId: Long
+        @Query("userId") userId: Int
     ): Call<ClosetResponse>
 
     // 옷장 카테고리별 조회 API

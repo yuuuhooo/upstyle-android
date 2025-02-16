@@ -91,7 +91,6 @@ class CreateRequestFragment : Fragment() {
                             binding.imgSelected.visibility = View.VISIBLE
                             binding.btnRemoveImage.visibility = View.VISIBLE // x 버튼 표시
                             binding.btnImageUpload.visibility = View.INVISIBLE
-                            saveImageUri(Uri.parse(item.imageUrl)) // ✅ photoUri가 null이 아닐 때 저장
 
                             photoUri = Uri.parse(item.imageUrl)
                             Glide.with(requireContext())
@@ -199,14 +198,13 @@ class CreateRequestFragment : Fragment() {
             binding.imgSelected.setImageURI(photoUri) // 촬영한 사진 표시
             binding.btnRemoveImage.visibility = View.VISIBLE // x 버튼 표시
             binding.btnImageUpload.visibility = View.INVISIBLE
-            saveImageUri(photoUri!!) // ✅ photoUri가 null이 아닐 때 저장
             Toast.makeText(requireContext(), "사진 촬영 성공!", Toast.LENGTH_SHORT).show()
         } else {
             Toast.makeText(requireContext(), "사진 촬영 실패", Toast.LENGTH_SHORT).show()
         }
     }
 
-    // ✅ 이미지 선택 시 photoUri를 사용하지 않고 직접 적용
+    // ✅ 이미지 선택
     private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let {
             val savedPath = saveImageToInternalStorage(it)
@@ -253,10 +251,6 @@ class CreateRequestFragment : Fragment() {
         }
     }
 
-    private fun saveImageUri(uri: Uri) {
-        val preferences = requireActivity().getSharedPreferences("AppData", Context.MODE_PRIVATE)
-        preferences.edit().putString("SAVED_IMAGE_PATH", uri.toString()).apply()
-    }
 
     private fun selectImageFromGallery() {
         pickImageLauncher.launch("image/*")
@@ -320,8 +314,6 @@ class CreateRequestFragment : Fragment() {
             Log.e("CodiRequest", "Error: ${e.message}")
         }
     }
-
-
 
     override fun onDestroyView() {
         super.onDestroyView()

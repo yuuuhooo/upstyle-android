@@ -46,7 +46,10 @@ class CodiBottomSheetFragment : BottomSheetDialogFragment() {
             when (cloth.clothKindId) {
                 1 -> binding.tvOuter.text = cloth.description // OUTER (1)
                 2 -> binding.tvTop.text = cloth.description   // TOP (2)
-                3 -> binding.tvBottom.text = cloth.description   // TOP (2)
+                3 -> binding.tvBottom.text = cloth.description
+                4 -> binding.tvShoes.text = cloth.description
+                5 -> binding.tvBag.text = cloth.description
+                6 -> binding.tvOther.text = cloth.description
             }
         }
     }

@@ -1,5 +1,6 @@
 package com.umc.upstyle
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,19 +11,21 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.navigation.fragment.findNavController
+import com.umc.upstyle.data.model.AccountInfoDTO
 import com.umc.upstyle.data.model.ApiResponse
 import com.umc.upstyle.data.network.ApiService
 import com.umc.upstyle.databinding.ActivityMyhomeBinding
 import com.umc.upstyle.data.model.ClosetResponse
+import com.umc.upstyle.data.model.Gender
 import com.umc.upstyle.data.model.OOTDCalendar
 import com.umc.upstyle.data.model.OOTDPreview
 import com.umc.upstyle.data.network.OotdApiService
+import com.umc.upstyle.data.network.UserApiService
 import com.umc.upstyle.data.network.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.util.Calendar
-
 
 class MyHomeFragment : Fragment() {
 
@@ -31,6 +34,7 @@ class MyHomeFragment : Fragment() {
     private lateinit var monthListManager: LinearLayoutManager
     private val center = Int.MAX_VALUE / 2 // 중앙 위치 값 (Adapter에서 사용한 값)
     private val apiService = RetrofitClient.createService(OotdApiService::class.java)
+    private val userApiService = RetrofitClient.createService(UserApiService::class.java)
 
 
     override fun onCreateView(
@@ -44,25 +48,38 @@ class MyHomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val sharedPref = requireContext().getSharedPreferences("Auth", Context.MODE_PRIVATE)
+        val jwtToken = sharedPref.getString("jwt_token", null)
+        val isGuest = sharedPref.getBoolean("is_guest", false)  // 비회원 여부 확인
+
         val apiService = RetrofitClient.createService(ApiService::class.java)
 
-        apiService.getUserCloset(userId = 1).enqueue(object : Callback<ClosetResponse> {
-            override fun onResponse(call: Call<ClosetResponse>, response: Response<ClosetResponse>) {
-                if (response.isSuccessful) {
-                    val userName = response.body()?.result?.userName
-                    binding.wardrobeText.text = "${userName}님의 옷장"
-                    binding.topUserName.text ="${userName} 님"
-                } else {
-                    binding.wardrobeText.text = "오류"
-                    binding.topUserName.text ="오류"
-                }
-            }
+        if (isGuest) { // 비회원 모드
+            binding.topUserName.text = "비회원 님"
+            binding.wardrobeText.text = "비회원님의 옷장"
+        } else { // 회원 모드
+            userApiService.getUserInfo("Bearer $jwtToken").enqueue(object :
+                Callback<ApiResponse<AccountInfoDTO>> {
+                override fun onResponse(
+                    call: Call<ApiResponse<AccountInfoDTO>>,
+                    response: Response<ApiResponse<AccountInfoDTO>>
+                ) {
+                    if (response.isSuccessful) {
+                        val nickName = response.body()?.result?.nickname
+                        binding.topUserName.text = "${nickName} 님"
+                        binding.wardrobeText.text = "${nickName}님의 옷장"
+                    } else {
+                        binding.wardrobeText.text = "닉네임을 불러올 수 없음"
+                        binding.topUserName.text = "닉네임을 불러올 수 없음"
+                    }
 
-            override fun onFailure(call: Call<ClosetResponse>, t: Throwable) {
-                binding.wardrobeText.text = "API 실패"
-                binding.topUserName.text ="API 실패"
-            }
-        })
+                }
+
+                override fun onFailure(call: Call<ApiResponse<AccountInfoDTO>>, t: Throwable) {
+                    Log.e("Account", "사용자 정보 요청 실패: ${t.message}")
+                }
+            })
+        }
 
         // 리사이클러뷰 설정
         monthListManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)

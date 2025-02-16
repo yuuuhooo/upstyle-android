@@ -4,7 +4,6 @@ plugins {
     id ("kotlin-parcelize")
     id("androidx.navigation.safeargs.kotlin") //Safe args 추가
     id("kotlin-kapt") // KAPT 플러그인 추가
-
     id("com.google.gms.google-services")
 }
 
@@ -121,6 +120,10 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.11.0")
     implementation("com.squareup.retrofit2:converter-gson:2.11.0")
     implementation("com.squareup.retrofit2:adapter-rxjava2:2.11.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.9.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
+
+    implementation ("com.kakao.sdk:v2-user:2.12.1") // 카카오 로그인
 
     implementation(platform("com.google.firebase:firebase-bom:33.8.0"))
     implementation("com.google.firebase:firebase-storage:21.0.1")
